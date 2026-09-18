@@ -1,0 +1,10 @@
+name: jsxgraph
+description: Dynamic geometry / interactive mathematics with JSXGraph in a React wrapper (kind interactive)
+kind: interactive
+engine: jsxgraph
+role: dynamic-geometry
+next_steps:
+  - "Edit bits/__BIT_ID__/src/index.tsx (the construction lives in build()) ."
+  - "Develop: just dev __BIT_ID__     (opens http://localhost:4321/bits/__BIT_ID__)"
+  - "Export:  just export __BIT_ID__  (standalone static site in dist/web/)"
+  - "Then: just check __BIT_ID__ and update bit.yml (status, subjects, topics, levels)."

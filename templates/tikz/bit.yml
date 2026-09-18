@@ -1,0 +1,34 @@
+id: __BIT_ID__
+title: __BIT_TITLE__
+
+kind: figure
+role: __BIT_ROLE__
+engine: tikz
+
+status: draft
+language: it
+created: __BIT_DATE__
+
+# description: One or two sentences on what the figure shows.
+
+outputs:
+  - format: svg
+    file: dist/figure.svg
+  - format: pdf
+    file: dist/figure.pdf
+
+# build:
+#   main: src/figure.tex   # defaults to the only .tex file in src/
+#   compiler: pdflatex     # pdflatex | lualatex | xelatex
+
+# subjects: [mathematics]
+# topics: []
+# levels: [upper-secondary]
+# tags: []
+
+# provenance:
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""

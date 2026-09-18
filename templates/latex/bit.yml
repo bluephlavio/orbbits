@@ -1,0 +1,32 @@
+id: __BIT_ID__
+title: __BIT_TITLE__
+
+kind: document
+role: __BIT_ROLE__
+engine: latex
+
+status: draft
+language: it
+created: __BIT_DATE__
+
+# description: One or two sentences on what the document is for.
+
+outputs:
+  - format: pdf
+    file: dist/__BIT_ID__.pdf
+
+# build:
+#   main: src/main.tex     # defaults to the only .tex file in src/
+#   compiler: pdflatex     # pdflatex | lualatex | xelatex
+
+# subjects: []
+# topics: []
+# levels: []
+# tags: []
+
+# provenance:              # essential for annotated historical sources
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""

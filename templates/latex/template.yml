@@ -1,0 +1,9 @@
+name: latex
+description: Typeset document (handout, source packet, reference sheet) built with LaTeX (kind document)
+kind: document
+engine: latex
+role: handout
+next_steps:
+  - "Edit bits/__BIT_ID__/src/main.tex."
+  - "Build: just build __BIT_ID__   (-> dist/__BIT_ID__.pdf)"
+  - "Then: just check __BIT_ID__ and update bit.yml (status, subjects, topics, levels, provenance)."

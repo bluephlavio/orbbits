@@ -1,0 +1,27 @@
+id: __BIT_ID__
+title: __BIT_TITLE__
+
+kind: interactive
+role: __BIT_ROLE__
+engine: react
+
+status: draft
+language: it
+created: __BIT_DATE__
+
+# description: One or two sentences on what can be explored and why.
+
+# Interactive Bits are mounted from src/index.tsx by the web runtime.
+# `just export __BIT_ID__` writes a standalone static site to dist/web/ (not versioned).
+
+# subjects: [mathematics]
+# topics: []
+# levels: [upper-secondary]
+# tags: []
+
+# provenance:
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""

@@ -1,0 +1,47 @@
+/* OrbBits runtime chrome. Bits bring their own styles; this only frames them. */
+:root {
+  --orb-bg: #ffffff;
+  --orb-fg: #1c1c1c;
+  --orb-muted: #6b6b6b;
+  --orb-line: #e4e4e4;
+  --orb-accent: #1f5fbf;
+  --orb-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --orb-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --orb-bg: #121212;
+    --orb-fg: #ececec;
+    --orb-muted: #9a9a9a;
+    --orb-line: #2c2c2c;
+    --orb-accent: #7fb0ff;
+  }
+}
+* { box-sizing: border-box; }
+html { font-family: var(--orb-font); background: var(--orb-bg); color: var(--orb-fg); }
+body { margin: 0; line-height: 1.5; }
+a { color: var(--orb-accent); }
+code { font-family: var(--orb-mono); font-size: 0.92em; }
+
+.orb-page { max-width: 64rem; margin: 0 auto; padding: 1rem 1rem 3rem; }
+.orb-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--orb-line); margin-bottom: 1.25rem; }
+.orb-header h1 { font-size: 1.35rem; margin: 0; font-weight: 600; }
+.orb-header nav a { font-size: 0.9rem; text-decoration: none; }
+.orb-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.orb-badge { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--orb-muted); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.orb-badge[data-status="curated"] { color: var(--orb-accent); border-color: var(--orb-accent); }
+.orb-description { color: var(--orb-muted); margin: 0 0 1.25rem; }
+.orb-footer { margin-top: 2rem; font-size: 0.8rem; color: var(--orb-muted); }
+
+.orb-bit { width: 100%; }
+.orb-bit video, .orb-bit img, .orb-bit iframe { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.orb-bit iframe { width: 100%; height: 80vh; border: 1px solid var(--orb-line); }
+.orb-outputs { font-size: 0.9rem; color: var(--orb-muted); }
+.orb-outputs a { margin-right: 0.75rem; }
+.orb-empty { border: 1px dashed var(--orb-line); padding: 1rem; color: var(--orb-muted); }
+
+.orb-catalog { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+.orb-catalog li { border: 1px solid var(--orb-line); border-radius: 8px; padding: 0.7rem 0.9rem; display: grid; gap: 0.25rem; }
+.orb-catalog a { font-weight: 600; text-decoration: none; }
+.orb-catalog .orb-id { font-family: var(--orb-mono); font-size: 0.8rem; color: var(--orb-muted); }

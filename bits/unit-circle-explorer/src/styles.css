@@ -1,0 +1,53 @@
+/* Styles are scoped by the .unit-circle-explorer class so several Bits can share a page. */
+.unit-circle-explorer {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+.unit-circle-explorer .board {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+  background: #fff;
+  touch-action: none;
+}
+.unit-circle-explorer .controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.95rem;
+}
+.unit-circle-explorer .controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1 1 14rem;
+}
+.unit-circle-explorer .controls input[type="range"] {
+  flex: 1;
+}
+.unit-circle-explorer .controls output {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.5ch;
+}
+.unit-circle-explorer .readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.unit-circle-explorer .readout div {
+  display: flex;
+  gap: 0.5rem;
+}
+.unit-circle-explorer .readout dt {
+  font-weight: 600;
+}
+.unit-circle-explorer .readout dd {
+  margin: 0;
+}

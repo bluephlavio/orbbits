@@ -1,0 +1,52 @@
+# Interactive style
+
+Conventions for `kind: interactive` Bits (React, JSXGraph, p5, Mafs, three.js…).
+Reference implementation: `bits/unit-circle-explorer`.
+
+## Component boundary
+
+- `src/index.tsx` default-exports one component with no required props.
+- The component is the whole Bit: stage + controls + readouts. It never reaches outside
+  itself (no page selectors, no globals, no assumptions about a header or a route).
+- Third-party libraries own their canvas (JSXGraph board, p5 sketch, three renderer);
+  React owns the controls and readouts. Create the library object in `useEffect`, dispose it
+  in the cleanup, keep a `ref` to it, and bump a `key`/generation counter to rebuild on reset.
+
+## Layout and responsiveness
+
+- Fill the container width (`width: 100%`), keep an aspect ratio (`aspect-ratio`), cap with a
+  `max-width` that suits the content (≈ 34–48 rem). Never fix pixel sizes.
+- Everything must work on a projector (large), a laptop and a phone (stacked controls).
+- Styles are scoped under a class named after the Bit id (`.unit-circle-explorer …`).
+  Use plain CSS in `src/styles.css`; no global resets.
+
+## Interaction
+
+- Pointer *and* touch (`touch-action: none` on the stage; libraries generally handle both).
+- Controls are real form elements with labels: `<label>` + `<input type="range">`, `<button>`,
+  `<select>`; `<output>` for the value next to a slider; `aria-label` where the label is a symbol.
+- Always a **Reset** to the initial state.
+- Disable pan/zoom on dynamic-geometry boards unless they are the point.
+- Keep a readout of the quantities the lesson is about, with tabular numerals, sensible
+  decimals, and units.
+
+## Mathematical notation
+
+Unicode for simple symbols (θ, π, ≤); for real typesetting add KaTeX at the root
+(`pnpm add katex`) and render into the component — not yet a repository convention.
+
+## Performance
+
+- One lazily loaded chunk per Bit is automatic; keep dependencies light.
+- Throttle expensive redraws (JSXGraph `resize.throttle`, `requestAnimationFrame` for p5).
+- No network requests at runtime; data ships in `src/`.
+
+## Preview, export, embedding
+
+```bash
+just dev <id>       # http://localhost:4321/bits/<id>
+just export <id>    # bits/<id>/dist/web/ — standalone static site
+```
+
+The standalone page and, later, Orbits mount the component through the same `BitHost`.
+If it works standalone without touching the page, it will embed.

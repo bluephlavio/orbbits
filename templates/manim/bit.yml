@@ -1,0 +1,36 @@
+id: __BIT_ID__
+title: __BIT_TITLE__
+
+kind: video
+role: __BIT_ROLE__
+engine: manim
+
+status: draft
+language: it
+created: __BIT_DATE__
+
+# description: One or two sentences on what the animation shows and why.
+
+outputs:
+  - format: mp4
+    file: dist/__BIT_ID__.mp4
+  - format: webp
+    file: dist/poster.webp
+    description: poster frame (last frame of the animation)
+
+# build:
+#   scene: __BIT_CLASS__   # defaults to the first Scene subclass in src/scene.py
+#   poster: last           # last | first | <seconds>
+
+# Optional, evolvable taxonomy (discovery uses metadata, not directories):
+# subjects: [mathematics]
+# topics: []
+# levels: [upper-secondary]
+# tags: []
+
+# provenance:               # for third-party or historical material used in the Bit
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""

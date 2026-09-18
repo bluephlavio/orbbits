@@ -1,0 +1,9 @@
+name: tikz
+description: Static diagram drawn with TikZ (kind figure), exported to SVG and PDF
+kind: figure
+engine: tikz
+role: diagram
+next_steps:
+  - "Edit bits/__BIT_ID__/src/figure.tex (standalone TikZ picture)."
+  - "Build: just build __BIT_ID__   (-> dist/figure.svg, dist/figure.pdf)"
+  - "Then: just check __BIT_ID__ and update bit.yml (status, subjects, topics, levels)."

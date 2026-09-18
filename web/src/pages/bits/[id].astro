@@ -1,0 +1,19 @@
+---
+import Shell from '../../layouts/Shell.astro';
+import BitView from '../../components/BitView.astro';
+import { bits, exportBitId, type BitManifest } from '../../lib/catalog';
+
+export function getStaticPaths() {
+  // In export mode the single Bit is rendered at the root by index.astro instead.
+  if (exportBitId) return [];
+  return bits.map((bit) => ({ params: { id: bit.id }, props: { bit } }));
+}
+
+interface Props {
+  bit: BitManifest;
+}
+const { bit } = Astro.props;
+---
+<Shell title={bit.title} bit={bit}>
+  <BitView bit={bit} />
+</Shell>

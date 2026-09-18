@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+build/
+*.egg-info/
+
+# JavaScript / Astro
+node_modules/
+web/dist/
+web/.astro/
+.astro/
+
+# Bit build scratch space (intermediate products; dist/ is the deliverable)
+bits/*/.build/
+
+# Standalone web exports are rebuildable from src/ (`orbbits export <id>`)
+bits/*/dist/web/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json

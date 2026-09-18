@@ -1,0 +1,22 @@
+/* Styles are scoped by the .__BIT_ID__ class so several Bits can share a page. */
+.__BIT_ID__ {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+.__BIT_ID__ .board {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+  touch-action: none;
+}
+.__BIT_ID__ .controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.95rem;
+}

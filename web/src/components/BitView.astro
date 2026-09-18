@@ -1,0 +1,45 @@
+---
+/**
+ * Renders any Bit in its standalone form, by kind:
+ * - interactive: mounts bits/<id>/src/index.tsx through BitHost;
+ * - video / figure / document: shows the declared classroom-ready outputs from dist/.
+ */
+import BitHost from '../lib/BitHost';
+import { firstOutput, outputUrl, type BitManifest } from '../lib/catalog';
+
+interface Props {
+  bit: BitManifest;
+}
+const { bit } = Astro.props;
+
+const video = firstOutput(bit, 'mp4', 'webm');
+const poster = firstOutput(bit, 'webp', 'png', 'jpg');
+const image = firstOutput(bit, 'svg', 'png', 'webp', 'jpg');
+const pdf = firstOutput(bit, 'pdf');
+
+const url = (file?: string) => (file ? outputUrl(bit.id, file) : undefined);
+const links = (bit.outputs ?? [])
+  .map((o) => ({ ...o, url: outputUrl(bit.id, o.file) }))
+  .filter((o) => o.url);
+---
+<div class="orb-bit" data-kind={bit.kind} data-bit={bit.id}>
+  {bit.kind === 'interactive' && <BitHost id={bit.id} client:only="react" />}
+
+  {bit.kind === 'video' && (url(video?.file)
+    ? <video controls playsinline preload="metadata" src={url(video?.file)} poster={url(poster?.file)} />
+    : <p class="orb-empty">No rendered video yet — run <code>just build {bit.id}</code>.</p>)}
+
+  {bit.kind === 'figure' && (url(image?.file)
+    ? <img src={url(image?.file)} alt={bit.title} />
+    : <p class="orb-empty">No rendered figure yet — run <code>just build {bit.id}</code>.</p>)}
+
+  {bit.kind === 'document' && (url(pdf?.file)
+    ? <iframe src={url(pdf?.file)} title={bit.title} />
+    : <p class="orb-empty">No built document yet — run <code>just build {bit.id}</code>.</p>)}
+
+  {links.length > 0 && (
+    <p class="orb-outputs">
+      Outputs: {links.map((o) => <a href={o.url} download>{o.file.replace(/^dist\//, '')}</a>)}
+    </p>
+  )}
+</div>

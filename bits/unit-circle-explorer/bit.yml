@@ -1,0 +1,18 @@
+id: unit-circle-explorer
+title: Unit circle explorer
+
+kind: interactive
+role: dynamic-geometry
+engine: jsxgraph
+
+status: usable
+language: it
+created: 2026-09-18
+
+description: >-
+  Drag a point around the unit circle to see how the angle θ determines cos θ (horizontal
+  projection) and sin θ (vertical projection), in degrees and radians.
+
+subjects: [mathematics]
+topics: [trigonometry, unit-circle, sine, cosine]
+levels: [upper-secondary]
