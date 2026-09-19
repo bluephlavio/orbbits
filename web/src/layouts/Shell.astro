@@ -65,8 +65,8 @@ const lang = bit ? bitLocale(bit) : 'it';
         </span>
         <span class="orb-license">
           {SITE.footerSoftware} <a href={LICENSES.software.url}>{LICENSES.software.name}</a>
-          · {SITE.footerContent} <a href={LICENSES.content.url} rel="license">{LICENSES.content.name}</a> {SITE.footerUnlessNoted}
-          · {SITE.footerThirdParty}
+          {' · '}{SITE.footerContent} <a href={LICENSES.content.url} rel="license">{LICENSES.content.name}</a> {SITE.footerUnlessNoted}
+          {' · '}{SITE.footerThirdParty}
         </span>
       </footer>
     </div>
