@@ -31,7 +31,8 @@ jobs:
       - uses: astral-sh/setup-uv@v10.1.0 # no floating v10 tag is published
         with:
           enable-cache: true
-      # The manim dependency group needs cairo/pango; nothing in CI renders, so skip it.
+      # The manim dependency group needs cairo/pango; nothing in CI renders, so skip it —
+      # on `uv run` too, which would otherwise sync the default groups back in.
       - run: uv sync --locked --no-group manim
 
       - uses: pnpm/action-setup@v6 # version pinned by "packageManager" in package.json
@@ -43,10 +44,10 @@ jobs:
 
       - name: Python tests and lint
         run: |
-          uv run pytest
-          uv run ruff check src tests
+          uv run --no-group manim pytest
+          uv run --no-group manim ruff check src tests
       - name: Validate Bits
-        run: uv run orbbits check
+        run: uv run --no-group manim orbbits check
       - name: Type-check the web runtime and interactive Bits
         run: pnpm exec astro check --root "$GITHUB_WORKSPACE/web"
 
