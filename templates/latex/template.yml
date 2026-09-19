@@ -4,6 +4,7 @@ kind: document
 engine: latex
 role: handout
 next_steps:
+  - "Write bits/__BIT_ID__/brief.md (intent, essential relations) before typesetting."
   - "Edit bits/__BIT_ID__/src/main.tex."
   - "Build: just build __BIT_ID__   (-> dist/__BIT_ID__.pdf)"
-  - "Then: just check __BIT_ID__ and update bit.yml (status, subjects, topics, levels, provenance)."
+  - "Then: just check __BIT_ID__; fill bit.yml (description, tags, subjects, topics, levels, provenance); status usable publishes /bits/__BIT_ID__/."

@@ -1,4 +1,14 @@
-"""A Bit is a directory under bits/<id>/ with a bit.yml manifest, src/ and dist/."""
+"""A Bit is a directory under bits/<id>/ with a bit.yml manifest, src/, dist/ and its notes.
+
+Documentation files, all optional but expected for substantial Bits:
+- README.md     technical notes (implementation, build, decisions) for maintainers and agents;
+- brief.md      pedagogical specification, engine-independent (intent, essential relations,
+                required elements, progression, pitfalls) - what an agent reads to re-create
+                the concept in another medium;
+- narrative.md  reusable classroom prose (what to say, ask, caption) and notes after use.
+
+Localised strings, when a Bit needs them, live in locales/<tag>.yml (docs/localization.md).
+"""
 
 from __future__ import annotations
 
@@ -10,6 +20,10 @@ from pydantic import ValidationError
 from orbbits.manifest import Manifest, parse_manifest
 
 MANIFEST_NAME = "bit.yml"
+README_NAME = "README.md"
+BRIEF_NAME = "brief.md"
+NARRATIVE_NAME = "narrative.md"
+LOCALES_DIRNAME = "locales"
 
 
 class ManifestError(Exception):
@@ -44,6 +58,29 @@ class Bit:
     def build_dir(self) -> Path:
         """Scratch space for intermediate build products; never versioned."""
         return self.dir / ".build"
+
+    @property
+    def locales_dir(self) -> Path:
+        """Per-language string files (locales/it.yml, locales/en.yml); optional."""
+        return self.dir / LOCALES_DIRNAME
+
+    def locale_files(self) -> dict[str, Path]:
+        """Language tag -> file, for whatever is in locales/ (it.yml, en.tex, ...)."""
+        if not self.locales_dir.is_dir():
+            return {}
+        return {p.stem: p for p in sorted(self.locales_dir.iterdir()) if p.is_file()}
+
+    @property
+    def readme(self) -> Path:
+        return self.dir / README_NAME
+
+    @property
+    def brief(self) -> Path:
+        return self.dir / BRIEF_NAME
+
+    @property
+    def narrative(self) -> Path:
+        return self.dir / NARRATIVE_NAME
 
     @classmethod
     def load(cls, bit_dir: Path) -> Bit:

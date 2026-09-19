@@ -3,7 +3,9 @@
 OrbBits Manim conventions (see docs/style/manim.md):
 - one main Scene per Bit, 16:9, rendered at 1080p60 by `orbbits build`;
 - dark background, restrained palette, large readable labels;
-- animate one idea at a time and leave short pauses for the teacher to talk.
+- animate one idea at a time and leave short pauses for the teacher to talk;
+- labels in the Bit's default_locale; a Bit rendered in several languages reads
+  os.environ["ORBBITS_LOCALE"] and locales/<tag>.yml (docs/localization.md).
 """
 
 from manim import *  # noqa: F403  (Manim idiom: scenes use the global namespace)

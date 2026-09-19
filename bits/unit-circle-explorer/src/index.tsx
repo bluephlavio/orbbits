@@ -4,11 +4,26 @@
  * Drag P around the unit circle (or use the slider) and read the angle, cos θ and sin θ.
  * JSXGraph owns the geometry; React owns the controls and the readout.
  * Conventions: docs/style/interactive.md.
+ *
+ * Localised: every string the learner reads comes from locales/<tag>.yml and the runtime
+ * passes the language to render as `locale` (docs/localization.md). Same Bit, same URL.
  */
 import JXG from 'jsxgraph';
 import 'jsxgraph/distrib/jsxgraph.css';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import en from '../locales/en.yml';
+import it from '../locales/it.yml';
 import './styles.css';
+
+interface Messages {
+  angle_slider: string;
+  reset: string;
+  cos: string;
+  sin: string;
+  rad: string;
+}
+const MESSAGES: Record<string, Messages> = { it: it as Messages, en: en as Messages };
+const DEFAULT_LOCALE = 'it';
 
 const INITIAL_DEG = 40;
 const BOUNDING_BOX: [number, number, number, number] = [-1.5, 1.5, 1.5, -1.5];
@@ -31,7 +46,7 @@ interface Construction {
 }
 
 /** The whole construction. Everything draggable or readable is created here. */
-function build(board: JXG.Board, initialDeg: number): Construction {
+function build(board: JXG.Board, initialDeg: number, t: Messages): Construction {
   const O = board.create('point', [0, 0], { name: 'O', fixed: true, size: 2, color: COLOR.muted, label: { offset: [-14, -12] } });
   const X = board.create('point', [1, 0], { visible: false, fixed: true });
   const circle = board.create('circle', [O, X], { strokeColor: COLOR.circle, strokeWidth: 2, fixed: true });
@@ -61,14 +76,14 @@ function build(board: JXG.Board, initialDeg: number): Construction {
     label: { fontSize: 14 },
   });
 
-  board.create('text', [() => P.X() / 2, -0.08, 'cos θ'], {
+  board.create('text', [() => P.X() / 2, -0.08, t.cos], {
     anchorX: 'middle',
     anchorY: 'top',
     fontSize: 13,
     color: COLOR.cos,
     fixed: true,
   });
-  board.create('text', [-0.08, () => P.Y() / 2, 'sin θ'], {
+  board.create('text', [-0.08, () => P.Y() / 2, t.sin], {
     anchorX: 'right',
     anchorY: 'middle',
     fontSize: 13,
@@ -79,7 +94,8 @@ function build(board: JXG.Board, initialDeg: number): Construction {
   return { board, P };
 }
 
-export default function UnitCircleExplorer() {
+export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale?: string }) {
+  const t = MESSAGES[locale] ?? MESSAGES[DEFAULT_LOCALE];
   const containerId = useId().replace(/:/g, '');
   const ref = useRef<Construction | null>(null);
   const [deg, setDeg] = useState(INITIAL_DEG);
@@ -99,7 +115,7 @@ export default function UnitCircleExplorer() {
         y: { ticks: { insertTicks: false, ticksDistance: 0.5, minorTicks: 1, label: { fontSize: 11 } } },
       },
     });
-    const construction = build(board, INITIAL_DEG);
+    const construction = build(board, INITIAL_DEG, t);
     ref.current = construction;
 
     // Keep the React readout in sync with the geometry whenever P moves.
@@ -112,7 +128,7 @@ export default function UnitCircleExplorer() {
       JXG.JSXGraph.freeBoard(board);
       ref.current = null;
     };
-  }, [containerId]);
+  }, [containerId, t]);
 
   const moveTo = useCallback((degrees: number) => {
     const c = ref.current;
@@ -136,25 +152,25 @@ export default function UnitCircleExplorer() {
             step="1"
             value={Math.round(deg)}
             onChange={(e) => moveTo(Number(e.target.value))}
-            aria-label="angle in degrees"
+            aria-label={t.angle_slider}
           />
           <output>{deg.toFixed(0)}°</output>
         </label>
         <button type="button" onClick={() => moveTo(INITIAL_DEG)}>
-          Reset
+          {t.reset}
         </button>
       </div>
       <dl className="readout">
         <div>
           <dt>θ</dt>
-          <dd>{deg.toFixed(1)}° = {(rad / Math.PI).toFixed(3)}π rad</dd>
+          <dd>{deg.toFixed(1)}° = {(rad / Math.PI).toFixed(3)}π {t.rad}</dd>
         </div>
         <div>
-          <dt style={{ color: COLOR.cos }}>cos θ</dt>
+          <dt style={{ color: COLOR.cos }}>{t.cos}</dt>
           <dd>{Math.cos(rad).toFixed(3)}</dd>
         </div>
         <div>
-          <dt style={{ color: COLOR.sin }}>sin θ</dt>
+          <dt style={{ color: COLOR.sin }}>{t.sin}</dt>
           <dd>{Math.sin(rad).toFixed(3)}</dd>
         </div>
       </dl>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "OrbBits web runtime: Astro + React shells that mount interactive Bits.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "cd web && astro dev",

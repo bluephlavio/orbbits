@@ -1,10 +1,14 @@
 ---
 /**
- * Minimal page chrome. It is NOT the future public site: it exists so every Bit can be
- * previewed and shared on its own. Bits never depend on it.
+ * Page chrome shared by the catalog and the Bit pages. Deliberately minimal: a header with
+ * the site name, a title, badges for a Bit, and a footer. Bits never depend on it.
+ *
+ * `standalone` is the single-Bit export (`just export <id>`): no site navigation, no base.
  */
 import '../styles/base.css';
 import type { BitManifest } from '../lib/catalog';
+import { bitLocale, bitPath } from '../lib/catalog';
+import { KIND_LABEL, LICENSES, SITE, STATUS_LABEL, absoluteUrl, repoUrl, withBase } from '../lib/site';
 
 interface Props {
   title: string;
@@ -12,35 +16,59 @@ interface Props {
   standalone?: boolean;
 }
 const { title, bit, standalone = false } = Astro.props;
+
+const path = bit ? bitPath(bit.id) : '/';
+const canonical = standalone ? undefined : absoluteUrl(path);
+const showStatus = bit && (bit.status !== 'usable' || import.meta.env.DEV);
+// The page speaks the Bit's default language; the chrome is Italian (docs/localization.md).
+const lang = bit ? bitLocale(bit) : 'it';
 ---
 <!doctype html>
-<html lang={bit?.language ?? 'en'}>
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}{standalone ? '' : ' · OrbBits'}</title>
+    <title>{title}{standalone ? '' : ` · ${SITE.name}`}</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%231f5fbf' stroke-width='3'/%3E%3Ccircle cx='24' cy='9' r='4' fill='%23e0a100'/%3E%3C/svg%3E" />
     {bit?.description && <meta name="description" content={bit.description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
   </head>
   <body>
     <div class="orb-page">
+      {!standalone && bit && (
+        <nav class="orb-nav">
+          <a class="orb-brand" href={withBase('/')}>{SITE.name}</a>
+          <a href={withBase('/')}>← {SITE.home}</a>
+        </nav>
+      )}
       <header class="orb-header">
         <h1>{title}</h1>
         {bit && (
           <div class="orb-badges">
-            <span class="orb-badge">{bit.kind}</span>
+            <span class="orb-badge" data-kind={bit.kind}>{KIND_LABEL[bit.kind]}</span>
             <span class="orb-badge">{bit.role}</span>
             <span class="orb-badge">{bit.engine}</span>
-            <span class="orb-badge" data-status={bit.status}>{bit.status}</span>
+            {showStatus && (
+              <span class="orb-badge" data-status={bit.status}>{STATUS_LABEL[bit.status]}</span>
+            )}
           </div>
         )}
-        {!standalone && bit && <nav><a href="/">← all Bits</a></nav>}
       </header>
       {bit?.description && <p class="orb-description">{bit.description}</p>}
       <main>
         <slot />
       </main>
-      <footer class="orb-footer">OrbBits{bit && <> · <code>{bit.id}</code></>}</footer>
+      <footer class="orb-footer">
+        <span>
+          {SITE.name}{bit && <> · <code>{bit.id}</code></>}
+          {repoUrl && <> · <a href={repoUrl}>{SITE.footerRepository}</a></>}
+        </span>
+        <span class="orb-license">
+          {SITE.footerSoftware} <a href={LICENSES.software.url}>{LICENSES.software.name}</a>
+          · {SITE.footerContent} <a href={LICENSES.content.url} rel="license">{LICENSES.content.name}</a> {SITE.footerUnlessNoted}
+          · {SITE.footerThirdParty}
+        </span>
+      </footer>
     </div>
   </body>
 </html>

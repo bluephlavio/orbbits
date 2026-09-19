@@ -5,8 +5,14 @@ description: Author a dynamic-geometry / interactive-mathematics Bit with JSXGra
 
 # JSXGraph Bit
 
-Reference: `bits/unit-circle-explorer`. General rules: `web-interactive-bit` skill and
-`docs/style/interactive.md`. Template: `templates/jsxgraph`.
+Reference: `bits/unit-circle-explorer` (read its `brief.md` to see how a concept is specified
+independently of the board). General rules: `web-interactive-bit` skill and
+`docs/style/interactive.md`; flow (relatives, naming, brief, publication): `create-bit`.
+Template: `templates/jsxgraph`.
+
+The brief decides the construction: "essential relations" become constrained elements
+(gliders, dependent points), "required elements" become what is drawn and labelled,
+"pitfalls" become what is `fixed`, hidden or disabled (pan/zoom, free points).
 
 ## Pattern
 
@@ -39,15 +45,21 @@ const board = JXG.JSXGraph.initBoard(containerId, {
 - Colours: primary `#1f5fbf`, active point `#e0a100`, paired quantities `#d1495b` / `#2a9d8f`,
   construction `#7a7a7a` dashed.
 - Draggable things are `glider`s or free points with `size: 4–5`; everything else `fixed: true`.
-- Labels via `text` elements with function coordinates; keep them off the axes.
+- Labels via `text` elements with function coordinates; keep them off the axes. In a
+  localised Bit, `build(board, …, t)` receives the messages so board labels follow the
+  `locale` prop like the React readout (see `bits/unit-circle-explorer`).
 - Live values as function texts on the board **and/or** a React readout (`<dl>`), tabular numerals.
 - Disable pan/zoom unless they are the point of the Bit.
 
 ## Workflow
 
 ```bash
-just dev <id>      # live preview
+just dev <id>      # live preview at /bits/<id>/
 just web-check     # types
 just export <id>   # standalone site in dist/web/
-just check <id>
+just check <id>    # 0 errors, no warnings about the Bit
 ```
+
+Finish as in `web-interactive-bit`: `brief.md` filled, `README.md` technical (bounding box,
+gliders vs fixed, sync strategy), `description` in the default locale, concept `tags`,
+`locales` honest; `status: usable` publishes the Bit.

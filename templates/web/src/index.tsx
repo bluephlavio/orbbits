@@ -5,7 +5,9 @@
  * - the default export is the whole Bit and depends on nothing from the page around it;
  * - responsive: fill the container width, keep an aspect ratio, work with touch;
  * - controls are accessible (<label>, <input type="range">, <button>) and there is a reset;
- * - styles are scoped under a class named after the Bit id.
+ * - styles are scoped under a class named after the Bit id;
+ * - on-screen text is in the Bit's default_locale; a Bit meant for several languages keeps
+ *   its strings in locales/<tag>.yml and reads an optional `locale` prop (docs/localization.md).
  */
 import { useState } from 'react';
 import './styles.css';

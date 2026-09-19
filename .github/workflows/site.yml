@@ -1,0 +1,84 @@
+# Build, verify and publish the OrbBits site (docs/publishing.md).
+#
+#   push to main / manual run  →  install  →  tests + check + web-check  →  astro build  →  GitHub Pages
+#   pull request               →  the same, without the deployment
+#
+# The site consumes the already-built outputs versioned under bits/*/dist/ (SVG, PDF, MP4,
+# posters); CI never renders Manim/TikZ/LaTeX sources, so it needs no TeX, ffmpeg or cairo.
+# Bits are built locally with `just build <id>` and committed together with their outputs.
+name: site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run per ref at a time; a queued run must not cancel a deployment in progress.
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.1.0 # no floating v10 tag is published
+        with:
+          enable-cache: true
+      # The manim dependency group needs cairo/pango; nothing in CI renders, so skip it.
+      - run: uv sync --locked --no-group manim
+
+      - uses: pnpm/action-setup@v6 # version pinned by "packageManager" in package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Python tests and lint
+        run: |
+          uv run pytest
+          uv run ruff check src tests
+      - name: Validate Bits
+        run: uv run orbbits check
+      - name: Type-check the web runtime and interactive Bits
+        run: pnpm exec astro check --root "$GITHUB_WORKSPACE/web"
+
+      # Where the site will live (origin + base path); pull requests build for a placeholder
+      # base so that base-path handling is exercised even without Pages configured. The
+      # repository link in the footer needs nothing here: astro.config reads the
+      # GITHUB_SERVER_URL / GITHUB_REPOSITORY variables every Actions run provides.
+      - id: pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6
+      - name: Build the site
+        run: pnpm exec astro build --root "$GITHUB_WORKSPACE/web"
+        env:
+          # (an empty base_path is a valid answer: user site or custom domain → root)
+          ORBBITS_SITE: ${{ github.event_name == 'pull_request' && 'https://example.invalid' || steps.pages.outputs.origin }}
+          ORBBITS_BASE: ${{ github.event_name == 'pull_request' && format('/{0}/', github.event.repository.name) || steps.pages.outputs.base_path }}
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

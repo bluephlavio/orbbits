@@ -3,7 +3,8 @@
  *
  * JSXGraph inside React: the board is created once in an effect and freed on unmount;
  * React owns the surrounding controls, JSXGraph owns the geometry.
- * Conventions: docs/style/interactive.md.
+ * Conventions: docs/style/interactive.md. Several languages: docs/localization.md
+ * (strings in locales/<tag>.yml, optional `locale` prop; see bits/unit-circle-explorer).
  */
 import JXG from 'jsxgraph';
 import 'jsxgraph/distrib/jsxgraph.css';

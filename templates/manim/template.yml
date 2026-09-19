@@ -4,7 +4,8 @@ kind: video
 engine: manim
 role: animation
 next_steps:
+  - "Write bits/__BIT_ID__/brief.md (intent, essential relations) before animating."
   - "Edit bits/__BIT_ID__/src/scene.py (scene class __BIT_CLASS__)."
   - "Quick preview: just build __BIT_ID__ --quick   (480p, written to .build/)"
   - "Final render:  just build __BIT_ID__           (1080p60 -> dist/__BIT_ID__.mp4 + dist/poster.webp)"
-  - "Then: just check __BIT_ID__ and update bit.yml (status, subjects, topics, levels)."
+  - "Then: just check __BIT_ID__; fill bit.yml (description, tags, subjects, topics, levels); status usable publishes /bits/__BIT_ID__/."

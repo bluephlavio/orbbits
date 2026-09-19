@@ -1,19 +1,103 @@
 ---
+/**
+ * Canonical page of a Bit: /bits/<id>/ — the URL to share in class, whatever the kind.
+ * Production builds emit only published Bits; the dev server also serves drafts.
+ */
 import Shell from '../../layouts/Shell.astro';
 import BitView from '../../components/BitView.astro';
-import { bits, exportBitId, type BitManifest } from '../../lib/catalog';
+import {
+  bitLocales,
+  bitPath,
+  contentLicense,
+  exportBitId,
+  relatedBits,
+  visibleBits,
+  type BitManifest,
+} from '../../lib/catalog';
+import { LICENSES, SITE, absoluteUrl, withBase } from '../../lib/site';
 
 export function getStaticPaths() {
   // In export mode the single Bit is rendered at the root by index.astro instead.
   if (exportBitId) return [];
-  return bits.map((bit) => ({ params: { id: bit.id }, props: { bit } }));
+  return visibleBits.map((bit) => ({ params: { id: bit.id }, props: { bit } }));
 }
 
 interface Props {
   bit: BitManifest;
 }
 const { bit } = Astro.props;
+const related = relatedBits(bit).slice(0, 6);
+const address = absoluteUrl(bitPath(bit.id)) ?? withBase(bitPath(bit.id));
+const tags = bit.tags ?? [];
+const locales = bitLocales(bit);
+// Licence of the original content; third-party ingredients are listed with their own terms.
+const license = contentLicense(bit);
+const licenseUrl = license === LICENSES.content.name ? LICENSES.content.url : undefined;
+const provenance = bit.provenance ?? [];
 ---
 <Shell title={bit.title} bit={bit}>
   <BitView bit={bit} />
+
+  <aside class="orb-about">
+    <h2>{SITE.about}</h2>
+    <dl>
+      {tags.length > 0 && (
+        <div>
+          <dt>{SITE.tags}</dt>
+          <dd class="orb-tags">
+            {tags.map((tag) => (
+              <a class="orb-tag" href={`${withBase('/')}#tag=${encodeURIComponent(tag)}`}>{tag}</a>
+            ))}
+          </dd>
+        </div>
+      )}
+      {bit.created && (
+        <div>
+          <dt>{SITE.created}</dt>
+          <dd>{bit.created}</dd>
+        </div>
+      )}
+      <div>
+        <dt>{SITE.languages}</dt>
+        <dd>{locales.map((l, i) => <>{i > 0 && ', '}<code>{l}</code></>)}</dd>
+      </div>
+      <div>
+        <dt>{SITE.license}</dt>
+        <dd>
+          {SITE.licenseOriginal}: {licenseUrl ? <a href={licenseUrl} rel="license">{license}</a> : license}
+          {provenance.length > 0 && <>; {SITE.sourcesNote}</>}
+        </dd>
+      </div>
+      {provenance.length > 0 && (
+        <div>
+          <dt>{SITE.sources}</dt>
+          <dd>
+            <ul class="orb-provenance">
+              {provenance.map((p) => (
+                <li>
+                  {p.url ? <a href={p.url}>{p.source}</a> : p.source}
+                  {p.author && <> — {p.author}</>}
+                  {p.license && <> <small>({p.license})</small></>}
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      )}
+      <div>
+        <dt>{SITE.address}</dt>
+        <dd><a href={withBase(bitPath(bit.id))}><code>{address}</code></a></dd>
+      </div>
+    </dl>
+    {related.length > 0 && (
+      <>
+        <h2>{SITE.related}</h2>
+        <ul class="orb-related">
+          {related.map((r) => (
+            <li><a href={withBase(bitPath(r.id))}>{r.title}</a> <span class="orb-id">{r.kind}</span></li>
+          ))}
+        </ul>
+      </>
+    )}
+  </aside>
 </Shell>

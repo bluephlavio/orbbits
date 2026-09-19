@@ -1,9 +1,10 @@
 # __BIT_TITLE__
 
-<!-- What this document is, for whom, how it is used in class. -->
+<!-- Technical notes for maintainers and agents. The pedagogical intent lives in brief.md,
+     classroom prose in narrative.md; do not repeat them here. -->
 
-- Kind: document · Engine: LaTeX
-- Source: `src/main.tex`
+- Kind: document · Engine: LaTeX · Public page: `/bits/__BIT_ID__/` (once `status` is usable)
+- Source: `src/main.tex` (+ `src/assets/` for scans, images, data)
 - Output: `dist/__BIT_ID__.pdf`
 
 ## Workflow
@@ -13,4 +14,8 @@ just build __BIT_ID__
 just check __BIT_ID__
 ```
 
-## Notes
+## Implementation notes
+
+<!-- Packages, compiler, included assets, anything needed to rebuild. -->
+
+## Limitations / open issues

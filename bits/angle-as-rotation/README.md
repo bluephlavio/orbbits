@@ -1,12 +1,10 @@
-# Angle as rotation
+# Angolo come rotazione
 
-A point *P* rotates on the unit circle while its horizontal shadow (cos θ) and vertical
-shadow (sin θ) are highlighted and read out live. The point stops at a few notable angles so
-the teacher can comment. Companion of the interactive `unit-circle-explorer` Bit.
+Technical notes. Pedagogical intent: `brief.md`; classroom prose: `narrative.md`.
 
-- Kind: video · Engine: Manim
+- Kind: video · Engine: Manim · Public page: `/bits/angle-as-rotation/`
 - Source: `src/scene.py` (scene `AngleAsRotation`)
-- Outputs: `dist/angle-as-rotation.mp4` (1080p60), `dist/poster.webp`
+- Outputs: `dist/angle-as-rotation.mp4` (1080p60, ≈ 22 s, 1.1 MB), `dist/poster.webp` (last frame)
 
 ## Workflow
 
@@ -16,7 +14,18 @@ just build angle-as-rotation           # final render into dist/
 just check angle-as-rotation
 ```
 
-## Notes
+## Implementation notes
 
-Serves as the end-to-end validation of the Manim builder (render → copy to dist → poster
-frame with ffmpeg). Text is in Italian; labels are mathematical.
+End-to-end validation of the Manim builder (render → copy to dist → poster frame with ffmpeg).
+
+- One `ValueTracker` (θ) drives everything through `always_redraw`: radius, point, label,
+  dashed drops, projection segments, angle arc, and two `DecimalNumber` updaters.
+- The circle is drawn at on-screen radius `R = 2.4`, shifted left to leave room for the readout.
+- Pauses at π/3, 5π/6, 3π/2, 2π are `wait(0.8)` between smooth `run_time` 2.5–3 s rotations.
+- `MathTex` needs a LaTeX distribution; text is Italian, mathematics in math mode.
+- Colours: `BLUE` circle, `YELLOW` moving parts, `RED` cos, `TEAL` sin (`docs/style/manim.md`).
+
+## Limitations / open issues
+
+- No audio; the narration is meant to be live (see `narrative.md`).
+- The mp4 is versioned in git for now (small); revisit if videos grow (LFS or object storage).

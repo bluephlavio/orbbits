@@ -5,8 +5,9 @@ kind: interactive
 role: __BIT_ROLE__
 engine: react
 
-status: draft
-language: it
+status: draft             # draft = local only · usable / curated = published on the site
+default_locale: __BIT_LOCALE__   # language of title/description and of the artifact at /bits/__BIT_ID__/
+locales: [__BIT_LOCALES__]       # every language the Bit is realised in (docs/localization.md)
 created: __BIT_DATE__
 
 # description: One or two sentences on what can be explored and why.
@@ -17,8 +18,9 @@ created: __BIT_DATE__
 # subjects: [mathematics]
 # topics: []
 # levels: [upper-secondary]
-# tags: []
+tags: [__BIT_TAGS__]        # concept keywords shared with related Bits (docs/bit-spec.md#tags)
 
+# license: CC BY-SA 4.0     # original content inherits the repository default (docs/licensing.md); set only to override
 # provenance:
 #   - source: ""
 #     author: ""

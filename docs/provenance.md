@@ -2,7 +2,8 @@
 
 Bits and, later, Orbits combine original material with historical images, archival sources,
 screenshots, maps, public-domain works and third-party media. Provenance is a first-class
-concern from day one, without a rights-management system.
+concern from day one, without a rights-management system — and it matters more now that the
+repository and the site are public: whatever is under `bits/` is redistributed.
 
 ## Record it in `bit.yml`
 
@@ -27,7 +28,15 @@ preserved. Use it for:
 - code or constructions adapted from someone else's work.
 
 Original work needs no entry; a short `notes` line saying a figure is an original rendering
-"after" a classic diagram is still useful (see `bits/alkhwarizmi-completing-square`).
+"after" a classic diagram is still useful (see `bits/alkhwarizmi-completing-square`, whose
+entry names the 9th-century source and states that the drawing itself is original).
+
+What the fields are for, once public: `source`/`author`/`url` let a reader find the original;
+`license` states under which terms the material is redistributed here (the content licence
+CC BY-SA 4.0 in `docs/licensing.md` applies only to original work, and a Bit's own
+`license:` field only to *its* original content — never to what is listed here);
+`modifications` separates what is theirs from what is ours; `retrieved`/`notes` record
+context that is easy to lose.
 
 ## Keep the material
 
@@ -36,6 +45,8 @@ so the Bit can be rebuilt or re-checked; never only in `dist/`.
 
 ## Checks
 
-`orbbits check` warns when a Bit with engine `external` or `static` has no provenance. The
-future publication pipeline is expected to refuse `curated` Bits whose third-party material
-lacks a license note.
+`orbbits check` warns when a Bit with engine `external` or `static` has no provenance, and
+when a *published* Bit (status `usable` or `curated`) has a provenance entry without
+`license`; for `curated` Bits the missing license is an error. The public Bit page lists
+every entry ("Fonti": source linked to `url`, author, licence) under the content licence, so
+what is third-party is visible next to what is CC BY-SA.

@@ -1,0 +1,6 @@
+# Strings the learner reads; keys are shared by every locale file (docs/localization.md).
+angle_slider: Angolo θ in gradi
+reset: Reset
+cos: cos θ
+sin: sin θ
+rad: rad

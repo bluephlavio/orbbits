@@ -1,17 +1,18 @@
 id: angle-as-rotation
-title: Angle as rotation
+title: Angolo come rotazione
 
 kind: video
 role: animation
 engine: manim
 
 status: usable
-language: it
+default_locale: it
+locales: [it]
 created: 2026-09-18
 
 description: >-
-  A point rotates on the unit circle; its horizontal and vertical shadows are cos θ and sin θ.
-  Shows why sine and cosine are naturally functions of an angle of rotation.
+  Un punto ruota sulla circonferenza goniometrica; le sue ombre orizzontale e verticale sono
+  cos θ e sin θ. Mostra perché seno e coseno sono funzioni di un angolo di rotazione.
 
 outputs:
   - format: mp4
@@ -23,3 +24,4 @@ outputs:
 subjects: [mathematics]
 topics: [trigonometry, unit-circle, sine, cosine, rotation]
 levels: [upper-secondary]
+tags: [unit-circle, trigonometry, sine, cosine, rotation, projection]

@@ -1,18 +1,20 @@
 id: unit-circle-explorer
-title: Unit circle explorer
+title: Esplora la circonferenza goniometrica
 
 kind: interactive
 role: dynamic-geometry
 engine: jsxgraph
 
 status: usable
-language: it
+default_locale: it
+locales: [it, en]
 created: 2026-09-18
 
 description: >-
-  Drag a point around the unit circle to see how the angle θ determines cos θ (horizontal
-  projection) and sin θ (vertical projection), in degrees and radians.
+  Trascina un punto sulla circonferenza goniometrica e osserva come l'angolo θ determina
+  cos θ (proiezione orizzontale) e sin θ (proiezione verticale), in gradi e in radianti.
 
 subjects: [mathematics]
 topics: [trigonometry, unit-circle, sine, cosine]
 levels: [upper-secondary]
+tags: [unit-circle, trigonometry, sine, cosine, rotation, projection]

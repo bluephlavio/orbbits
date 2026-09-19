@@ -5,22 +5,39 @@ description: Author, render and validate a Manim video Bit (kind video, engine m
 
 # Manim Bit
 
-Reference: `bits/angle-as-rotation`. Style: `docs/style/manim.md`. Spec: `docs/bit-spec.md`.
+Reference: `bits/angle-as-rotation` (its `brief.md` shows how the interactive
+`unit-circle-explorer` concept was adapted to a narrated sequence). Style:
+`docs/style/manim.md`. Spec: `docs/bit-spec.md`. Flow (relatives, naming, brief,
+publication): `create-bit` skill.
 
 ## Files
 
 ```text
 bits/<id>/
-├── bit.yml            kind: video · engine: manim · outputs: dist/<id>.mp4, dist/poster.webp
+├── bit.yml            kind: video · engine: manim · outputs: dist/<id>.mp4, dist/poster.webp · tags
+├── brief.md           intent, essential relations, the progression the animation narrates
+├── README.md          scene structure, trackers, pacing, packages
+├── narrative.md       where to pause, what to ask (optional)
+├── locales/<tag>.yml  on-screen strings per language (only for a localised Bit)
 ├── src/scene.py       one main Scene subclass (build picks the first, or build.scene)
-└── dist/              produced by `just build <id>`
+└── dist/              produced by `just build <id>`, committed (CI does not render);
+                       localised renders under dist/<tag>/
 ```
+
+Start from the brief. A video is the medium for a *controlled sequence*: turn the brief's
+"didactic progression" into the scene's steps and its "pitfalls" into what stays visible or
+moves smoothly. If an interactive on the same concept exists, keep its colour pairing and
+labels; do not try to reproduce its freedom — pick the notable values and pause there.
 
 ## Authoring checklist
 
 - `from manim import *`; module docstring says what the animation shows.
 - Palette: `BLUE` primary, `YELLOW` active/moving, `RED`/`TEAL` paired quantities, `GREY_B` axes.
-- `Text` for titles (font_size 40), `MathTex` for all mathematics (≥ 36 pt), Italian labels.
+- `Text` for titles (font_size 40), `MathTex` for all mathematics (≥ 36 pt), labels in the
+  Bit's `default_locale`. Localised Bit: `outputs` with `locale` (`dist/it/<id>.mp4`,
+  `dist/en/<id>.mp4`), and the scene reads the language it is rendering —
+  `LOCALE = os.environ.get("ORBBITS_LOCALE", "it")`, strings from `locales/{LOCALE}.yml`
+  (`yaml.safe_load`; the cwd is the Bit directory). `just build` renders once per locale.
 - Parameter-driven objects: `ValueTracker` + `always_redraw` / updaters, not hand-animated.
 - Structure: stage → introduce → core idea (slow, `run_time` 2–3 s, stop at notable values) →
   conclusion formula → `wait(2)` (becomes the poster).
@@ -47,5 +64,8 @@ ffmpeg -y -ss 5 -i bits/<id>/dist/<id>.mp4 -frames:v 1 /tmp/frame.png   # then v
 
 ## Finish
 
-Set `status: usable` once the final render exists and looks right; fill `description`,
-`subjects`, `topics`, `levels`; write `README.md`. Never commit `.build/`.
+Set `status: usable` once the final render exists and looks right — that publishes the Bit
+(and its mp4/poster) at `/bits/<id>/` on the next push. Fill `description` (in the default
+locale), `tags` (shared with related Bits), `subjects`, `topics`, `levels`, `locales`;
+`README.md` technical, `brief.md` filled, pauses and questions in `narrative.md`.
+`just check <id>` clean. Commit `dist/`, never `.build/`.

@@ -14,6 +14,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from orbbits.manifest import DEFAULT_LOCALE
 from orbbits.slug import pascal_case
 
 TEMPLATE_META = "template.yml"
@@ -75,6 +76,9 @@ class Context:
     bit_id: str
     title: str
     role: str
+    tags: list[str] = field(default_factory=list)
+    default_locale: str = DEFAULT_LOCALE
+    locales: list[str] = field(default_factory=lambda: [DEFAULT_LOCALE])
     today: date = field(default_factory=date.today)
 
     def placeholders(self) -> dict[str, str]:
@@ -84,6 +88,10 @@ class Context:
             "__BIT_ROLE__": self.role,
             "__BIT_CLASS__": pascal_case(self.bit_id),
             "__BIT_DATE__": self.today.isoformat(),
+            # YAML flow list bodies: `tags: [__BIT_TAGS__]` -> `tags: []` or `tags: [a, b]`.
+            "__BIT_TAGS__": ", ".join(self.tags),
+            "__BIT_LOCALE__": self.default_locale,
+            "__BIT_LOCALES__": ", ".join(self.locales),
         }
 
 

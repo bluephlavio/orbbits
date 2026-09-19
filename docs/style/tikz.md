@@ -13,6 +13,8 @@ Conventions for `engine: tikz` figures. Reference implementation:
 - Line width 0.9 pt, `>=Stealth`, labels `\small`, mathematics in math mode, dashed lines for
   auxiliary constructions, braces (`decorations.pathreplacing`) for dimensions.
 - Scale the figure so that labels remain legible when the SVG is 12–14 cm wide on a slide.
-- Language of labels: Italian by default; formulas are universal.
+- Language of labels: the Bit's `default_locale` (Italian by default); formulas are universal.
+  For localised outputs the build defines `\orbLocale`; start the file with
+  `\providecommand{\orbLocale}{it}` and switch the words on it (docs/localization.md).
 - Preserve the argument in the figure: annotate the algebra next to the geometry when the
   picture *is* the proof.

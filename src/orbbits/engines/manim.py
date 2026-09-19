@@ -1,4 +1,8 @@
-"""Manim animations: render the main Scene to dist/<id>.mp4 plus a poster frame."""
+"""Manim animations: render the main Scene to dist/<id>.mp4 plus a poster frame.
+
+Localised Bits render once per locale that declares outputs (ORBBITS_LOCALE in the scene's
+environment; docs/localization.md), e.g. dist/it/<id>.mp4 and dist/en/<id>.mp4.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +13,7 @@ import sys
 from pathlib import Path
 
 from orbbits.bit import Bit
-from orbbits.engines.base import Engine, EngineError, Issue
+from orbbits.engines.base import LOCALE_ENV, Engine, EngineError, Issue
 
 SCENE_RE = re.compile(r"^class\s+(\w+)\s*\(\s*[\w.]*Scene\w*\s*\)", re.MULTILINE)
 
@@ -46,10 +50,37 @@ class ManimEngine(Engine):
             raise EngineError("manim is not installed in this environment (uv sync --group manim)")
         scene_file = self._scene_file(bit)
         scene = self._scene_name(bit, scene_file)
-        media = bit.build_dir / "manim"
-        media.mkdir(parents=True, exist_ok=True)
 
-        quality = "l" if quick else str(bit.manifest.build.get("quality", "h"))
+        if quick:
+            # Preview in the default language only; a quick render is for pacing and layout.
+            video = self._render(bit, scene_file, scene, "l", bit.manifest.default_locale)
+            preview = bit.build_dir / "preview" / f"{bit.id}.mp4"
+            preview.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(video, preview)
+            return [preview]
+
+        quality = str(bit.manifest.build.get("quality", "h"))
+        poster_at = bit.manifest.build.get("poster", "last")
+        written: list[Path] = []
+        for locale, outputs in self.locale_runs(bit):
+            video = self._render(bit, scene_file, scene, quality, locale)
+            videos = [bit.dir / o.file for o in outputs if o.format == "mp4"]
+            if not bit.manifest.outputs:
+                videos = [bit.dist / f"{bit.id}.mp4"]
+            for dest in videos:
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(video, dest)
+                written.append(dest)
+            for o in outputs:
+                if o.format in ("webp", "png", "jpg"):
+                    self._poster(video, bit.dir / o.file, poster_at)
+                    written.append(bit.dir / o.file)
+        return written
+
+    def _render(self, bit: Bit, scene_file: Path, scene: str, quality: str, locale: str) -> Path:
+        """Render one scene in one language; returns the mp4 inside the media directory."""
+        media = bit.build_dir / "manim" / locale
+        media.mkdir(parents=True, exist_ok=True)
         cmd = [
             sys.executable,
             "-m",
@@ -65,29 +96,11 @@ class ManimEngine(Engine):
             str(scene_file),
             scene,
         ]
-        self.run(cmd, cwd=bit.dir)
-
+        self.run(cmd, cwd=bit.dir, env={LOCALE_ENV: locale})
         rendered = sorted(media.glob(f"videos/**/{bit.id}.mp4"), key=lambda p: p.stat().st_mtime)
         if not rendered:
             raise EngineError("manim finished but no mp4 was produced")
-        video = rendered[-1]
-
-        if quick:
-            preview = bit.build_dir / "preview" / f"{bit.id}.mp4"
-            preview.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(video, preview)
-            return [preview]
-
-        written: list[Path] = []
-        videos = self.declared_outputs(bit, "mp4") or [bit.dist / f"{bit.id}.mp4"]
-        for dest in videos:
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(video, dest)
-            written.append(dest)
-        for dest in self.declared_outputs(bit, "webp", "png", "jpg"):
-            self._poster(video, dest, bit.manifest.build.get("poster", "last"))
-            written.append(dest)
-        return written
+        return rendered[-1]
 
     def _poster(self, video: Path, dest: Path, which: str | float) -> None:
         ffmpeg = self.require("ffmpeg", "needed to extract the poster frame")

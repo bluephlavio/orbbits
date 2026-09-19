@@ -67,7 +67,7 @@ class WebEngine(Engine):
                 "--root",
                 str(self.repo.web_dir),
                 "--open",
-                f"/bits/{bit.id}",
+                bit.manifest.path,
             ],
             cwd=self.repo.root,
         )

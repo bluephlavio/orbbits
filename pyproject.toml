@@ -5,7 +5,7 @@ description = "Personal, local-first authoring system for reusable educational m
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
-authors = [{ name = "Flavio Grandin", email = "flavio.grandin@gmail.com" }]
+authors = [{ name = "Flavio Grandin" }]
 dependencies = [
     "typer>=0.16",
     "pyyaml>=6.0",

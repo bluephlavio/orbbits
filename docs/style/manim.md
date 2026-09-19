@@ -21,7 +21,9 @@ do not decorate.
 - Titles: `Text(..., font_size=40)` at the top edge. Mathematics: `MathTex`, never `Text`.
 - Labels ≥ 36 pt at 1080p; classroom projectors are worse than your monitor.
 - Live numbers: `DecimalNumber` with an updater, 2 decimals unless the lesson needs more.
-- Language of on-screen text: Italian by default (`language: it`); mathematics is universal.
+- Language of on-screen text: the Bit's `default_locale` (Italian by default); mathematics is
+  universal. For a Bit with localised outputs read `ORBBITS_LOCALE` and load
+  `locales/<tag>.yml` (docs/localization.md).
 
 ## Scene organisation
 

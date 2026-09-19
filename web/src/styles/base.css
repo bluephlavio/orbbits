@@ -1,9 +1,10 @@
-/* OrbBits runtime chrome. Bits bring their own styles; this only frames them. */
+/* OrbBits site chrome. Bits bring their own styles; this only frames them. */
 :root {
   --orb-bg: #ffffff;
   --orb-fg: #1c1c1c;
   --orb-muted: #6b6b6b;
   --orb-line: #e4e4e4;
+  --orb-soft: #f5f6f8;
   --orb-accent: #1f5fbf;
   --orb-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --orb-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -15,6 +16,7 @@
     --orb-fg: #ececec;
     --orb-muted: #9a9a9a;
     --orb-line: #2c2c2c;
+    --orb-soft: #1b1b1b;
     --orb-accent: #7fb0ff;
   }
 }
@@ -23,25 +25,58 @@ html { font-family: var(--orb-font); background: var(--orb-bg); color: var(--orb
 body { margin: 0; line-height: 1.5; }
 a { color: var(--orb-accent); }
 code { font-family: var(--orb-mono); font-size: 0.92em; }
+h2 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
 
-.orb-page { max-width: 64rem; margin: 0 auto; padding: 1rem 1rem 3rem; }
+.orb-page { max-width: 64rem; margin: 0 auto; padding: 0.75rem 1rem 3rem; }
+
+/* Navigation and header */
+.orb-nav { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9rem; padding: 0.25rem 0 0.75rem; }
+.orb-nav a { text-decoration: none; }
+.orb-brand { font-weight: 700; letter-spacing: 0.02em; color: var(--orb-fg); }
 .orb-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--orb-line); margin-bottom: 1.25rem; }
-.orb-header h1 { font-size: 1.35rem; margin: 0; font-weight: 600; }
-.orb-header nav a { font-size: 0.9rem; text-decoration: none; }
+.orb-header h1 { font-size: 1.45rem; margin: 0; font-weight: 650; }
 .orb-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-.orb-badge { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--orb-muted); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.orb-badge { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--orb-muted); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.1rem 0.55rem; white-space: nowrap; }
+.orb-badge[data-kind] { color: var(--orb-fg); border-color: var(--orb-muted); }
 .orb-badge[data-status="curated"] { color: var(--orb-accent); border-color: var(--orb-accent); }
-.orb-description { color: var(--orb-muted); margin: 0 0 1.25rem; }
-.orb-footer { margin-top: 2rem; font-size: 0.8rem; color: var(--orb-muted); }
+.orb-badge[data-status="draft"] { color: #b5651d; border-color: #b5651d; }
+.orb-description { color: var(--orb-muted); margin: 0 0 1.25rem; max-width: 46rem; }
+.orb-footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--orb-muted); display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; }
+.orb-license a { color: inherit; }
 
+/* The artifact */
 .orb-bit { width: 100%; }
 .orb-bit video, .orb-bit img, .orb-bit iframe { display: block; max-width: 100%; height: auto; margin: 0 auto; }
 .orb-bit iframe { width: 100%; height: 80vh; border: 1px solid var(--orb-line); }
-.orb-outputs { font-size: 0.9rem; color: var(--orb-muted); }
-.orb-outputs a { margin-right: 0.75rem; }
+.orb-open { margin: 0 0 0.5rem; font-size: 0.95rem; }
+.orb-outputs { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-size: 0.9rem; color: var(--orb-muted); margin-top: 0.75rem; }
+.orb-outputs a { text-decoration: none; }
+.orb-outputs small { color: var(--orb-muted); }
 .orb-empty { border: 1px dashed var(--orb-line); padding: 1rem; color: var(--orb-muted); }
+.orb-bit-missing, .orb-bit-loading { color: var(--orb-muted); }
 
-.orb-catalog { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
-.orb-catalog li { border: 1px solid var(--orb-line); border-radius: 8px; padding: 0.7rem 0.9rem; display: grid; gap: 0.25rem; }
-.orb-catalog a { font-weight: 600; text-decoration: none; }
-.orb-catalog .orb-id { font-family: var(--orb-mono); font-size: 0.8rem; color: var(--orb-muted); }
+/* About box on a Bit page */
+.orb-about { margin-top: 1.5rem; padding-top: 0.5rem; border-top: 1px solid var(--orb-line); font-size: 0.9rem; }
+.orb-about dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; }
+.orb-about dl > div { display: contents; }
+.orb-about dt { color: var(--orb-muted); }
+.orb-about dd { margin: 0; overflow-wrap: anywhere; }
+.orb-related { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
+.orb-provenance { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.15rem; }
+
+/* Tags: buttons on the home page (filter), links on Bit pages */
+.orb-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.orb-tag { font: inherit; font-size: 0.78rem; color: var(--orb-fg); background: var(--orb-soft); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.1rem 0.6rem; cursor: pointer; text-decoration: none; line-height: 1.4; }
+.orb-tag:hover { border-color: var(--orb-accent); }
+.orb-tag[aria-pressed="true"] { background: var(--orb-accent); color: var(--orb-bg); border-color: var(--orb-accent); }
+.orb-tag small { opacity: 0.7; }
+.orb-filter { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+
+/* Catalog */
+.orb-catalog { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+.orb-card { border: 1px solid var(--orb-line); border-radius: 10px; padding: 0.8rem 1rem; display: grid; gap: 0.4rem; align-content: start; }
+.orb-card[hidden] { display: none; }
+.orb-card-title { font-weight: 600; text-decoration: none; font-size: 1.05rem; }
+.orb-card-description { margin: 0; font-size: 0.9rem; color: var(--orb-muted); }
+.orb-id { font-family: var(--orb-mono); font-size: 0.78rem; color: var(--orb-muted); }
+.orb-drafts { margin-top: 2rem; padding-top: 1rem; border-top: 1px dashed var(--orb-line); }

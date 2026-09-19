@@ -1,12 +1,10 @@
-# Completing the square in al-Khwarizmi
+# Completare il quadrato con al-Khwarizmi
 
-The geometric proof behind the worked example *x² + 10x = 39* in al-Khwarizmi's *Al-jabr*
-(c. 820): the square of side *x* and two rectangles 5 × *x* are completed by a 5 × 5 corner,
-giving a square of side *x* + 5 and area 39 + 25 = 64, hence *x* = 3.
+Technical notes. Pedagogical intent: `brief.md`; classroom prose: `narrative.md`.
 
-- Kind: figure · Engine: TikZ
-- Source: `src/figure.tex`
-- Outputs: `dist/figure.svg` (slides/web), `dist/figure.pdf` (print)
+- Kind: figure · Engine: TikZ · Public page: `/bits/alkhwarizmi-completing-square/`
+- Source: `src/figure.tex` (standalone TikZ picture)
+- Outputs: `dist/figure.svg` (web/slides), `dist/figure.pdf` (print)
 
 ## Workflow
 
@@ -15,7 +13,16 @@ just build alkhwarizmi-completing-square
 just check alkhwarizmi-completing-square
 ```
 
-## Notes
+## Implementation notes
 
-Serves as the end-to-end validation of the TikZ builder (latexmk → PDF → SVG via pdf2svg).
-The proportions use the actual solution (*x* = 3) so that the picture is "to scale".
+End-to-end validation of the TikZ builder (latexmk → PDF → SVG via pdf2svg).
+
+- The drawing is parametric: `\x` (the solution, 3) and `\h` (half the coefficient, 5) set
+  every coordinate, so the proportions are "to scale" and another example is a two-line edit.
+- Palette macros `orbPrimary` / `orbAccent` / `orbMuted` with `!18`–`!20` fills; braces via
+  `decorations.pathreplacing`; the algebra is one `align=left` node beside the figure.
+- Compiles with `pdflatex`; no fonts beyond Computer Modern.
+
+## Limitations / open issues
+
+- Labels are set in `\small`; on a phone the SVG is readable only in landscape.

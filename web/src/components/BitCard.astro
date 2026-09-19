@@ -1,0 +1,29 @@
+---
+/**
+ * One entry of the catalog: title (link to the canonical page), badges, description, tags.
+ * `data-tags` lets the home page filter cards client-side without any framework.
+ */
+import { bitPath, type BitManifest } from '../lib/catalog';
+import { KIND_LABEL, STATUS_LABEL, withBase } from '../lib/site';
+
+interface Props {
+  bit: BitManifest;
+}
+const { bit } = Astro.props;
+const tags = bit.tags ?? [];
+---
+<li class="orb-card" data-tags={tags.join(' ')} data-kind={bit.kind}>
+  <a class="orb-card-title" href={withBase(bitPath(bit.id))}>{bit.title}</a>
+  <span class="orb-badges">
+    <span class="orb-badge" data-kind={bit.kind}>{KIND_LABEL[bit.kind]}</span>
+    <span class="orb-badge">{bit.role}</span>
+    <span class="orb-badge" data-status={bit.status}>{STATUS_LABEL[bit.status]}</span>
+  </span>
+  {bit.description && <p class="orb-card-description">{bit.description}</p>}
+  {tags.length > 0 && (
+    <span class="orb-tags">
+      {tags.map((tag) => <button type="button" class="orb-tag" data-tag={tag}>{tag}</button>)}
+    </span>
+  )}
+  <span class="orb-id">{bit.id}</span>
+</li>

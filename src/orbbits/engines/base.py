@@ -13,7 +13,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from orbbits.bit import Bit
+from orbbits.manifest import Output
 from orbbits.repo import Repo
+
+# Environment variable telling a build (Manim scene, Python script) which language to render.
+LOCALE_ENV = "ORBBITS_LOCALE"
 
 
 class EngineError(Exception):
@@ -87,6 +91,22 @@ class Engine:
         return [
             bit.dir / o.file for o in bit.manifest.outputs if not formats or o.format in formats
         ]
+
+    @staticmethod
+    def locale_runs(bit: Bit) -> list[tuple[str, list[Output]]]:
+        """How many times to build, in which language, for which declared outputs.
+
+        One run per locale that has outputs of its own; locale-independent outputs (posters,
+        formula sheets) are produced by the default locale's run. A Bit without localised
+        outputs - the common case - builds once, in its default locale.
+        """
+        m = bit.manifest
+        runs: dict[str, list[Output]] = {m.default_locale: []}
+        for o in m.outputs:
+            runs.setdefault(o.locale or m.default_locale, []).append(o)
+        if len(runs) > 1:
+            runs = {tag: outs for tag, outs in runs.items() if outs}
+        return list(runs.items())
 
     @staticmethod
     def main_source(bit: Bit, suffix: str, preferred: tuple[str, ...] = ()) -> Path:

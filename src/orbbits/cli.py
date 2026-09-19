@@ -82,11 +82,35 @@ def new(
     role: Annotated[
         str | None, typer.Option("--role", help="Override the template's default role.")
     ] = None,
+    tags: Annotated[
+        str | None,
+        typer.Option("--tags", help="Comma-separated tags (e.g. 'unit-circle,trigonometry')."),
+    ] = None,
+    locale: Annotated[
+        str | None,
+        typer.Option(
+            "--locale",
+            help="Default language of the Bit (BCP-47 tag); it, or the first of --locales.",
+        ),
+    ] = None,
+    locales: Annotated[
+        str | None,
+        typer.Option(
+            "--locales",
+            help="Comma-separated languages the Bit is realised in (e.g. 'it,en'). "
+            "Default: the default locale only.",
+        ),
+    ] = None,
     list_templates: Annotated[
         bool, typer.Option("--list", help="List templates and exit.")
     ] = False,
 ) -> None:
-    """Scaffold a new Bit from a template (interactive unless all options are given)."""
+    """Scaffold a new Bit from a template (interactive unless all options are given).
+
+    Only title, id and template are asked for; tags and locales are optional (Italian by
+    default) and everything else (description, taxonomy, provenance, brief) is edited
+    afterwards in bits/<id>/.
+    """
     repo = _repo()
     templates = load_templates(repo.templates_dir)
     if not templates:
@@ -141,16 +165,28 @@ def new(
         )
         template = templates[int(choice) - 1].name if choice.isdigit() else choice
 
+    tag_list = [t for t in (tags or "").split(",") if t.strip()]
+    locale_list = [t for t in (locales or "").split(",") if t.strip()]
     try:
-        result = create_bit(repo, template=template, title=title, bit_id=bit_id, role=role)
+        result = create_bit(
+            repo,
+            template=template,
+            title=title,
+            bit_id=bit_id,
+            role=role,
+            tags=tag_list,
+            default_locale=locale,
+            locales=locale_list,
+        )
     except (ScaffoldError, TemplateNotFound, ManifestError) as exc:
         err_console.print(f"[red]error:[/] {exc}")
         raise typer.Exit(1) from exc
 
     rel = result.bit.dir.relative_to(repo.root)
+    m = result.bit.manifest
     console.print(
-        f"[green]created[/] {rel}/  [dim]({result.template.name}: {result.bit.manifest.kind} · "
-        f"{result.bit.manifest.engine})[/]"
+        f"[green]created[/] {rel}/  [dim]({result.template.name}: {m.kind} · {m.engine} · "
+        f"{', '.join(m.locales)})[/]"
     )
     for f in result.files:
         console.print(f"  {f.relative_to(repo.root)}")
@@ -169,11 +205,18 @@ def list_bits(
     role: Annotated[str | None, typer.Option(help="Filter by role.")] = None,
     engine: Annotated[str | None, typer.Option(help="Filter by engine.")] = None,
     status: Annotated[str | None, typer.Option(help="Filter by status.")] = None,
+    tag: Annotated[
+        list[str] | None, typer.Option("--tag", help="Keep Bits having this tag (repeatable).")
+    ] = None,
+    published: Annotated[
+        bool, typer.Option("--published", help="Only Bits that go to the public site.")
+    ] = False,
     as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
 ) -> None:
-    """List the Bits in the repository."""
+    """List the Bits in the repository (find related Bits with --tag before creating one)."""
     repo = _repo()
     bits, errors = repo.scan()
+    wanted_tags = set(tag or [])
     rows = [
         b
         for b in bits
@@ -181,22 +224,40 @@ def list_bits(
         and (role is None or b.manifest.role == role)
         and (engine is None or b.manifest.engine == engine)
         and (status is None or b.manifest.status == status)
+        and (not published or b.manifest.published)
+        and wanted_tags <= set(b.manifest.tags)
     ]
     if as_json:
         payload = [
             b.manifest.model_dump(mode="json", exclude_none=True)
-            | {"dir": str(b.dir.relative_to(repo.root))}
+            | {
+                "dir": str(b.dir.relative_to(repo.root)),
+                "published": b.manifest.published,
+                "path": b.manifest.path,
+                "brief": bool(b.brief.is_file()),
+                "narrative": bool(b.narrative.is_file()),
+            }
             for b in rows
         ]
         console.print_json(json.dumps(payload))
     else:
         table = Table(box=None, pad_edge=False)
-        for col in ("id", "kind", "role", "engine", "status"):
+        for col in ("id", "kind", "role", "engine", "status", "locales"):
             table.add_column(col, style="bold" if col == "id" else None, no_wrap=True)
+        table.add_column("tags", overflow="fold", style="dim")
         table.add_column("title", overflow="fold")
         for b in rows:
             m = b.manifest
-            table.add_row(m.id, m.kind, m.role, m.engine, m.status, m.title)
+            table.add_row(
+                m.id,
+                m.kind,
+                m.role,
+                m.engine,
+                m.status,
+                ",".join(m.locales),
+                " ".join(m.tags),
+                m.title,
+            )
         console.print(table)
         console.print(f"[dim]{len(rows)} Bit(s)[/]")
     for e in errors:

@@ -7,7 +7,9 @@ Reference implementation: `bits/unit-circle-explorer`.
 
 - `src/index.tsx` default-exports one component with no required props.
 - The component is the whole Bit: stage + controls + readouts. It never reaches outside
-  itself (no page selectors, no globals, no assumptions about a header or a route).
+  itself (no page selectors, no globals, no assumptions about a header, a route or the
+  site's base path: the same component is served at `/bits/<id>/`, under a prefix such as
+  `/orbbits/`, and as a standalone export).
 - Third-party libraries own their canvas (JSXGraph board, p5 sketch, three renderer);
   React owns the controls and readouts. Create the library object in `useEffect`, dispose it
   in the cleanup, keep a `ref` to it, and bump a `key`/generation counter to rebuild on reset.
@@ -41,12 +43,22 @@ Unicode for simple symbols (θ, π, ≤); for real typesetting add KaTeX at the 
 - Throttle expensive redraws (JSXGraph `resize.throttle`, `requestAnimationFrame` for p5).
 - No network requests at runtime; data ships in `src/`.
 
-## Preview, export, embedding
+## Language
+
+Everything the learner reads on screen — labels, buttons, readouts, hints — is in the Bit's
+`default_locale` (Italian unless the Bit says otherwise); identifiers and comments are
+English. A Bit meant to exist in several languages keeps those strings in
+`locales/<tag>.yml`, accepts an optional `locale` prop and resolves the strings itself
+(docs/localization.md; reference `bits/unit-circle-explorer`). A single-language Bit may keep
+them inline.
+
+## Preview, export, publication
 
 ```bash
-just dev <id>       # http://localhost:4321/bits/<id>
+just dev <id>       # http://localhost:4321/bits/<id>/
 just export <id>    # bits/<id>/dist/web/ — standalone static site
 ```
 
-The standalone page and, later, Orbits mount the component through the same `BitHost`.
-If it works standalone without touching the page, it will embed.
+The public page `/bits/<id>/` (status usable/curated), the export and, later, Orbits all
+mount the component through the same `BitHost`. If it works standalone without touching
+the page, it will embed.

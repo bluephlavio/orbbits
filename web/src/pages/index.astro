@@ -1,34 +1,87 @@
 ---
+/**
+ * Home: the OrbBits library. Lists every published Bit (usable/curated) with a tag filter;
+ * the local dev server also shows drafts in a separate section. Derived from bits/<id>/bit.yml.
+ *
+ * In export mode (`just export <id>`) the site root is the exported Bit instead.
+ */
 import Shell from '../layouts/Shell.astro';
 import BitView from '../components/BitView.astro';
-import { bits, exportBitId, getBit } from '../lib/catalog';
+import BitCard from '../components/BitCard.astro';
+import { bits, exportBitId, getBit, isPublished, publishedBits, tagCounts } from '../lib/catalog';
+import { SITE } from '../lib/site';
 
-// In export mode the site root IS the exported Bit; otherwise it is the local catalog.
 const exported = exportBitId ? getBit(exportBitId) : undefined;
 if (exportBitId && !exported) {
   throw new Error(`ORBBITS_EXPORT_BIT=${exportBitId} does not match any bits/*/bit.yml`);
 }
+const drafts = import.meta.env.DEV ? bits.filter((b) => !isPublished(b)) : [];
+const tags = tagCounts(publishedBits);
 ---
 {exported ? (
   <Shell title={exported.title} bit={exported} standalone>
     <BitView bit={exported} />
   </Shell>
 ) : (
-  <Shell title="OrbBits">
-    <p class="orb-description">Local catalog · {bits.length} Bit{bits.length === 1 ? '' : 's'}</p>
+  <Shell title={SITE.name}>
+    <p class="orb-description">{SITE.tagline}</p>
+
+    {tags.length > 0 && (
+      <nav class="orb-filter" aria-label={SITE.filterHint}>
+        <button type="button" class="orb-tag" data-tag="" aria-pressed="true">{SITE.filterAll}</button>
+        {tags.map(({ tag, count }) => (
+          <button type="button" class="orb-tag" data-tag={tag} aria-pressed="false">
+            {tag} <small>{count}</small>
+          </button>
+        ))}
+      </nav>
+    )}
+
     <ul class="orb-catalog">
-      {bits.map((bit) => (
-        <li>
-          <a href={`/bits/${bit.id}`}>{bit.title}</a>
-          <span class="orb-badges">
-            <span class="orb-badge">{bit.kind}</span>
-            <span class="orb-badge">{bit.role}</span>
-            <span class="orb-badge">{bit.engine}</span>
-            <span class="orb-badge" data-status={bit.status}>{bit.status}</span>
-          </span>
-          <span class="orb-id">{bit.id}</span>
-        </li>
-      ))}
+      {publishedBits.map((bit) => <BitCard bit={bit} />)}
     </ul>
+    {publishedBits.length === 0 && <p class="orb-empty">Nessun Bit pubblicato.</p>}
+
+    {drafts.length > 0 && (
+      <section class="orb-drafts">
+        <h2>{SITE.drafts}</h2>
+        <ul class="orb-catalog">
+          {drafts.map((bit) => <BitCard bit={bit} />)}
+        </ul>
+      </section>
+    )}
   </Shell>
 )}
+
+<script>
+  // Tag filter: click a tag (in the bar or on a card) to show only the Bits having it.
+  // The choice lives in the URL hash (#tag=unit-circle) so a filtered view can be shared.
+  const cards = [...document.querySelectorAll<HTMLElement>('.orb-card')];
+  const bar = document.querySelector<HTMLElement>('.orb-filter');
+
+  function apply(tag: string) {
+    for (const card of cards) {
+      const has = !tag || (card.dataset.tags ?? '').split(' ').includes(tag);
+      card.hidden = !has;
+    }
+    bar?.querySelectorAll<HTMLButtonElement>('.orb-tag').forEach((b) => {
+      b.setAttribute('aria-pressed', String((b.dataset.tag ?? '') === tag));
+    });
+  }
+
+  function current(): string {
+    const m = /(?:^#|&)tag=([^&]*)/.exec(location.hash);
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  document.addEventListener('click', (e) => {
+    const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.orb-tag');
+    if (!button) return;
+    const tag = button.dataset.tag ?? '';
+    const next = tag && tag === current() && !bar?.contains(button) ? '' : tag;
+    history.replaceState(null, '', next ? `#tag=${encodeURIComponent(next)}` : location.pathname);
+    apply(next);
+  });
+  window.addEventListener('hashchange', () => apply(current()));
+  apply(current());
+</script>

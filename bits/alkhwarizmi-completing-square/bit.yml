@@ -1,17 +1,18 @@
 id: alkhwarizmi-completing-square
-title: Completing the square in al-Khwarizmi
+title: Completare il quadrato con al-Khwarizmi
 
 kind: figure
 role: diagram
 engine: tikz
 
 status: usable
-language: it
+default_locale: it
+locales: [it]
 created: 2026-09-18
 
 description: >-
-  The geometric argument behind x² + 10x = 39 from al-Khwarizmi's Al-jabr: a square of side x,
-  two 5×x rectangles, and the 5×5 corner that completes the square of side x + 5.
+  L'argomento geometrico dietro x² + 10x = 39 nell'Al-jabr di al-Khwarizmi: un quadrato di
+  lato x, due rettangoli 5×x e l'angolo 5×5 che completa il quadrato di lato x + 5.
 
 outputs:
   - format: svg
@@ -22,9 +23,12 @@ outputs:
 subjects: [mathematics, history-of-science]
 topics: [algebra, quadratic-equations, al-khwarizmi]
 levels: [upper-secondary]
+tags: [completing-the-square, quadratic-equations, geometric-algebra, al-khwarizmi, history-of-mathematics]
 
 provenance:
   - source: "Al-Khwarizmi, Al-kitab al-mukhtasar fi hisab al-jabr wa-l-muqabala (c. 820)"
-    notes: >-
-      Original figure redrawn from the classic worked example x² + 10x = 39; the diagram is
-      an original rendering, not a reproduction of a manuscript.
+    author: Muhammad ibn Musa al-Khwarizmi
+    license: public domain (9th-century work); the drawing itself is original
+    modifications: >-
+      Original figure redrawn from the classic worked example x² + 10x = 39, with modern
+      notation and the algebra alongside; not a reproduction of a manuscript.
