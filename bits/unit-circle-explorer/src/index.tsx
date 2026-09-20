@@ -35,8 +35,9 @@ interface Messages {
   angle: string;
   point_P: string;
   coordinates: string;
-  record: string;
   alpha: string;
+  reference_values: string;
+  functions: string;
 }
 
 const MESSAGES: Record<string, Messages> = { it: it as Messages, en: en as Messages };
@@ -64,11 +65,6 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
   const t = MESSAGES[locale] ?? MESSAGES[DEFAULT_LOCALE];
   const [angleDeg, setAngleDeg] = useState(INITIAL_DEG);
   const [observations, setObservations] = useState<Observation[]>([]);
-  const [graphPoints, setGraphPoints] = useState<{ sin: [number, number][]; cos: [number, number][] }>({
-    sin: [],
-    cos: [],
-  });
-  const [lastGraphAngle, setLastGraphAngle] = useState(INITIAL_DEG);
   const geometricBoardRef = useRef<any>(null);
 
   const angleRad = toRad(angleDeg);
@@ -84,24 +80,20 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
       isNotable: isNotableAngle(INITIAL_DEG),
     };
     setObservations([initialObs]);
-    setGraphPoints({
-      sin: [[INITIAL_DEG, Math.sin(toRad(INITIAL_DEG))]],
-      cos: [[INITIAL_DEG, Math.cos(toRad(INITIAL_DEG))]],
-    });
-    setLastGraphAngle(INITIAL_DEG);
   }, []);
 
   // Record an observation: add to table if notable angle or explicitly recorded
-  const recordObservation = useCallback(
+  // Record notable angles automatically during exploration
+  const recordNotableAngle = useCallback(
     (angle: number) => {
+      if (!isNotableAngle(angle)) return;
+
       const xP = Math.cos(toRad(angle));
       const yP = Math.sin(toRad(angle));
-      const notable = isNotableAngle(angle);
-      const obs: Observation = { angle, xP, yP, isNotable: notable };
+      const obs: Observation = { angle, xP, yP, isNotable: true };
 
       setObservations((prev) => {
-        // Don't add if already present
-        const exists = prev.some((o) => Math.abs(o.angle - angle) < 1);
+        const exists = prev.some((o) => Math.abs(o.angle - angle) < 0.5);
         if (exists) return prev;
 
         const updated = [obs, ...prev].slice(0, MAX_OBSERVATIONS);
@@ -111,30 +103,10 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
     []
   );
 
-  // Update graph points if angle has moved significantly
-  const updateGraphPoints = useCallback((angle: number) => {
-    setGraphPoints((prev) => {
-      // Add point if it's at least 5° away from the last recorded point
-      if (Math.abs(angle - lastGraphAngle) >= 5) {
-        const rad = toRad(angle);
-        const newSinPoints = [...prev.sin, [angle, Math.sin(rad)] as [number, number]];
-        const newCosPoints = [...prev.cos, [angle, Math.cos(rad)] as [number, number]];
-        setLastGraphAngle(angle);
-        return { sin: newSinPoints, cos: newCosPoints };
-      }
-      return prev;
-    });
-  }, [lastGraphAngle]);
-
-  // When angle changes, update graphs and check for notable angles
+  // When angle changes, record notable angles
   useEffect(() => {
-    updateGraphPoints(angleDeg);
-
-    // Record notable angles automatically
-    if (isNotableAngle(angleDeg)) {
-      recordObservation(angleDeg);
-    }
-  }, [angleDeg, updateGraphPoints, recordObservation]);
+    recordNotableAngle(angleDeg);
+  }, [angleDeg, recordNotableAngle]);
 
   const handleAngleChange = useCallback((angle: number) => {
     const normalized = normalizeDeg(angle);
@@ -175,7 +147,6 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
             observations={observations}
             currentAngle={angleDeg}
             onObservationClick={handleObservationClick}
-            onRecordObservation={recordObservation}
             t={t}
           />
         </div>
@@ -183,8 +154,6 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
         {/* Right: Function graphs */}
         <div className="column column-graphs">
           <FunctionGraphs
-            sinPoints={graphPoints.sin}
-            cosPoints={graphPoints.cos}
             currentAngle={angleDeg}
             currentSin={sinVal}
             currentCos={cosVal}

@@ -4,6 +4,8 @@
  * P = (xP, yP)
  * xP = cos α
  * yP = sin α
+ *
+ * Shows both exact fraction form (as multiple of π) and decimal radians.
  */
 import './SymbolicBox.css';
 
@@ -14,26 +16,39 @@ interface SymbolicBoxProps {
   t: any;
 }
 
-export default function SymbolicBox({ angle, xP, yP }: SymbolicBoxProps) {
-  const angleRad = (angle * Math.PI) / 180;
-  const piRatio = angleRad / Math.PI;
+// Compute gcd
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
 
-  let angleStr = `${angle.toFixed(0)}°`;
-  if (piRatio !== 0) {
-    if (Math.abs(piRatio - 1) < 0.01) {
-      angleStr += ' = π';
-    } else if (Math.abs(piRatio - 0.5) < 0.01) {
-      angleStr += ' = π/2';
-    } else if (piRatio % 1 === 0) {
-      angleStr += ` = ${piRatio.toFixed(0)}π`;
-    } else {
-      const num = Math.round(piRatio * 12);
-      const denom = 12;
-      const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-      const g = gcd(Math.abs(num), denom);
-      angleStr += ` = ${num / g}π/${denom / g}`;
-    }
+// Convert degrees to exact fraction of π with reduction
+function formatRadians(angleDeg: number): { exact: string; decimal: number } {
+  const angleRad = (angleDeg * Math.PI) / 180;
+
+  // Express as fraction of π: α_deg * π / 180
+  let numerator = Math.round(angleDeg);
+  let denominator = 180;
+
+  // Reduce the fraction
+  const g = gcd(Math.abs(numerator), denominator);
+  numerator /= g;
+  denominator /= g;
+
+  // Format the exact fraction
+  let exact = '';
+  if (numerator === 0) {
+    exact = '0 rad';
+  } else if (numerator === denominator) {
+    exact = 'π rad';
+  } else if (denominator === 1) {
+    exact = `${numerator}π rad`;
+  } else {
+    exact = `${numerator}π/${denominator} rad`;
   }
+
+  return { exact, decimal: angleRad };
+}
+
+export default function SymbolicBox({ angle, xP, yP }: SymbolicBoxProps) {
+  const { exact: exactRad, decimal: decimalRad } = formatRadians(angle);
 
   return (
     <div className="symbolic-box">
@@ -59,8 +74,14 @@ export default function SymbolicBox({ angle, xP, yP }: SymbolicBoxProps) {
       </div>
 
       <div className="angle-display">
-        <span className="symbol">α</span>
-        <span> = {angleStr}</span>
+        <div>
+          <span className="symbol">α</span>
+          <span> = {angle.toFixed(0)}°</span>
+        </div>
+        <div className="radians">
+          <span>{exactRad}</span>
+          <span className="decimal"> ≈ {decimalRad.toFixed(3)}</span>
+        </div>
       </div>
     </div>
   );

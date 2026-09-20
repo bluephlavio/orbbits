@@ -1,8 +1,8 @@
 /**
- * Observation table: discrete observations of (α, xP, yP) pairs
+ * Reference observations: input-output pairs at notable angles
  *
- * Accumulates as the learner moves P, particularly at notable angles.
- * Clicking a row restores that angle.
+ * Shows current α prominently, plus a few nearby reference angles for comparison.
+ * Designed to support understanding of input-output relationships, not as a history log.
  */
 import './ObservationTable.css';
 
@@ -17,7 +17,6 @@ interface ObservationTableProps {
   observations: Observation[];
   currentAngle: number;
   onObservationClick: (obs: Observation) => void;
-  onRecordObservation: (angle: number) => void;
   t: any;
 }
 
@@ -25,45 +24,46 @@ export default function ObservationTable({
   observations,
   currentAngle,
   onObservationClick,
-  onRecordObservation,
   t,
 }: ObservationTableProps) {
-  const isCurrentObservation = (angle: number) => Math.abs(angle - currentAngle) < 0.5;
+  // Find the current observation
+  const currentObs = observations.find((obs) => Math.abs(obs.angle - currentAngle) < 0.5);
 
-  const handleRecordClick = () => {
-    onRecordObservation(currentAngle);
-  };
+  // Select reference observations (notable angles, max 4-5)
+  const references = observations.filter((obs) => obs.isNotable && !currentObs || Math.abs(obs.angle - currentAngle) > 1).slice(0, 5);
 
   return (
     <div className="observation-table-container">
-      <div className="table-header">
-        <span className="table-title">{t.observations}</span>
-        <button className="record-button" onClick={handleRecordClick} title="Record current observation">
-          ⊕ {t.record}
-        </button>
-      </div>
+      <div className="table-title">{t.reference_values}</div>
 
-      <div className="table-wrapper">
-        <table className="observation-table">
-          <thead>
-            <tr>
-              <th>α</th>
-              <th>x_P</th>
-              <th>y_P</th>
-            </tr>
-          </thead>
+      <div className="current-observation">
+        <div className="label">Current α:</div>
+        <table className="compact-table">
           <tbody>
-            {observations.length === 0 ? (
-              <tr className="empty-row">
-                <td colSpan={3}>Move P to record observations</td>
+            {currentObs ? (
+              <tr className="current-row">
+                <td className="angle-cell">{currentObs.angle.toFixed(0)}°</td>
+                <td className="value-cell cos-color">{currentObs.xP.toFixed(3)}</td>
+                <td className="value-cell sin-color">{currentObs.yP.toFixed(3)}</td>
               </tr>
             ) : (
-              observations.map((obs, idx) => (
+              <tr className="empty-row">
+                <td colSpan={3}>—</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {references.length > 0 && (
+        <div className="reference-observations">
+          <div className="label">Reference angles:</div>
+          <table className="compact-table">
+            <tbody>
+              {references.map((obs, idx) => (
                 <tr
                   key={idx}
-                  className={`observation-row ${isCurrentObservation(obs.angle) ? 'current' : ''} ${
-                    obs.isNotable ? 'notable' : ''
-                  }`}
+                  className="reference-row"
                   onClick={() => onObservationClick(obs)}
                   role="button"
                   tabIndex={0}
@@ -77,11 +77,11 @@ export default function ObservationTable({
                   <td className="value-cell cos-color">{obs.xP.toFixed(3)}</td>
                   <td className="value-cell sin-color">{obs.yP.toFixed(3)}</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

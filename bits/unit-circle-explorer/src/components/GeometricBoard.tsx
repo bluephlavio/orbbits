@@ -98,7 +98,7 @@ const GeometricBoard = forwardRef<GeometricBoardHandle, GeometricBoardProps>(
 
       board.create('angle', [X, O, P], {
         radius: 0.28,
-        name: 'θ',
+        name: 'α',
         fillColor: COLOR.point,
         fillOpacity: 0.2,
         strokeColor: COLOR.point,

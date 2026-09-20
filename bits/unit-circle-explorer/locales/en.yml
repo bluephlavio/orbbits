@@ -1,15 +1,14 @@
 # English realisation of the same Bit: same keys as it.yml.
-angle_slider: Angle θ in degrees
+angle_slider: Angle α in degrees
 reset: Reset
-cos: cos θ
-sin: sin θ
+cos: cos α
+sin: sin α
 rad: rad
 alpha: α
 angle: Angle
 point_P: Point P
 coordinates: Coordinates
-record: Record
-observations: Observations
+reference_values: Reference Values
 functions: Functions
 x_coordinate: x_P
 y_coordinate: y_P

@@ -1,15 +1,14 @@
 # Strings the learner reads; keys are shared by every locale file (docs/localization.md).
-angle_slider: Angolo θ in gradi
+angle_slider: Angolo α in gradi
 reset: Reset
-cos: cos θ
-sin: sin θ
+cos: cos α
+sin: sin α
 rad: rad
 alpha: α
 angle: Angolo
 point_P: Punto P
 coordinates: Coordinate
-record: Registra
-observations: Osservazioni
+reference_values: Valori di riferimento
 functions: Funzioni
 x_coordinate: x_P
 y_coordinate: y_P
