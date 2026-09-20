@@ -3,7 +3,7 @@ title: Esplora la circonferenza goniometrica
 
 kind: interactive
 role: dynamic-geometry
-engine: jsxgraph
+engine: react
 
 status: usable
 default_locale: it

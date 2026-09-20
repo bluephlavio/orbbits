@@ -70,11 +70,18 @@ directories under `bits/` are fine.
 
 - `kind` — how the runtime renders the object: `video`, `interactive`, `figure`, `document`.
 - `role` — what it is pedagogically: `animation`, `simulation`, `diagram`, `handout`, … (open).
-- `engine` — how it is produced: `manim`, `react`, `jsxgraph`, `tikz`, `latex`, `python`, …
+- `engine` — the OrbBits-facing build/rendering contract: `manim`, `react`, `jsxgraph`, `tikz`, `latex`, `python`, …
 
 The engine determines the build pipeline (`src/orbbits/engines/`), the template that
 scaffolds it (`templates/<name>/template.yml`) and the skill an agent should load. None of
 the three appears in the Bit's id or URL: the id names the pedagogical artifact.
+
+**Important distinction:** For web engines (`react`, `jsxgraph`, `p5`, `mafs`, `three`), the engine name
+may reflect pedagogical intent or the primary internal library, but all web engines share the same
+OrbBits contract: `src/index.tsx` with a React default export, built and mounted through the Astro
+runtime. Internal implementation details — JSXGraph geometry, SVG plots, custom libraries — are
+architectural decisions within the Bit, not reasons to define new engines. A Bit is not split into
+multiple engines because it uses multiple libraries internally (see **Internal Componentization** below).
 
 ## Engines
 
@@ -84,11 +91,16 @@ the three appears in the Bit's id or URL: the id names the pedagogical artifact.
 | `tikz` | figure | `latexmk` → PDF → SVG (`pdf2svg`/`dvisvgm`), PNG via ghostscript if declared; `\orbLocale` per localised output | — |
 | `latex` | document | `latexmk` → PDF; `\orbLocale` per localised output | — |
 | `python` / `matplotlib` | figure | runs `src/main.py`, which writes into `dist/`; `ORBBITS_LOCALE` per localised output | — |
-| `react`, `jsxgraph`, `p5`, `mafs`, `three` | interactive | standalone static export into `dist/web/` | Astro dev server on the Bit's page |
+| `react`, `jsxgraph`, `p5`, `mafs`, `three` | interactive | `src/index.tsx` (React component) → Astro static export into `dist/web/` | Astro dev server on the Bit's page |
 | `static`, `external`, `blender` | any | none — outputs are maintained by hand, provenance is mandatory | — |
 
-All web libraries share one engine class (`WebEngine`). Adding one is a template plus an
-entry in `WEB_ENGINES` (`src/orbbits/engines/__init__.py`) and, if it needs a package, `pnpm add`.
+**Web engines** (`react`, `jsxgraph`, `p5`, `mafs`, `three`) are all rendered through the same
+OrbBits contract: a default-exported React component in `src/index.tsx`, built and mounted via
+Astro. The engine name reflects pedagogical intent (`dynamic-geometry` for JSXGraph) or indicates
+the primary internal library (p5, Mafs, three.js), but they all use the same `WebEngine` build class.
+Adding one is a template plus an entry in `WEB_ENGINES` (`src/orbbits/engines/__init__.py`) and,
+if it needs a package, `pnpm add`. Do not add a new web engine value unless the rendering contract
+changes.
 
 Every engine builds once per locale that declares outputs (`Engine.locale_runs`); a Bit
 without localised outputs builds exactly once, in its default language.
@@ -197,4 +209,11 @@ without a concrete current need:
   intentionally simpler;
 - a **multilingual public site** (localised routes and chrome, per-language
   `title`/`description`) — the architecture is ready for it (docs/localization.md), the
-  site is Italian until an international audience exists.
+  site is Italian until an international audience exists;
+- a **shared mathematical plotting primitive** or style layer for Cartesian axes, coordinate
+  transforms, tick marks, and function curves — Bits implementing interactive mathematics
+  (like `unit-circle-explorer`) currently re-implement these by hand in SVG. Once multiple
+  Bits need custom plots, extract a reusable component or library (either a React primitive
+  or a plotting library like Plotly / Recharts) rather than duplicating the work per Bit.
+  **Why deferred:** one implementation is sufficient to infer the API; the pattern will clarify
+  when a second real use case appears.

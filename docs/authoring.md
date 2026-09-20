@@ -56,12 +56,16 @@ Name the artifact, not the engine: `projectile-motion-explorer`, not `projectile
 |----------|------|--------|------|
 | `manim` | video | manim | animation |
 | `web` | interactive | react | explorable |
-| `jsxgraph` | interactive | jsxgraph | dynamic-geometry |
+| `jsxgraph` | interactive | react | dynamic-geometry |
 | `tikz` | figure | tikz | diagram |
 | `latex` | document | latex | handout |
 
-p5, Mafs and three.js Bits start from the `web` template (`pnpm add p5` etc. at the repository
-root, set `engine:` accordingly).
+All interactive Bits — whether starting from the `web` template (general React) or the `jsxgraph`
+template (JSXGraph geometry) — use `engine: react` and the same OrbBits rendering contract
+(`src/index.tsx` as a React component, built via Astro). Choose the template based on pedagogical
+intent and convenient scaffolding, not because of different rendering. If you are building an interactive
+with p5, Mafs, three.js, or custom visualization, start from the `web` template (`pnpm add p5`
+etc. at the repository root, set `engine: react`).
 
 ## Write the brief, then author
 

@@ -123,6 +123,16 @@ licensed per `provenance` entry (docs/licensing.md).
 
 Do not add kinds without a concrete rendering need.
 
+### `engine` (closed, technical)
+
+The OrbBits-facing build/rendering contract. Names the production pipeline and runtime:
+
+- **Non-interactive**: `manim`, `tikz`, `latex`, `python` / `matplotlib` — each with its own compiler/renderer.
+- **Interactive**: `react`, `jsxgraph`, `p5`, `mafs`, `three` — all use the same WebEngine (Astro + React component export). The engine name reflects the primary internal library or pedagogical intent (e.g., a JSXGraph-focused Bit uses `engine: jsxgraph` to signal dynamic geometry), but the OrbBits contract is identical: the Bit must export a React component as `src/index.tsx`.
+- **Hand-maintained**: `static`, `external`, `blender` — no build pipeline.
+
+See `docs/web-runtime.md` for how web engines are added. Do not add a new engine value unless the OrbBits build and mounting contract genuinely differs; internal implementation libraries (SVG, custom plotting code, imported UI libraries) are details, not engines.
+
 ### `role` (open, suggested)
 
 `animation`, `simulation`, `explorable`, `dynamic-geometry`, `diagram`, `plot`,
