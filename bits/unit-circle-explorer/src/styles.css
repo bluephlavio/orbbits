@@ -1,11 +1,40 @@
 /* Styles are scoped by the .unit-circle-explorer class so several Bits can share a page. */
 .unit-circle-explorer {
-  display: grid;
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
-  max-width: 34rem;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 0 0.75rem;
 }
+
+.unit-circle-explorer .workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.unit-circle-explorer .column {
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-circle-explorer .column-geometry {
+  /* Circle dominates the left */
+}
+
+.unit-circle-explorer .column-center {
+  /* Symbolic + table in the middle */
+  min-width: 0;
+}
+
+.unit-circle-explorer .column-graphs {
+  /* Graphs on the right */
+  min-width: 0;
+}
+
 .unit-circle-explorer .board {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -14,40 +43,32 @@
   background: #fff;
   touch-action: none;
 }
-.unit-circle-explorer .controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1rem;
-  font-size: 0.95rem;
+
+/* Responsive: tablet and below */
+@media (max-width: 900px) {
+  .unit-circle-explorer .workspace {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .unit-circle-explorer .board {
+    max-width: 400px;
+    margin: 0 auto;
+  }
 }
-.unit-circle-explorer .controls label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex: 1 1 14rem;
-}
-.unit-circle-explorer .controls input[type="range"] {
-  flex: 1;
-}
-.unit-circle-explorer .controls output {
-  font-variant-numeric: tabular-nums;
-  min-width: 3.5ch;
-}
-.unit-circle-explorer .readout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.5rem;
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-}
-.unit-circle-explorer .readout div {
-  display: flex;
-  gap: 0.5rem;
-}
-.unit-circle-explorer .readout dt {
-  font-weight: 600;
-}
-.unit-circle-explorer .readout dd {
-  margin: 0;
+
+/* Responsive: small mobile */
+@media (max-width: 500px) {
+  .unit-circle-explorer {
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .unit-circle-explorer .workspace {
+    gap: 0.75rem;
+  }
+
+  .unit-circle-explorer .board {
+    max-width: none;
+  }
 }

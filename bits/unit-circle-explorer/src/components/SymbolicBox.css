@@ -1,0 +1,54 @@
+.symbolic-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: monospace;
+  line-height: 1.4;
+  border-left: 3px solid #1f5fbf;
+}
+
+.symbolic-box .equation {
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.symbolic-box .symbol {
+  font-weight: 600;
+  font-size: 1.05em;
+}
+
+.symbolic-box .value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.symbolic-box .value.cos-color {
+  color: #d1495b;
+}
+
+.symbolic-box .value.sin-color {
+  color: #2a9d8f;
+}
+
+.symbolic-box .function-name {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.symbolic-box .angle-display {
+  margin-top: 0.3rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.symbolic-box .angle-display .symbol {
+  color: #e0a100;
+}

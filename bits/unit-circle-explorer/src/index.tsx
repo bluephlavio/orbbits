@@ -1,19 +1,30 @@
 /**
- * Unit circle explorer
+ * Unit circle explorer: multiple representations of one mathematical state
  *
- * Drag P around the unit circle (or use the slider) and read the angle, cos θ and sin θ.
- * JSXGraph owns the geometry; React owns the controls and the readout.
+ * The learner explores a unit circle, observing how angle α simultaneously determines:
+ * - coordinates (xP, yP) of point P;
+ * - function values cos α and sin α;
+ * - points on the graphs of sin and cos.
+ *
+ * All views are kept in sync through a single authoritative source: the angle α.
+ *
+ * JSXGraph owns the geometry; React owns the state, controls, and other representations.
  * Conventions: docs/style/interactive.md.
  *
- * Localised: every string the learner reads comes from locales/<tag>.yml and the runtime
- * passes the language to render as `locale` (docs/localization.md). Same Bit, same URL.
+ * Localised: every string the learner reads comes from locales/<tag>.yml.
+ * The runtime passes the language to render as `locale` (docs/localization.md).
  */
-import JXG from 'jsxgraph';
 import 'jsxgraph/distrib/jsxgraph.css';
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import en from '../locales/en.yml';
 import it from '../locales/it.yml';
 import './styles.css';
+
+import GeometricBoard from './components/GeometricBoard';
+import SymbolicBox from './components/SymbolicBox';
+import ObservationTable from './components/ObservationTable';
+import FunctionGraphs from './components/FunctionGraphs';
+import ControlPanel from './components/ControlPanel';
 
 interface Messages {
   angle_slider: string;
@@ -21,159 +32,174 @@ interface Messages {
   cos: string;
   sin: string;
   rad: string;
+  angle: string;
+  point_P: string;
+  coordinates: string;
+  record: string;
+  alpha: string;
 }
+
 const MESSAGES: Record<string, Messages> = { it: it as Messages, en: en as Messages };
 const DEFAULT_LOCALE = 'it';
 
 const INITIAL_DEG = 40;
-const BOUNDING_BOX: [number, number, number, number] = [-1.5, 1.5, 1.5, -1.5];
-
-const COLOR = {
-  circle: '#1f5fbf',
-  point: '#e0a100',
-  cos: '#d1495b',
-  sin: '#2a9d8f',
-  muted: '#7a7a7a',
-};
+const NOTABLE_ANGLES = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+const MAX_OBSERVATIONS = 10;
 
 const toRad = (deg: number) => (deg * Math.PI) / 180;
-const toDeg = (rad: number) => (rad * 180) / Math.PI;
 const normalizeDeg = (deg: number) => ((deg % 360) + 360) % 360;
 
-interface Construction {
-  board: JXG.Board;
-  P: JXG.Glider;
+function isNotableAngle(deg: number, tolerance = 2): boolean {
+  return NOTABLE_ANGLES.some((angle) => Math.abs(normalizeDeg(deg - angle)) <= tolerance);
 }
 
-/** The whole construction. Everything draggable or readable is created here. */
-function build(board: JXG.Board, initialDeg: number, t: Messages): Construction {
-  const O = board.create('point', [0, 0], { name: 'O', fixed: true, size: 2, color: COLOR.muted, label: { offset: [-14, -12] } });
-  const X = board.create('point', [1, 0], { visible: false, fixed: true });
-  const circle = board.create('circle', [O, X], { strokeColor: COLOR.circle, strokeWidth: 2, fixed: true });
-
-  const P = board.create('glider', [Math.cos(toRad(initialDeg)), Math.sin(toRad(initialDeg)), circle], {
-    name: 'P',
-    size: 5,
-    color: COLOR.point,
-    label: { offset: [10, 10] },
-  });
-
-  const Px = board.create('point', [() => P.X(), 0], { visible: false });
-  const Py = board.create('point', [0, () => P.Y()], { visible: false });
-
-  board.create('segment', [O, P], { strokeColor: COLOR.point, strokeWidth: 2, fixed: true });
-  board.create('segment', [P, Px], { strokeColor: COLOR.muted, dash: 2, strokeWidth: 1, fixed: true });
-  board.create('segment', [P, Py], { strokeColor: COLOR.muted, dash: 2, strokeWidth: 1, fixed: true });
-  board.create('segment', [O, Px], { strokeColor: COLOR.cos, strokeWidth: 4, fixed: true });
-  board.create('segment', [O, Py], { strokeColor: COLOR.sin, strokeWidth: 4, fixed: true });
-
-  board.create('angle', [X, O, P], {
-    radius: 0.28,
-    name: 'θ',
-    fillColor: COLOR.point,
-    fillOpacity: 0.2,
-    strokeColor: COLOR.point,
-    label: { fontSize: 14 },
-  });
-
-  board.create('text', [() => P.X() / 2, -0.08, t.cos], {
-    anchorX: 'middle',
-    anchorY: 'top',
-    fontSize: 13,
-    color: COLOR.cos,
-    fixed: true,
-  });
-  board.create('text', [-0.08, () => P.Y() / 2, t.sin], {
-    anchorX: 'right',
-    anchorY: 'middle',
-    fontSize: 13,
-    color: COLOR.sin,
-    fixed: true,
-  });
-
-  return { board, P };
+interface Observation {
+  angle: number;
+  xP: number;
+  yP: number;
+  isNotable: boolean;
 }
 
 export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale?: string }) {
   const t = MESSAGES[locale] ?? MESSAGES[DEFAULT_LOCALE];
-  const containerId = useId().replace(/:/g, '');
-  const ref = useRef<Construction | null>(null);
-  const [deg, setDeg] = useState(INITIAL_DEG);
+  const [angleDeg, setAngleDeg] = useState(INITIAL_DEG);
+  const [observations, setObservations] = useState<Observation[]>([]);
+  const [graphPoints, setGraphPoints] = useState<{ sin: [number, number][]; cos: [number, number][] }>({
+    sin: [],
+    cos: [],
+  });
+  const [lastGraphAngle, setLastGraphAngle] = useState(INITIAL_DEG);
+  const geometricBoardRef = useRef<any>(null);
 
+  const angleRad = toRad(angleDeg);
+  const cosVal = Math.cos(angleRad);
+  const sinVal = Math.sin(angleRad);
+
+  // Initialize observations with the initial angle
   useEffect(() => {
-    const board = JXG.JSXGraph.initBoard(containerId, {
-      boundingbox: BOUNDING_BOX,
-      axis: true,
-      keepaspectratio: true,
-      showCopyright: false,
-      showNavigation: false,
-      pan: { enabled: false },
-      zoom: { wheel: false, pinchHorizontal: false, pinchVertical: false },
-      resize: { enabled: true, throttle: 100 },
-      defaultAxes: {
-        x: { ticks: { insertTicks: false, ticksDistance: 0.5, minorTicks: 1, label: { fontSize: 11 } } },
-        y: { ticks: { insertTicks: false, ticksDistance: 0.5, minorTicks: 1, label: { fontSize: 11 } } },
-      },
-    });
-    const construction = build(board, INITIAL_DEG, t);
-    ref.current = construction;
-
-    // Keep the React readout in sync with the geometry whenever P moves.
-    const { P } = construction;
-    const sync = () => setDeg(normalizeDeg(toDeg(Math.atan2(P.Y(), P.X()))));
-    board.on('update', sync);
-    sync();
-
-    return () => {
-      JXG.JSXGraph.freeBoard(board);
-      ref.current = null;
+    const initialObs: Observation = {
+      angle: INITIAL_DEG,
+      xP: Math.cos(toRad(INITIAL_DEG)),
+      yP: Math.sin(toRad(INITIAL_DEG)),
+      isNotable: isNotableAngle(INITIAL_DEG),
     };
-  }, [containerId, t]);
-
-  const moveTo = useCallback((degrees: number) => {
-    const c = ref.current;
-    if (!c) return;
-    const r = toRad(degrees);
-    c.P.moveTo([Math.cos(r), Math.sin(r)]);
-    c.board.update();
+    setObservations([initialObs]);
+    setGraphPoints({
+      sin: [[INITIAL_DEG, Math.sin(toRad(INITIAL_DEG))]],
+      cos: [[INITIAL_DEG, Math.cos(toRad(INITIAL_DEG))]],
+    });
+    setLastGraphAngle(INITIAL_DEG);
   }, []);
 
-  const rad = toRad(deg);
+  // Record an observation: add to table if notable angle or explicitly recorded
+  const recordObservation = useCallback(
+    (angle: number) => {
+      const xP = Math.cos(toRad(angle));
+      const yP = Math.sin(toRad(angle));
+      const notable = isNotableAngle(angle);
+      const obs: Observation = { angle, xP, yP, isNotable: notable };
+
+      setObservations((prev) => {
+        // Don't add if already present
+        const exists = prev.some((o) => Math.abs(o.angle - angle) < 1);
+        if (exists) return prev;
+
+        const updated = [obs, ...prev].slice(0, MAX_OBSERVATIONS);
+        return updated;
+      });
+    },
+    []
+  );
+
+  // Update graph points if angle has moved significantly
+  const updateGraphPoints = useCallback((angle: number) => {
+    setGraphPoints((prev) => {
+      // Add point if it's at least 5° away from the last recorded point
+      if (Math.abs(angle - lastGraphAngle) >= 5) {
+        const rad = toRad(angle);
+        const newSinPoints = [...prev.sin, [angle, Math.sin(rad)] as [number, number]];
+        const newCosPoints = [...prev.cos, [angle, Math.cos(rad)] as [number, number]];
+        setLastGraphAngle(angle);
+        return { sin: newSinPoints, cos: newCosPoints };
+      }
+      return prev;
+    });
+  }, [lastGraphAngle]);
+
+  // When angle changes, update graphs and check for notable angles
+  useEffect(() => {
+    updateGraphPoints(angleDeg);
+
+    // Record notable angles automatically
+    if (isNotableAngle(angleDeg)) {
+      recordObservation(angleDeg);
+    }
+  }, [angleDeg, updateGraphPoints, recordObservation]);
+
+  const handleAngleChange = useCallback((angle: number) => {
+    const normalized = normalizeDeg(angle);
+    setAngleDeg(normalized);
+    if (geometricBoardRef.current) {
+      geometricBoardRef.current.moveTo(normalized);
+    }
+  }, []);
+
+  const handleReset = useCallback(() => {
+    handleAngleChange(INITIAL_DEG);
+  }, [handleAngleChange]);
+
+  const handleObservationClick = useCallback(
+    (observation: Observation) => {
+      handleAngleChange(observation.angle);
+    },
+    [handleAngleChange]
+  );
+
   return (
     <div className="unit-circle-explorer">
-      <div id={containerId} className="board jxgbox" />
-      <div className="controls">
-        <label>
-          θ
-          <input
-            type="range"
-            min="0"
-            max="360"
-            step="1"
-            value={Math.round(deg)}
-            onChange={(e) => moveTo(Number(e.target.value))}
-            aria-label={t.angle_slider}
+      <div className="workspace">
+        {/* Left: Geometric view */}
+        <div className="column column-geometry">
+          <GeometricBoard
+            ref={geometricBoardRef}
+            initialDeg={INITIAL_DEG}
+            onAngleChange={setAngleDeg}
+            locale={locale}
           />
-          <output>{deg.toFixed(0)}°</output>
-        </label>
-        <button type="button" onClick={() => moveTo(INITIAL_DEG)}>
-          {t.reset}
-        </button>
+        </div>
+
+        {/* Center: Symbolic and observational views */}
+        <div className="column column-center">
+          <SymbolicBox angle={angleDeg} xP={cosVal} yP={sinVal} t={t} />
+          <ObservationTable
+            observations={observations}
+            currentAngle={angleDeg}
+            onObservationClick={handleObservationClick}
+            onRecordObservation={recordObservation}
+            t={t}
+          />
+        </div>
+
+        {/* Right: Function graphs */}
+        <div className="column column-graphs">
+          <FunctionGraphs
+            sinPoints={graphPoints.sin}
+            cosPoints={graphPoints.cos}
+            currentAngle={angleDeg}
+            currentSin={sinVal}
+            currentCos={cosVal}
+            t={t}
+          />
+        </div>
       </div>
-      <dl className="readout">
-        <div>
-          <dt>θ</dt>
-          <dd>{deg.toFixed(1)}° = {(rad / Math.PI).toFixed(3)}π {t.rad}</dd>
-        </div>
-        <div>
-          <dt style={{ color: COLOR.cos }}>{t.cos}</dt>
-          <dd>{Math.cos(rad).toFixed(3)}</dd>
-        </div>
-        <div>
-          <dt style={{ color: COLOR.sin }}>{t.sin}</dt>
-          <dd>{Math.sin(rad).toFixed(3)}</dd>
-        </div>
-      </dl>
+
+      {/* Controls below */}
+      <ControlPanel
+        angle={angleDeg}
+        onAngleChange={handleAngleChange}
+        onReset={handleReset}
+        t={t}
+      />
     </div>
   );
 }
