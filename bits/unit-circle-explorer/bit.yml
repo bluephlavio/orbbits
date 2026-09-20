@@ -11,8 +11,8 @@ locales: [it, en]
 created: 2026-09-18
 
 description: >-
-  Trascina un punto sulla circonferenza goniometrica e osserva come l'angolo θ determina
-  cos θ (proiezione orizzontale) e sin θ (proiezione verticale), in gradi e in radianti.
+  Trascina un punto sulla circonferenza goniometrica e osserva come l'angolo α determina
+  cos α (proiezione orizzontale) e sin α (proiezione verticale), in gradi e in radianti.
 
 subjects: [mathematics]
 topics: [trigonometry, unit-circle, sine, cosine]

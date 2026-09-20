@@ -37,7 +37,7 @@ export default function ObservationTable({
       <div className="table-title">{t.reference_values}</div>
 
       <div className="current-observation">
-        <div className="label">Current α:</div>
+        <div className="label">α attuale:</div>
         <table className="compact-table">
           <tbody>
             {currentObs ? (
@@ -57,7 +57,7 @@ export default function ObservationTable({
 
       {references.length > 0 && (
         <div className="reference-observations">
-          <div className="label">Reference angles:</div>
+          <div className="label">Angoli di riferimento:</div>
           <table className="compact-table">
             <tbody>
               {references.map((obs, idx) => (
