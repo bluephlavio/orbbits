@@ -14,6 +14,24 @@ Reference implementation: `bits/unit-circle-explorer`.
   React owns the controls and readouts. Create the library object in `useEffect`, dispose it
   in the cleanup, keep a `ref` to it, and bump a `key`/generation counter to rebuild on reset.
 
+## Internal component structure
+
+The default-exported component can internally decompose into any number of subcomponents, hooks,
+and utilities. Organize however makes sense: separate concerns, share state through React
+patterns (props, context, custom hooks), reuse internal components freely. Examples:
+
+- Multiple synchronized views (e.g., a geometry board, coordinates, a table, and a plot
+  sharing the same mathematical state)
+- Layered complexity (e.g., a basic mode and an advanced mode, toggled by the learner)
+- Separated concerns (e.g., stage rendering in one module, control logic in another)
+
+This is all implementation detail. The caller (runtime, Orbit, export) does not configure
+which views are visible or how they are organized; they receive the whole Bit. The brief.md
+specifies what the learner *should see* (essential relations, required elements); the
+component tree is how you make that happen. For Bits where the internal structure is important
+for understanding the pedagogical intent, describe it in `README.md` so the next author or agent
+can grasp the design without decoding the React.
+
 ## Layout and responsiveness
 
 - Fill the container width (`width: 100%`), keep an aspect ratio (`aspect-ratio`), cap with a

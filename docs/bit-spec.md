@@ -71,7 +71,7 @@ outputs:              # classroom-ready artifacts under dist/
     locale: en
 
 build:                # optional, engine-specific (see docs/authoring.md)
-  compiler: pdflatex
+  compiler: pdflatex  # interpreted by the engine; not a caller-facing interface
 
 subjects: [mathematics, history-of-science]   # curricular placement (optional)
 topics: [algebra, al-khwarizmi]

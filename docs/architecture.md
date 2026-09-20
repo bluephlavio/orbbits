@@ -157,16 +157,39 @@ edit / build locally  →  git commit + push  →  GitHub Actions  →  astro bu
 - **TexBits stays separate.** Exercise banks are TexBits' concern; a future Orbit may
   reference TexBits selections through a provider Block.
 
+## Internal Componentization
+
+Interactive Bits can have arbitrarily complex internal React structure: multiple synchronized
+components sharing state, dynamic views, progressive reveal, custom hooks and utilities. All
+of this is implementation detail.
+
+**Public boundary:** A Bit is the unit of publication. The caller (the runtime, an Orbit, the
+public catalog) does not choose or configure internal components; they mount the Bit and get
+the whole thing. `BitHost` passes only the `locale` prop; the component owns everything else.
+Internal components are discovered through reading the brief.md (what views the learner
+should see) and the source code, never through a schema or registry.
+
+**Example:** `unit-circle-explorer` can internally decompose into `<UnitCircleBoard />`,
+`<CoordinateDisplay />`, `<ValueTable />`, `<SymbolicRepresentation />`, and `<TrigPlots />`
+all sharing state through React patterns. The pedagogical identity remains one: "exploring
+the unit circle as a function." The id, URL, and brief.md reflect that identity, not the
+component tree.
+
+---
+
 ## Deferred on purpose
 
 Ideas that were considered and set aside until actual authoring pressure appears. None of
 them has a field, a folder or a dependency in the repository, and none should be introduced
 without a concrete current need:
 
-- a general **variant** system (`variant_of`), Bit **forks** and upstream/downstream lineage
-  (`forked_from`, `upstream`) — today a variation is either the same Bit (a locale, a
-  parameter) or a new Bit related by tags;
-- per-Bit **semantic versions** (`version`) and independent Git repositories per Bit — the
+- a general **variant** or **parametrization** system (`context`, `variant_of`, parameters)
+  — today a variation is either the same Bit (a locale) or a new Bit related by tags.
+  **Why deferred:** caller-facing context would require defining a schema per Bit, a runtime
+  interface to pass parameters, and discovery machinery. The use case is not yet clear:
+  would Orbits want `Bit(context={type: "2"})` or would they embed multiple separate Bits?
+  When a real Orbit needs this, the pattern will clarify.
+- per-Bit **forks** and upstream/downstream lineage (`forked_from`, `upstream`) — the
   repository is the unit of versioning;
 - **Bit.dev**-style component tooling (isolated previews, generators, per-component
   environments) — appealing for interactive Bits, but OrbBits Bits are broader than
