@@ -19,10 +19,10 @@ export default function FunctionGraphs({
   currentCos,
   t,
 }: FunctionGraphsProps) {
-  const GRAPH_HEIGHT = 280; // pixels
-  const MARGIN = { top: 20, right: 30, bottom: 50, left: 50 };
-  const WIDTH = 500; // SVG viewBox units
-  const HEIGHT = 320; // SVG viewBox units
+  const GRAPH_HEIGHT = 150; // pixels — wide and relatively shallow
+  const MARGIN = { top: 15, right: 30, bottom: 40, left: 50 };
+  const WIDTH = 600; // SVG viewBox units — wider for better domain visibility
+  const HEIGHT = 180; // SVG viewBox units — shallower
 
   const innerWidth = WIDTH - MARGIN.left - MARGIN.right;
   const innerHeight = HEIGHT - MARGIN.top - MARGIN.bottom;
@@ -54,7 +54,7 @@ export default function FunctionGraphs({
 
     const currentX = scaleX(currentAngle);
     const currentY = scaleY(currentValue);
-    const originY = scaleY(0); // y=0 line
+    const originY = scaleY(0); // y=0 line — this is the X-AXIS
 
     return (
       <div key={title} className="graph-frame">
@@ -68,24 +68,23 @@ export default function FunctionGraphs({
           {/* Background */}
           <rect width={WIDTH} height={HEIGHT} fill="white" />
 
-          {/* Grid: horizontal line at y=0 */}
-          <line x1={MARGIN.left} y1={originY} x2={WIDTH - MARGIN.right} y2={originY} className="axis-zero" />
-
-          {/* Y-axis */}
+          {/* Y-axis: vertical line at α = 0° (left edge) */}
           <line x1={MARGIN.left} y1={MARGIN.top} x2={MARGIN.left} y2={HEIGHT - MARGIN.bottom} className="axis-line" />
 
-          {/* X-axis */}
+          {/* X-axis: horizontal line at y = 0 (middle) — THIS IS THE MATHEMATICAL X-AXIS */}
           <line
             x1={MARGIN.left}
-            y1={HEIGHT - MARGIN.bottom}
+            y1={originY}
             x2={WIDTH - MARGIN.right}
-            y2={HEIGHT - MARGIN.bottom}
+            y2={originY}
             className="axis-line"
           />
 
           {/* Y-axis ticks and labels (-1, 0, 1) */}
           {[-1, 0, 1].map((val) => {
             const y = scaleY(val);
+            // Omit the middle (0) label to avoid redundancy with the x-axis
+            if (val === 0) return null;
             return (
               <g key={`ytick-${val}`}>
                 <line x1={MARGIN.left - 6} y1={y} x2={MARGIN.left} y2={y} className="tick" />
@@ -96,24 +95,29 @@ export default function FunctionGraphs({
             );
           })}
 
-          {/* X-axis ticks and labels (0°, 90°, 180°, 270°, 360°) */}
+          {/* X-axis ticks and labels (0°, 90°, 180°, 270°, 360°) — positioned below the actual x-axis */}
           {[0, 90, 180, 270, 360].map((angle) => {
             const x = scaleX(angle);
             return (
               <g key={`xtick-${angle}`}>
-                <line x1={x} y1={HEIGHT - MARGIN.bottom} x2={x} y2={HEIGHT - MARGIN.bottom + 6} className="tick" />
-                <text x={x} y={HEIGHT - MARGIN.bottom + 18} className="tick-label" textAnchor="middle">
-                  {angle}°
-                </text>
+                <line x1={x} y1={originY - 5} x2={x} y2={originY + 5} className="tick" />
+                {/* Skip the 0° label at origin to avoid collision; it's implied by the y-axis */}
+                {angle !== 0 && (
+                  <text x={x} y={originY + 16} className="tick-label" textAnchor="middle">
+                    {angle}°
+                  </text>
+                )}
               </g>
             );
           })}
 
-          {/* Axis labels */}
-          <text x={15} y={15} className="axis-label-y">
+          {/* Dependent variable label (cos α / sin α) — positioned cleanly at upper left */}
+          <text x={MARGIN.left + 5} y={MARGIN.top + 12} className="axis-label-y">
             {title}
           </text>
-          <text x={WIDTH - 20} y={HEIGHT - 10} className="axis-label-x">
+
+          {/* Independent variable label (α) — positioned at the right end of the x-axis */}
+          <text x={WIDTH - MARGIN.right - 8} y={originY - 8} className="axis-label-x">
             α
           </text>
 

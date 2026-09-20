@@ -50,6 +50,102 @@ can grasp the design without decoding the React.
 - Keep a readout of the quantities the lesson is about, with tabular numerals, sensible
   decimals, and units.
 
+## Visual validation and browser-driven iteration
+
+For interactive Bits, automated tests validate functionality, but visual/pedagogical correctness requires
+actual browser inspection and user interaction. These principles emerged from developing multi-representation
+learning tools like `unit-circle-explorer`:
+
+### Browser rendering is the acceptance criterion
+
+Do not claim that text is readable, elements are aligned, or behavior is responsive based solely on
+source code, CSS specifications, or build success. Visible correctness requires:
+
+```
+implement → build → open in browser → interact → screenshot → refine
+```
+
+This is not decoration; the actual rendered artifact is what learners see.
+
+### Verify the complete runtime path before debugging
+
+When visual discrepancies appear, confirm the chain:
+
+```
+source → dev-server compilation → built artifact → browser route
+```
+
+Stale cache, mismatched branches, or broken compilation can make the source code invisible to actual
+rendered output. Check:
+
+- dev-server is serving the current working directory
+- no stale/cached artifacts
+- actual browser URL matches expected route
+- locale files are being compiled/served
+
+### Mathematical coordinates differ from SVG/CSS coordinates
+
+Custom plots need explicit coordinate transformations. Define the mathematical plot region and scale
+functions **from mathematical values** (e.g., x = 0, y = 0), not inferred from SVG/container boundaries:
+
+```javascript
+const scaleX = (mathValue) => margin.left + (mathValue / domainMax) * plotWidth;
+const scaleY = (mathValue) => margin.top + plotHeight - ((mathValue + 1) / 2) * plotHeight;
+```
+
+Position axes at their mathematical locations (e.g., y-axis at x = 0, x-axis at y = 0), not at edges.
+This ensures the coordinate system is visually unmistakable.
+
+### Simultaneous representation visibility may be a functional requirement
+
+When pedagogical purpose is to compare multiple views of one state, simultaneous viewport visibility
+is not merely nice-to-have; it is part of the learning design. If learners must scroll between a
+circle and a graph to see synchronization, the pedagogical intent is lost. Optimize layout to fit
+all essential representations without scrolling at typical desktop/laptop viewports.
+
+### Design for coherent workspaces, not widget dashboards
+
+Multiple mathematical representations should form one interactive *space* with clear hierarchy and
+alignment, not a collection of isolated components. Use:
+
+- Alignment (circle + table on one axis, graphs below)
+- Whitespace (reduce gaps; remove redundant headings/labels)
+- Visual hierarchy (primary mathematical elements vs. secondary guides)
+
+Each additional card, heading, or container adds cognitive load.
+
+### Localization must be validated in the rendered UI
+
+Do not assume that locale YAML files guarantee visible localization. Search the source code for
+hard-coded learner-facing strings (labels, headings, messages) and visually inspect them in the
+actual browser at each locale. String extraction during build does not guarantee correct replacement
+at runtime.
+
+### Dynamic values should not destabilize the layout
+
+When numerical values change during interaction (e.g., a radian value with variable numerator/denominator
+width), reserved space and tabular numerals prevent the interface from jumping. This is especially
+important for sections that update at interaction speed (e.g., current-angle displays, value tables).
+
+### Sampling strategies depend on pedagogical purpose
+
+A continuous graph and a numerical table may represent the same mathematical function but serve
+different pedagogical roles:
+
+- **Graph**: continuous mathematical object; current point highlighted; shows overall shape.
+- **Table**: sparse, curated sampling of significant values; current value highlighted for reference.
+
+Choose which values appear in each representation according to learning goals, not convenience.
+
+### Contrast and label placement are not afterthoughts
+
+Graph axes, tick marks, and labels are part of the mathematical language. Ensure:
+
+- Axes are visually stronger than grid lines and curves
+- Labels are positioned at mathematical locations (axis labels near the axis, tick labels related to ticks)
+- Contrast is sufficient for the display context
+- Collision-free placement at domain boundaries and singularities (e.g., 0°, 180°, 360° on a circle)
+
 ## Mathematical notation
 
 Unicode for simple symbols (θ, π, ≤); for real typesetting add KaTeX at the root

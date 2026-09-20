@@ -6,9 +6,9 @@
 }
 
 .graphs-title {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #555;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #222;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
@@ -36,38 +36,37 @@
 
 /* SVG axes and grid */
 .graph-svg .axis-line {
-  stroke: #333;
-  stroke-width: 1.5;
+  stroke: #222;
+  stroke-width: 1.8;
 }
 
 .graph-svg .axis-zero {
-  stroke: #f0f0f0;
-  stroke-width: 0.8;
-  stroke-dasharray: 1,1;
+  stroke: #e8e8e8;
+  stroke-width: 0.7;
+  stroke-dasharray: 2,2;
 }
 
 .graph-svg .tick {
-  stroke: #333;
-  stroke-width: 1;
+  stroke: #444;
+  stroke-width: 1.2;
 }
 
 .graph-svg .tick-label {
-  font-size: 12px;
-  fill: #555;
-  font-weight: 500;
+  font-size: 11px;
+  fill: #333;
+  font-weight: 600;
 }
 
 .graph-svg .axis-label-y {
-  font-size: 12px;
-  fill: #555;
-  font-weight: 600;
+  font-size: 11px;
+  fill: #222;
+  font-weight: 700;
 }
 
 .graph-svg .axis-label-x {
   font-size: 11px;
-  fill: #777;
-  font-weight: 500;
-  text-anchor: end;
+  fill: #222;
+  font-weight: 700;
 }
 
 /* Function curve */
