@@ -2,18 +2,20 @@
 .unit-circle-explorer {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
 }
 
+/* Top section: circle + symbolic */
 .unit-circle-explorer .workspace {
   display: grid;
-  grid-template-columns: 1.2fr 0.6fr 1.5fr;
-  gap: 1.2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
   width: 100%;
+  align-items: start;
 }
 
 .unit-circle-explorer .column {
@@ -22,22 +24,31 @@
 }
 
 .unit-circle-explorer .column-geometry {
-  /* Circle dominates the left */
+  /* Circle on left */
 }
 
 .unit-circle-explorer .column-center {
-  /* Symbolic + table in the middle */
+  /* Symbolic + table on right */
   min-width: 0;
 }
 
 .unit-circle-explorer .column-graphs {
-  /* Graphs on the right */
-  min-width: 0;
+  /* Graphs section - full width below */
+  display: none;
+}
+
+/* Bottom section: graphs */
+.unit-circle-explorer .graphs-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
 }
 
 .unit-circle-explorer .board {
   width: 100%;
   aspect-ratio: 1 / 1;
+  max-width: 350px;
   border: 1px solid #e4e4e4;
   border-radius: 8px;
   background: #fff;
@@ -45,27 +56,40 @@
 }
 
 /* Responsive: tablet and below */
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
+  .unit-circle-explorer {
+    gap: 1.2rem;
+    padding: 0 0.75rem;
+  }
+
   .unit-circle-explorer .workspace {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .unit-circle-explorer .graphs-section {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .unit-circle-explorer .board {
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 100%;
   }
 }
 
 /* Responsive: small mobile */
 @media (max-width: 500px) {
   .unit-circle-explorer {
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 0 0.5rem;
   }
 
   .unit-circle-explorer .workspace {
-    gap: 0.75rem;
+    gap: 1rem;
+  }
+
+  .unit-circle-explorer .graphs-section {
+    gap: 1rem;
   }
 
   .unit-circle-explorer .board {

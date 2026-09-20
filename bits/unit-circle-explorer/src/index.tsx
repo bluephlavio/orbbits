@@ -129,6 +129,7 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
 
   return (
     <div className="unit-circle-explorer">
+      {/* Top: Circle + Symbolic */}
       <div className="workspace">
         {/* Left: Geometric view */}
         <div className="column column-geometry">
@@ -140,7 +141,7 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
           />
         </div>
 
-        {/* Center: Symbolic and observational views */}
+        {/* Right: Symbolic and observational views */}
         <div className="column column-center">
           <SymbolicBox angle={angleDeg} xP={cosVal} yP={sinVal} t={t} />
           <ObservationTable
@@ -150,8 +151,10 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
             t={t}
           />
         </div>
+      </div>
 
-        {/* Right: Function graphs */}
+      {/* Bottom: Function graphs */}
+      <div className="graphs-section">
         <div className="column column-graphs">
           <FunctionGraphs
             currentAngle={angleDeg}
@@ -162,7 +165,7 @@ export default function UnitCircleExplorer({ locale = DEFAULT_LOCALE }: { locale
         </div>
       </div>
 
-      {/* Controls below */}
+      {/* Controls */}
       <ControlPanel
         angle={angleDeg}
         onAngleChange={handleAngleChange}
