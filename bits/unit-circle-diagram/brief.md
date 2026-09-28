@@ -14,8 +14,8 @@ signs, in all four quadrants.
 
 ## Essential relations
 
-- The angle is measured counterclockwise from the positive x-axis (the sweep arcs in the
-  first quadrant establish the convention once; the rest of the figure relies on it).
+- The angle is measured counterclockwise from the positive x-axis (one small arc labelled
+  θ establishes the convention once; the rest of the figure relies on it).
 - Degrees and radians name the same angle: 30° = π/6, 45° = π/4, 60° = π/3, and so on.
 - The coordinates of the point ARE the values: one annotation, P_θ = (cos θ, sin θ), makes
   the reading rule explicit; no per-point "cos θ = …, sin θ = …" repetition.
@@ -30,8 +30,11 @@ signs, in all four quadrants.
   degrees = radians pair.
 - The exact coordinates of each point, symbolic only (√3/2, √2/2, 1/2 and signs), never
   decimal approximations.
-- A radial hierarchy that separates the two kinds of information: angle machinery inside
-  the circle, coordinates immediately outside.
+- A radial structure: every angle owns a ray from the origin and everything about it is
+  read along that ray, from the centre outwards — degrees, radians, the point, the
+  coordinates. Angle information inside the circle, coordinates immediately outside.
+- Angles are identified by rays and labels, not by arcs: one arc for the convention is
+  enough; a nest of arcs dominates the figure and competes with the labels.
 - Print-first: legible in grayscale, no colour-only distinctions, no decorative elements.
 
 ### Deliberately left out
@@ -43,15 +46,16 @@ signs, in all four quadrants.
 
 ## Didactic progression
 
-1. Read the first quadrant: how the angle is measured (sweep arcs from the x-axis), the
+1. Read the first quadrant: how the angle is measured (the θ arc from the x-axis), the
    three fundamental values 30/45/60.
 2. Extend by symmetry to the other quadrants: same numbers, signs change.
 3. Afterwards the figure works as a lookup table during exercises.
 
 ## Misconceptions / pitfalls
 
-- Density is the enemy: with 32 labels the figure must not degenerate into noise. Label
-  collisions are a design failure, not a minor flaw.
+- Density is the enemy: with 48 labels the figure must not degenerate into noise. Label
+  collisions are a design failure, not a minor flaw. Horizontal labels scattered around
+  the circle cannot avoid them at 15° spacing; labels laid along their ray can.
 - Signs must be explicit; Q3/Q4 must not look like copies of Q1.
 - Radians must appear as exact fractions of π, not as decimals.
 - The coordinates must read as a *position*, not as a separate "cos θ = / sin θ =" ritual.

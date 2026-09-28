@@ -16,31 +16,36 @@ just check unit-circle-diagram
 
 ## Implementation notes
 
-- `scale=4`: geometry lives in units of the circle radius, text stays `\small`; the whole
-  figure is ≈ 13.5 cm wide, so the SVG is legible at 12–14 cm on a slide and the PDF
-  prints at page size. Fractions use `\dfrac`; everything is exact/symbolic.
-- The figure is **data-driven**: one `\foreach` table holds all 16 angles
-  (degrees / radians / x / y / angle-label position / coordinate position / anchor).
-  To change a value, edit the table row; to move a label, edit its position.
-- Visual hierarchy (grayscale-safe, colour only secondary): black = frame (circle, axes,
-  coordinates), blue (`orbPrimary`) = angle machinery (Q1 sweep arcs, angle labels,
-  points), grey (`orbMuted`) = construction (terminal sides in Q2–Q4, annotation).
-  The only text is mathematics — the figure is locale-neutral by construction.
-- Layout decisions worth remembering:
-  - **Angles inside, coordinates outside**, so the two semantics never mix; a single
-    annotation P_θ = (cos θ, sin θ) carries the reading rule.
-  - Terminal sides are drawn only in the outer annulus (r ≥ 0.68): the inner disc stays
-    clean around the Q1 arcs and the π/4-family labels.
-  - Coordinates **hug the circle tangentially** with one corner anchor per octant
-    family; radial centring does not work at 15° spacing with real TeX label widths.
-  - Q1 carries the reading convention (three nested sweep arcs from 0°, radii
-    0.16/0.23/0.58); cardinals sit on the axes with a white halo.
-- Label positions were **computed, not eyeballed**: exact label boxes were measured with
-  `\settowidth/\settoheight/\settodepth` and placed by a clearance search (min gap
-  ≈ 3 pt against circle, axes, rays, arcs, dots and each other). Horizontal text is not
-  mirror-invariant, so each quadrant is tuned individually — three rim labels sit 4° off
-  their ray to clear the wide cardinal labels. Re-run the same check after moving
-  anything (scratch method, not part of the build).
+- `scale=5`: geometry lives in units of the circle radius (5 cm), text stays `\small`; the
+  figure is ≈ 14.5 cm square, so it prints on A4 and stays legible at 12–14 cm on a slide.
+  Fractions use `\dfrac`; everything is exact/symbolic.
+- **Radial model.** Every non-cardinal angle owns a thin ray from the origin, and its
+  information is read along that ray: degrees → radians → point → coordinates. Labels are
+  centred on the ray and rotated along it (θ in the right half-plane, θ−180° in the left,
+  so nothing is upside down); a white halo interrupts the ray behind each label.
+  Coordinates start just outside the point (`\gapCrd`) and grow outwards, anchored
+  `west` on the right and `east` on the left. Radial text spends radial space, which is
+  free, instead of tangential space, which 15° spacing makes scarce: that is why
+  horizontal coordinate labels collided in the first version and radial ones cannot.
+- **Two rings** for the inner labels, the same for every direction (cardinals included):
+  degrees at `\rDeg` = 0.52, radians at `\rRad` = 0.80. At 5 cm radius 15° leaves room
+  for neighbours on the same ring, so no staggering is needed. Each quadrant is the
+  mirror image of Q1.
+- **Cardinals** have their own loop: horizontal labels on the counterclockwise side of
+  their axis (0° above +x, 90° left of +y, 180° below −x, 270° right of −y), so a
+  quarter turn maps each one onto the next.
+- One discreet arc 0°→30° with θ states the reading convention; the single annotation
+  P_θ = (cos θ, sin θ) sits in the top-right corner.
+- Colour marks the family (π/6 `orbPrimary`, π/4 `orbAccent!70!black`, axes black) on ray,
+  labels, point and coordinates; it is redundant with the values (grayscale-safe).
+- The data table holds only mathematics (angle, radians, cos, sin, family); the radii are
+  the few macros at the top. Hand corrections go in optional keys `deg <a>`, `rad <a>`,
+  `crd <a>` (applied with `/.try`, e.g. `crd 60/.style={xshift=2pt}` in the picture
+  options); the current layout needs none.
+- Nodes are named `deg-<a>`, `rad-<a>`, `crd-<a>`, `theta`, `annot`. After moving anything,
+  check clearances: dump each named node's four corners (`\pgfgetlastxy` on
+  `(name.north west)` etc.) from a scratch copy and test the boxes against each other and
+  against rays, axes, circle and points (e.g. with shapely).
 
 ## Limitations / open issues
 

@@ -4,9 +4,10 @@
 
 La figura si presta a due usi: proiettata mentre si costruiscono i valori (con
 `unit-circle-explorer` accanto, se serve il movimento), e stampata come carta di
-riferimento da tenere sul banco. Parte sempre dal primo quadrante: lì ci sono i tre
-archetti che mostrano *come si misura* l'angolo, partendo dall'asse x in senso
-antiorario. Poi si legge tutto il resto per simmetria.
+riferimento da tenere sul banco. Parte sempre dal primo quadrante: l'archetto θ mostra
+*come si misura* l'angolo, partendo dall'asse x in senso antiorario. Ogni angolo ha il
+suo raggio, e lungo il raggio si legge tutto, dal centro verso l'esterno: gradi, radianti,
+punto, coordinate. Poi il resto si ricava per simmetria.
 
 La lettura da insegnare è una sola: il punto sull'angolo θ ha coordinate (cos θ, sin θ) —
 l'annotazione in alto a destra lo dice una volta per tutte. Ogni etichetta esterna non è
@@ -32,6 +33,7 @@ l'annotazione in alto a destra lo dice una volta per tutte. Ogni etichetta ester
 
 ## Note dopo l'uso
 
-Ancora non usata in classe. Osservazione dal rendering: in Q1 la leggezione degli archetti
-va mostrata una volta a voce (quale arco appartiene a quale angolo); dopo il primo
-quadrante nessuno ha bisogno della spiegazione.
+Ancora non usata in classe. Osservazione dal rendering: le coordinate sono scritte lungo il
+raggio, quindi a 60°, 120°, 240°, 300° il testo è piuttosto inclinato; stampata, basta
+ruotare leggermente il foglio. I colori (blu per la famiglia di π/6, ocra per quella di
+π/4) aiutano a vedere che 45°, 135°, … hanno le due coordinate uguali in valore assoluto.
