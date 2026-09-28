@@ -1,0 +1,81 @@
+% Circonferenza goniometrica: angoli notevoli e coordinate esatte
+% Print-first reference chart. Radial hierarchy, three visual levels:
+%   black — stable frame: circle, axes, coordinates of the points
+%   blue  — the angle machinery: sweep arcs (Q1), angle labels, points
+%   grey  — construction: terminal sides in Q2-Q4, general annotation
+%
+% Layout (positions below were placed with a clearance search against the
+% exact TeX label sizes, then hand-rounded; horizontal text is not
+% mirror-symmetric, so each quadrant is tuned individually):
+%   - inside:  angle labels "deg = rad" on their directions; the pi/4 family
+%     sits in the inner disc, the others near the rim on their terminal sides;
+%   - outside: exact coordinates hug the circle tangentially, one corner
+%     anchor per octant family, so 15-deg neighbours never share a band;
+%   - Q1 carries the reading convention: three nested sweep arcs from 0 deg.
+% The figure is language-neutral (math only).
+% OrbBits TikZ conventions: see docs/style/tikz.md
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta}
+
+% Project palette (keep colours semantic, not decorative)
+\definecolor{orbPrimary}{HTML}{1F5FBF}
+\definecolor{orbAccent}{HTML}{E0A100}
+\definecolor{orbMuted}{HTML}{7A7A7A}
+
+\begin{document}
+\begin{tikzpicture}[
+    >=Stealth,
+    scale=4,                    % geometry in units of the radius; text stays \small
+    line width=0.9pt,
+    every node/.style={font=\small},
+    halo/.style={fill=white, inner sep=1.2pt},
+    ang/.style={halo, text=orbPrimary},
+    ray/.style={orbMuted!70, line width=0.5pt},
+    sweep/.style={orbPrimary, line width=0.7pt},
+  ]
+
+  % ---- axes, calibrated by the circle itself: the +/-1 points are on them ----
+  \draw[black, line width=0.8pt, <->] (-1.58,0) -- (1.58,0) node[right] {$x$};
+  \draw[black, line width=0.8pt, <->] (0,-1.58) -- (0,1.58) node[above] {$y$};
+
+  % ---- unit circle ----
+  \draw[black, line width=1.15pt] (0,0) circle (1);
+
+  % ---- Q1: how the angle is measured — nested sweep arcs from 0° ----
+  \foreach \aDeg/\rArc in {30/0.16, 45/0.23, 60/0.58}
+    \draw[sweep, ->] (0:\rArc) arc[start angle=0, end angle=\aDeg, radius=\rArc];
+
+  % ---- terminal sides, outer annulus only: the inner disc stays clean ----
+  \foreach \aDeg in {120,135,150,210,225,240,300,315,330}
+    \draw[ray] (\aDeg:0.68) -- (\aDeg:1);
+
+  % ---- the sixteen notable angles ----
+  % degrees / radians / x / y / angle-label pos / coord pos / coord anchor
+  \foreach \aDeg/\aRad/\aX/\aY/\aPos/\cPos/\cAnchor in {
+      0/0/1/0/{(0.45,-0.11)}/{(1.120,-0.040)}/north,
+      30/{\dfrac{\pi}{6}}/{\dfrac{\sqrt{3}}{2}}/{\dfrac{1}{2}}/{(0.658,0.380)}/{(0.918,0.530)}/west,
+      45/{\dfrac{\pi}{4}}/{\dfrac{\sqrt{2}}{2}}/{\dfrac{\sqrt{2}}{2}}/{(0.283,0.283)}/{(0.750,0.693)}/south west,
+      60/{\dfrac{\pi}{3}}/{\dfrac{1}{2}}/{\dfrac{\sqrt{3}}{2}}/{(0.380,0.658)}/{(0.536,0.949)}/south,
+      90/{\dfrac{\pi}{2}}/0/1/{(0,0.55)}/{(0.040,1.050)}/west,
+      120/{\dfrac{2\pi}{3}}/{-\dfrac{1}{2}}/{\dfrac{\sqrt{3}}{2}}/{(-0.395,0.684)}/{(-0.533,0.963)}/south,
+      135/{\dfrac{3\pi}{4}}/{-\dfrac{\sqrt{2}}{2}}/{\dfrac{\sqrt{2}}{2}}/{(-0.255,0.255)}/{(-0.750,0.693)}/south east,
+      150/{\dfrac{5\pi}{6}}/{-\dfrac{\sqrt{3}}{2}}/{\dfrac{1}{2}}/{(-0.665,0.368)}/{(-0.918,0.530)}/east,
+      180/{\pi}/{-1}/0/{(-0.58,0)}/{(-1.150,0.040)}/south,
+      210/{\dfrac{7\pi}{6}}/{-\dfrac{\sqrt{3}}{2}}/{-\dfrac{1}{2}}/{(-0.650,-0.375)}/{(-0.918,-0.530)}/east,
+      225/{\dfrac{5\pi}{4}}/{-\dfrac{\sqrt{2}}{2}}/{-\dfrac{\sqrt{2}}{2}}/{(-0.244,-0.244)}/{(-0.750,-0.693)}/north east,
+      240/{\dfrac{4\pi}{3}}/{-\dfrac{1}{2}}/{-\dfrac{\sqrt{3}}{2}}/{(-0.357,-0.733)}/{(-0.591,-0.964)}/north,
+      270/{\dfrac{3\pi}{2}}/0/{-1}/{(0,-0.55)}/{(-0.040,-1.050)}/east,
+      300/{\dfrac{5\pi}{3}}/{\dfrac{1}{2}}/{-\dfrac{\sqrt{3}}{2}}/{(0.357,-0.733)}/{(0.533,-0.963)}/north,
+      315/{\dfrac{7\pi}{4}}/{\dfrac{\sqrt{2}}{2}}/{-\dfrac{\sqrt{2}}{2}}/{(0.255,-0.255)}/{(0.750,-0.693)}/north west,
+      330/{\dfrac{11\pi}{6}}/{\dfrac{\sqrt{3}}{2}}/{-\dfrac{1}{2}}/{(0.683,-0.333)}/{(0.918,-0.530)}/west}
+  {
+    \fill[orbPrimary] (\aDeg:1) circle (0.026);
+    \node[ang] at \aPos {$\aDeg^\circ = \aRad$};
+    \node[anchor=\cAnchor] at \cPos {$\left(\aX,\ \aY\right)$};
+  }
+
+  % ---- the one general annotation ----
+  \node[text=orbMuted, anchor=west] at (1.02,1.50) {$P_\theta = (\cos\theta,\ \sin\theta)$};
+\end{tikzpicture}
+\end{document}

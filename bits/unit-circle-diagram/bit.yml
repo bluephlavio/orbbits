@@ -1,0 +1,30 @@
+id: unit-circle-diagram
+title: Circonferenza goniometrica e angoli notevoli
+
+kind: figure
+role: diagram
+engine: tikz
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-09-28
+
+description: >-
+  La circonferenza goniometrica come carta di riferimento: i 16 angoli notevoli con
+  l'equivalenza gradi–radianti (30° = π/6, …) e le coordinate esatte dei punti, che sono
+  cos θ e sin θ, con i segni corretti nei quattro quadranti.
+
+outputs:
+  - format: svg
+    file: dist/figure.svg
+  - format: pdf
+    file: dist/figure.pdf
+
+subjects: [mathematics]
+topics: [trigonometry, unit-circle, sine, cosine]
+levels: [upper-secondary]
+tags: [unit-circle, trigonometry, sine, cosine, notable-angles, radians]
+
+# Original content: inherits the repository default licence (CC BY-SA 4.0).
+# No provenance: the figure is drawn from scratch, not adapted from a specific source.
