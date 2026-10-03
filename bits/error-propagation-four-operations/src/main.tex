@@ -1,0 +1,406 @@
+% Propagazione degli errori nelle quattro operazioni
+% OrbBits LaTeX conventions: see docs/style/latex.md
+% Several languages: `orbbits build` defines \orbLocale per localised output; add
+% \providecommand{\orbLocale}{it} here and switch babel and text on it (docs/localization.md).
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+
+\definecolor{orbPrimary}{HTML}{1F5FBF}
+
+\title{Propagazione degli errori nelle quattro operazioni}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Il problema}
+
+I manuali enunciano le formule di propagazione dell'errore quasi sempre senza
+dimostrarle. In questa dispensa le ricaviamo per esteso, con il metodo degli
+\emph{estremi dell'intervallo di misura}: nessun passaggio saltato, e un
+commento nei punti concettualmente delicati.
+
+Partiamo da due grandezze misurate direttamente, nella forma consueta
+\begin{equation*}
+a = \bar a \pm \Delta a, \qquad b = \bar b \pm \Delta b,
+\end{equation*}
+dove $\bar a$ e $\bar b$ sono i valori misurati (valori nominali) e $\Delta a$,
+$\Delta b$ gli errori assoluti. Il significato è: il valore vero di $a$ sta
+nell'intervallo $[\bar a - \Delta a,\ \bar a + \Delta a]$, e lo stesso per $b$.
+Conviene dare un nome agli estremi di questi intervalli:
+\begin{equation*}
+a_{\max} = \bar a + \Delta a, \qquad a_{\min} = \bar a - \Delta a,
+\end{equation*}
+\begin{equation*}
+b_{\max} = \bar b + \Delta b, \qquad b_{\min} = \bar b - \Delta b.
+\end{equation*}
+
+Da $a$ e $b$ ricaviamo una grandezza \emph{indiretta} $c$, con una delle quattro
+operazioni: $c = a+b$, $c = a-b$, $c = ab$, $c = a/b$. L'obiettivo è determinare
+l'intervallo $[c_{\min},\, c_{\max}]$ in cui può trovarsi $c$ e riscriverlo
+nella forma
+\begin{equation*}
+c = \bar c \pm \Delta c,
+\end{equation*}
+cioè trovare il valore nominale $\bar c$ e l'incertezza $\Delta c$ in funzione
+di quelli di $a$ e $b$.
+
+\paragraph{Errori massimi, non statistici.} Qui $\Delta a$ e $\Delta b$ sono
+\emph{limiti di incertezza} (errori massimi): siamo cioè sicuri che il valore
+vero cada dentro l'intervallo. Non trattiamo errori casuali indipendenti; per
+questo nel seguito non comparirà mai la somma in quadratura
+$\sqrt{\Delta a^2 + \Delta b^2}$, che appartiene a quel quadro diverso.
+
+\paragraph{Ipotesi per prodotto e quoziente.} Nelle sezioni sul prodotto e sul
+quoziente assumiamo esplicitamente
+\begin{equation*}
+\bar a > 0, \qquad \bar b > 0, \qquad \Delta a < \bar a, \qquad \Delta b < \bar b,
+\end{equation*}
+così che $a$ e $b$ restano positivi in tutto l'intervallo di misura; in
+particolare l'intervallo di $b$ non contiene lo zero, condizione indispensabile
+per poter dividere. Queste ipotesi evitano problemi di monotonia: garantiscono
+che, dentro gli intervalli, le funzioni che useremo crescano o decrescano sempre
+nello stesso verso, e quindi che massimo e minimo si ottengano agli estremi.
+
+\section*{La somma: $c = a + b$}
+
+Il valore nominale della somma è
+\begin{equation*}
+\bar c = \bar a + \bar b.
+\end{equation*}
+La somma cresce sia al crescere di $a$ sia al crescere di $b$: il massimo di $c$
+si ottiene prendendo entrambe le grandezze al massimo, il minimo prendendole
+entrambe al minimo. Svolgiamo i conti per il massimo:
+\begin{align*}
+c_{\max} &= a_{\max} + b_{\max} && \text{entrambe al massimo}\\
+&= (\bar a + \Delta a) + (\bar b + \Delta b) && \text{per definizione di estremi}\\
+&= (\bar a + \bar b) + (\Delta a + \Delta b) && \text{raggruppando}\\
+&= \bar c + (\Delta a + \Delta b) && \text{per definizione di } \bar c
+\end{align*}
+e per il minimo, in modo del tutto analogo:
+\begin{align*}
+c_{\min} &= a_{\min} + b_{\min} && \text{entrambe al minimo}\\
+&= (\bar a - \Delta a) + (\bar b - \Delta b)\\
+&= (\bar a + \bar b) - (\Delta a + \Delta b)\\
+&= \bar c - (\Delta a + \Delta b).
+\end{align*}
+L'intervallo di $c$ è quindi esattamente simmetrico rispetto a $\bar c$, e
+l'incertezza della somma è
+\begin{equation*}
+\boxed{\,\Delta c = \Delta a + \Delta b\,}
+\tag*{esatta}
+\end{equation*}
+sicché la misura indiretta si scrive
+\begin{equation*}
+\boxed{\,c = (\bar a + \bar b) \pm (\Delta a + \Delta b)\,}
+\tag*{esatta}
+\end{equation*}
+
+\paragraph{Osservazione.} Nel modello adottato (incertezze come limiti) questo
+risultato non è un'approssimazione: è la conseguenza esatta delle definizioni.
+Nella somma, gli errori assoluti si sommano.
+
+\section*{La differenza: $c = a - b$}
+
+Ora il valore nominale è
+\begin{equation*}
+\bar c = \bar a - \bar b,
+\end{equation*}
+e il passaggio da capire bene riguarda \emph{quali} estremi accoppiare.
+
+\paragraph{Massimo e minimo si accoppiano in modo incrociato.} Al crescere di
+$a$ la differenza $a-b$ cresce; al crescere di $b$ essa \emph{diminuisce}.
+Quindi $c$ è massima quando $a$ è al massimo e $b$ è al minimo, ed è minima
+quando $a$ è al minimo e $b$ è al massimo. In parole: un errore che fa sembrare
+$b$ più grande di quanto sia rende $a-b$ più piccolo; ecco perché gli estremi
+vanno accoppiati in modo incrociato.
+
+Svolgiamo il massimo:
+\begin{align*}
+c_{\max} &= a_{\max} - b_{\min} && \text{estremi incrociati}\\
+&= (\bar a + \Delta a) - (\bar b - \Delta b) && \text{per definizione di estremi}\\
+&= \bar a + \Delta a - \bar b + \Delta b && \text{attenzione ai segni}\\
+&= (\bar a - \bar b) + (\Delta a + \Delta b) && \text{raggruppando}\\
+&= \bar c + (\Delta a + \Delta b)
+\end{align*}
+Soffermiamoci sul passo segnalato: il segno meno davanti alla parentesi cambia
+il segno a \emph{entrambi} i termini, $-(\bar b - \Delta b) = -\bar b +
+\Delta b$. È proprio qui che il meno della differenza, agendo su $-\Delta b$,
+produce un più: l'incertezza di $b$ entra con il segno positivo.
+
+Per il minimo:
+\begin{align*}
+c_{\min} &= a_{\min} - b_{\max} && \text{estremi incrociati}\\
+&= (\bar a - \Delta a) - (\bar b + \Delta b)\\
+&= \bar a - \Delta a - \bar b - \Delta b && \text{stessa attenzione ai segni}\\
+&= (\bar a - \bar b) - (\Delta a + \Delta b)\\
+&= \bar c - (\Delta a + \Delta b).
+\end{align*}
+Anche qui l'intervallo è esattamente simmetrico rispetto a $\bar c$, quindi
+\begin{equation*}
+\boxed{\,\Delta c = \Delta a + \Delta b\,}
+\tag*{esatta}
+\end{equation*}
+e
+\begin{equation*}
+\boxed{\,c = (\bar a - \bar b) \pm (\Delta a + \Delta b)\,}
+\tag*{esatta}
+\end{equation*}
+
+\paragraph{Perché gli errori si sommano anche sottraendo.} Il segno meno della
+formula riguarda i valori nominali, non le incertezze: sottrarre due misure non
+\emph{compensa} gli errori, li accumula, perché il caso peggiore è quello in cui
+i due errori spingono in versi opposti. Vale la pena notare una conseguenza:
+sottraendo grandezze quasi uguali ($\bar a \approx \bar b$) il valore nominale
+$\bar c$ diventa piccolo mentre $\Delta c$ resta la somma delle incertezze, e
+l'errore \emph{relativo} del risultato può diventare molto grande anche partendo
+da misure ottime.
+
+\section*{Il prodotto: $c = ab$}
+
+Vale l'ipotesi fatta all'inizio: $\bar a > 0$, $\bar b > 0$, $\Delta a < \bar a$,
+$\Delta b < \bar b$. I due fattori restano quindi positivi in tutto l'intervallo
+e il prodotto cresce al crescere di ciascuno di essi: massimo e minimo si
+ottengono accoppiando gli estremi nello stesso verso. Il valore nominale è
+\begin{equation*}
+\bar c = \bar a\,\bar b.
+\end{equation*}
+
+\paragraph{Massimo e minimo esatti.} Per il massimo:
+\begin{align*}
+c_{\max} &= a_{\max}\, b_{\max}
+= (\bar a + \Delta a)(\bar b + \Delta b)\\
+&= \bar a\,\bar b + \bar a\,\Delta b + \bar b\,\Delta a + \Delta a\,\Delta b
+&& \text{sviluppo completo}
+\end{align*}
+e quindi, essendo $\bar c = \bar a\,\bar b$,
+\begin{equation*}
+c_{\max} - \bar c
+= \bar a\,\Delta b + \bar b\,\Delta a + \Delta a\,\Delta b .
+\end{equation*}
+Per il minimo:
+\begin{align*}
+c_{\min} &= a_{\min}\, b_{\min}
+= (\bar a - \Delta a)(\bar b - \Delta b)\\
+&= \bar a\,\bar b - \bar a\,\Delta b - \bar b\,\Delta a + \Delta a\,\Delta b
+&& \text{nota: } (-\Delta a)(-\Delta b) = +\Delta a\,\Delta b
+\end{align*}
+da cui
+\begin{equation*}
+\bar c - c_{\min}
+= \bar a\,\Delta b + \bar b\,\Delta a - \Delta a\,\Delta b .
+\end{equation*}
+
+\paragraph{L'intervallo esatto non è simmetrico.} Lo scarto superiore
+$c_{\max} - \bar c$ e quello inferiore $\bar c - c_{\min}$ differiscono per il
+termine $\Delta a\,\Delta b$, che compare con $+$ nel primo e con $-$ nel
+secondo: rispetto a $\bar c$ l'intervallo esatto è leggermente sbilanciato verso
+l'alto. Il colpevole è proprio il termine $\Delta a\,\Delta b$, che nelle somme
+e nelle differenze non era mai comparso.
+
+\paragraph{Errori relativi.} Conviene introdurre gli errori relativi
+\begin{equation*}
+\varepsilon_a = \frac{\Delta a}{\bar a},
+\qquad
+\varepsilon_b = \frac{\Delta b}{\bar b}
+\end{equation*}
+e dividere gli scarti per $\bar c = \bar a\,\bar b$. Per l'estremo superiore:
+\begin{align*}
+\frac{c_{\max} - \bar c}{\bar c}
+&= \frac{\bar a\,\Delta b + \bar b\,\Delta a + \Delta a\,\Delta b}{\bar a\,\bar b}\\
+&= \frac{\Delta b}{\bar b} + \frac{\Delta a}{\bar a}
++ \frac{\Delta a}{\bar a}\cdot\frac{\Delta b}{\bar b}
+&& \text{termine a termine}\\
+&= \varepsilon_a + \varepsilon_b + \varepsilon_a\,\varepsilon_b ,
+\end{align*}
+e, con lo stesso conto per il minimo,
+\begin{equation*}
+\frac{\bar c - c_{\min}}{\bar c}
+= \varepsilon_a + \varepsilon_b - \varepsilon_a\,\varepsilon_b .
+\end{equation*}
+
+\paragraph{Il termine $\varepsilon_a\,\varepsilon_b$ è di secondo ordine.} Se
+gli errori relativi sono piccoli --- in un laboratorio scolastico tipicamente
+dell'ordine dell'1\% o meno --- il loro prodotto è cento volte più piccolo di
+ciascuno di essi: ad esempio $\varepsilon_a = \varepsilon_b = 1\%$ dà
+$\varepsilon_a\,\varepsilon_b = 0{,}01\%$. Un termine che è il prodotto di due
+piccole quantità si dice \emph{di secondo ordine} nelle incertezze relative.
+Trascurandolo, i due scarti coincidono e l'intervallo diventa, con ottima
+approssimazione, simmetrico: $c = \bar c \pm \Delta c$.
+
+\paragraph{Come leggere le formule che seguono.} Da qui in poi etichettiamo i
+risultati in tre modi: \emph{esatta} (conseguenza esatta delle definizioni),
+\emph{al primo ordine} (ottenuta trascurando i termini di secondo ordine nelle
+incertezze relative) e \emph{formula d'uso} (la forma sotto cui la si incontra
+nei problemi scolastici, ed è la stessa approssimazione al primo ordine
+riscritta con gli errori assoluti).
+
+Trascurando $\varepsilon_a\,\varepsilon_b$ otteniamo la formula usuale per
+l'errore relativo del prodotto:
+\begin{equation*}
+\boxed{\,\frac{\Delta c}{\bar c} \simeq \frac{\Delta a}{\bar a} + \frac{\Delta b}{\bar b}\,}
+\qquad\text{ovvero}\qquad
+\boxed{\,\varepsilon_c \simeq \varepsilon_a + \varepsilon_b\,}
+\tag*{al primo ordine}
+\end{equation*}
+
+\paragraph{La forma con gli errori assoluti.} Per l'errore assoluto basta
+moltiplicare per $\bar c = \bar a\,\bar b$ e semplificare termine a termine:
+\begin{align*}
+\Delta c
+&\simeq \bar a\,\bar b \left( \frac{\Delta a}{\bar a} + \frac{\Delta b}{\bar b} \right)\\
+&= \bar a\,\bar b \cdot \frac{\Delta a}{\bar a}
++ \bar a\,\bar b \cdot \frac{\Delta b}{\bar b}
+&& \text{termine a termine}\\
+&= \bar b\,\Delta a + \bar a\,\Delta b
+\end{align*}
+cioè
+\begin{equation*}
+\boxed{\,\Delta c \simeq \bar b\,\Delta a + \bar a\,\Delta b\,}
+\tag*{formula d'uso}
+\end{equation*}
+
+\section*{Il quoziente: $c = a/b$}
+
+Anche qui valgono le ipotesi iniziali; in particolare $b_{\min} = \bar b -
+\Delta b > 0$, quindi il denominatore non cambia mai segno e possiamo dividere.
+Il valore nominale è
+\begin{equation*}
+\bar c = \frac{\bar a}{\bar b}.
+\end{equation*}
+
+\paragraph{Quali estremi producono massimo e minimo.} Il rapporto cresce al
+crescere del numeratore e --- restando il denominatore positivo --- al
+\emph{decrescere} del denominatore: aumentando il numeratore il rapporto sale,
+aumentando il denominatore scende. Quindi
+\begin{equation*}
+c_{\max} = \frac{a_{\max}}{b_{\min}} = \frac{\bar a + \Delta a}{\bar b - \Delta b},
+\qquad
+c_{\min} = \frac{a_{\min}}{b_{\max}} = \frac{\bar a - \Delta a}{\bar b + \Delta b}:
+\end{equation*}
+di nuovo estremi accoppiati in modo incrociato.
+
+Riscriviamo $c_{\max}$ in termini degli errori relativi, raccogliendo $\bar a$ e
+$\bar b$:
+\begin{equation*}
+c_{\max}
+= \frac{\bar a\,(1 + \varepsilon_a)}{\bar b\,(1 - \varepsilon_b)}
+= \bar c\,\frac{1 + \varepsilon_a}{1 - \varepsilon_b}.
+\end{equation*}
+Calcoliamo \emph{esattamente} lo scarto relativo superiore:
+\begin{align*}
+\frac{c_{\max} - \bar c}{\bar c}
+&= \frac{1 + \varepsilon_a}{1 - \varepsilon_b} - 1\\
+&= \frac{1 + \varepsilon_a - (1 - \varepsilon_b)}{1 - \varepsilon_b}
+&& \text{al denominatore comune}\\
+&= \frac{\varepsilon_a + \varepsilon_b}{1 - \varepsilon_b},
+\end{align*}
+\begin{equation*}
+\boxed{\,\frac{c_{\max} - \bar c}{\bar c} = \frac{\varepsilon_a + \varepsilon_b}{1 - \varepsilon_b}\,}
+\tag*{esatta}
+\end{equation*}
+Analogamente, partendo da
+\begin{equation*}
+c_{\min} = \bar c\,\frac{1 - \varepsilon_a}{1 + \varepsilon_b},
+\end{equation*}
+lo scarto relativo inferiore è
+\begin{align*}
+\frac{\bar c - c_{\min}}{\bar c}
+&= 1 - \frac{1 - \varepsilon_a}{1 + \varepsilon_b}
+= \frac{(1 + \varepsilon_b) - (1 - \varepsilon_a)}{1 + \varepsilon_b}
+= \frac{\varepsilon_a + \varepsilon_b}{1 + \varepsilon_b},
+\end{align*}
+\begin{equation*}
+\boxed{\,\frac{\bar c - c_{\min}}{\bar c} = \frac{\varepsilon_a + \varepsilon_b}{1 + \varepsilon_b}\,}
+\tag*{esatta}
+\end{equation*}
+
+\paragraph{Anche qui, asimmetria.} I due scarti non sono esattamente uguali:
+il primo ha denominatore $1 - \varepsilon_b < 1$, il secondo $1 + \varepsilon_b
+> 1$, quindi lo scarto superiore è un poco più grande di quello inferiore. È lo
+stesso fenomeno del termine $\Delta a\,\Delta b$ nel prodotto, vestito in modo
+diverso.
+
+\paragraph{L'approssimazione.} Per errori relativi piccoli, $\varepsilon_b \ll
+1$, il denominatore $1 - \varepsilon_b$ è molto vicino a $1$; più precisamente
+si può scrivere
+\begin{equation*}
+\frac{1}{1 - \varepsilon_b} \simeq 1 + \varepsilon_b,
+\end{equation*}
+giacché $(1 - \varepsilon_b)(1 + \varepsilon_b) = 1 - \varepsilon_b^2 \simeq 1$.
+Sostituendo, comparirebbe il termine $(\varepsilon_a + \varepsilon_b)\,
+\varepsilon_b$, che è di secondo ordine e si trascura come nel prodotto.
+Restano così le formule note:
+\begin{equation*}
+\boxed{\,\frac{\Delta c}{\bar c} \simeq \frac{\Delta a}{\bar a} + \frac{\Delta b}{\bar b}\,}
+\qquad\text{ovvero}\qquad
+\boxed{\,\varepsilon_c \simeq \varepsilon_a + \varepsilon_b\,}
+\tag*{al primo ordine}
+\end{equation*}
+
+\paragraph{La forma con gli errori assoluti.} Moltiplicando per $\bar c =
+\bar a / \bar b$ e sviluppando i due termini:
+\begin{align*}
+\Delta c
+&\simeq \frac{\bar a}{\bar b} \left( \frac{\Delta a}{\bar a} + \frac{\Delta b}{\bar b} \right)\\
+&= \frac{\bar a}{\bar b} \cdot \frac{\Delta a}{\bar a}
++ \frac{\bar a}{\bar b} \cdot \frac{\Delta b}{\bar b}
+&& \text{termine a termine}\\
+&= \frac{\Delta a}{\bar b} + \frac{\bar a}{\bar b^{2}}\,\Delta b,
+\end{align*}
+\begin{equation*}
+\boxed{\,\Delta c \simeq \frac{\Delta a}{\bar b} + \frac{\bar a}{\bar b^{2}}\,\Delta b\,}
+\tag*{formula d'uso}
+\end{equation*}
+
+\section*{Le quattro formule a confronto}
+
+{\small
+\begin{center}
+\begin{tabular}{@{}c l l@{}}
+\toprule
+Grandezza & Incertezze di $c$ & Natura del risultato \\
+\midrule
+$a+b$ & $\Delta c = \Delta a + \Delta b$ & esatta \\[3pt]
+$a-b$ & $\Delta c = \Delta a + \Delta b$ & esatta \\[3pt]
+$ab$ &
+\begin{tabular}[t]{@{}l@{}}
+$\dfrac{\Delta c}{\bar c} \simeq \dfrac{\Delta a}{\bar a} + \dfrac{\Delta b}{\bar b}$\\[5pt]
+$\Delta c \simeq \bar b\,\Delta a + \bar a\,\Delta b$
+\end{tabular}
+& approssimata al primo ordine \\[3pt]
+$\dfrac{a}{b}$ &
+\begin{tabular}[t]{@{}l@{}}
+$\dfrac{\Delta c}{\bar c} \simeq \dfrac{\Delta a}{\bar a} + \dfrac{\Delta b}{\bar b}$\\[5pt]
+$\Delta c \simeq \dfrac{\Delta a}{\bar b} + \dfrac{\bar a}{\bar b^{2}}\,\Delta b$
+\end{tabular}
+& approssimata al primo ordine \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+\paragraph{Nota finale.} Le formule per somma e differenza sono conseguenze
+esatte delle definizioni. Le formule per prodotto e quoziente sono invece
+approssimate \emph{al primo ordine}: valgono quando le incertezze relative sono
+piccole, e il passaggio che le produce --- trascurare $\varepsilon_a
+\varepsilon_b$ e sostituire $1/(1 - \varepsilon_b)$ con $1 + \varepsilon_b$ ---
+è un'approssimazione reale, non una semplificazione cosmetica. Se servisse un
+valore fedele o un limite garantito, le formule esatte sono quelle ricavate
+negli scarti di prodotto e quoziente. Con incertezze dell'ordine di pochi
+punti percentuale --- il caso normale nei problemi scolastici --- l'errore
+commesso usando le formule al primo ordine è molto più piccolo delle
+incertezze stesse, ed è per questo che esse sono le formule standard.
+
+\end{document}

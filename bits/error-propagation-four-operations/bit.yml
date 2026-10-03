@@ -1,0 +1,38 @@
+id: error-propagation-four-operations
+title: Propagazione degli errori nelle quattro operazioni
+
+kind: document
+role: handout
+engine: latex
+
+status: usable            # draft = local only · usable / curated = published on the site
+default_locale: it   # language of title/description and of the artifact at /bits/error-propagation-four-operations/
+locales: [it]       # every language the Bit is realised in (docs/localization.md)
+created: 2026-10-03
+
+description: >-
+  Le dimostrazioni complete, passo per passo, delle formule di propagazione dell'errore per
+  somma, differenza, prodotto e quoziente di due misure dirette, con il metodo degli estremi
+  dell'intervallo: risultati esatti per somma e differenza, approssimazioni al primo ordine
+  per prodotto e quoziente.
+
+outputs:
+  - format: pdf
+    file: dist/error-propagation-four-operations.pdf
+
+# build:
+#   main: src/main.tex     # defaults to the only .tex file in src/
+#   compiler: pdflatex     # pdflatex | lualatex | xelatex
+
+subjects: [physics, mathematics]
+topics: [measurement-uncertainty, error-analysis]
+levels: [upper-secondary]
+tags: [error-propagation, measurement-uncertainty, indirect-measurements, relative-error]        # concept keywords shared with related Bits (docs/bit-spec.md#tags)
+
+# license: CC BY-SA 4.0     # original content inherits the repository default (docs/licensing.md); set only to override
+# provenance:              # essential for annotated historical sources
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""
