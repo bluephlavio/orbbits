@@ -1,0 +1,140 @@
+% La forza di Archimede
+% OrbBits LaTeX conventions: see docs/style/latex.md
+% Several languages: `orbbits build` defines \orbLocale per localised output; add
+% \providecommand{\orbLocale}{it} here and switch babel and text on it (docs/localization.md).
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,hmargin=2cm,vmargin=1.7cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing}
+
+\hypersetup{pdftitle={La forza di Archimede}}
+
+% The handout is a tuned one-pager: block paragraphs, no page number.
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\pagestyle{empty}
+
+\begin{document}
+
+{\LARGE\bfseries La forza di Archimede}\par
+\vspace{2pt}
+{\large Una spinta dovuta alla differenza di pressione}
+\vspace{7pt}
+
+Consideriamo un corpo a forma di \textbf{parallelepipedo}, completamente immerso
+in un fluido in quiete, di densità uniforme $d_f$.
+Le basi orizzontali hanno area $S$ e si trovano alle profondità $h_{\mathrm{sup}}$ e $h_{\mathrm{inf}}$,
+misurate dalla superficie libera. L'altezza del corpo è $\Delta h=h_{\mathrm{inf}}-h_{\mathrm{sup}}$
+e il suo volume è $V=S\Delta h$. Assumiamo costante $g$.
+
+\vspace{3pt}
+{\large\bfseries 1. Quali forze esercita il fluido sul corpo?}
+\par\vspace{2pt}
+\begin{minipage}[c]{0.38\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small]
+  \fill[black!4] (-1.65,-0.45) rectangle (4.2,4.4);
+  \draw[thick] (-1.65,4.4) .. controls (-1.0,4.52) and (-0.4,4.28) .. (0.3,4.4)
+    -- (3.2,4.4) .. controls (3.6,4.52) and (3.8,4.28) .. (4.2,4.4);
+  \node[above=5pt,font=\footnotesize] at (1.65,4.4) {aria: $p_0=p_{\mathrm{atm}}$};
+  \node[font=\footnotesize] at (0.8,3.8) {liquido};
+  \filldraw[fill=white,thick] (0,0.35) rectangle (1.9,2.95);
+  \node[above=4pt] at (0.95,2.95) {$S$};
+  \node[below=4pt] at (0.95,0.35) {$S$};
+  \draw[->,very thick] (0.7,2.95) -- (0.7,2.15)
+    node[midway,right=5pt] {$F_{\mathrm{sup}}$};
+  \draw[->,very thick] (0.7,0.35) -- (0.7,1.85)
+    node[midway,right=5pt] {$F_{\mathrm{inf}}$};
+  \draw[dashed,black!55] (1.9,2.95) -- (2.9,2.95);
+  \draw[dashed,black!55] (1.9,0.35) -- (3.8,0.35);
+  \draw[<->] (2.65,4.4) -- (2.65,2.95)
+    node[midway,right=3pt] {$h_{\mathrm{sup}}$};
+  \draw[<->] (3.6,4.4) -- (3.6,0.35)
+    node[midway,left=3pt] {$h_{\mathrm{inf}}$};
+  \draw[decorate,decoration={brace,amplitude=4pt}] (-0.45,0.35) -- (-0.45,2.95)
+    node[midway,left=6pt] {$\Delta h$};
+  \node[align=center,font=\footnotesize,text width=6.2cm] at (1.3,-1.0)
+    {Le forze di pressione sulle due basi del corpo.};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.58\textwidth}
+Il fluido preme su tutte le facce del corpo.
+Su ciascuna base la pressione è uniforme e la forza è distribuita
+su tutta l'area $S$: la freccia ne rappresenta la risultante.
+
+\textbf{$F_{\mathrm{sup}}=p_{\mathrm{sup}}S$, verso il basso.} È la forza esercitata dal fluido
+sulla \textbf{faccia superiore} del corpo.
+
+\textbf{$F_{\mathrm{inf}}=p_{\mathrm{inf}}S$, verso l'alto.} È la forza esercitata dal fluido
+sulla \textbf{faccia inferiore} del corpo.
+
+Le forze sulle facce laterali sono orizzontali e si bilanciano:
+a uguale profondità la pressione è uguale sui due lati opposti.
+
+Poiché $h_{\mathrm{inf}}>h_{\mathrm{sup}}$, per la legge di Stevino si ha $p_{\mathrm{inf}}>p_{\mathrm{sup}}$,
+quindi $F_{\mathrm{inf}}>F_{\mathrm{sup}}$. La risultante delle forze di pressione è
+la \textbf{spinta di Archimede}, diretta \textbf{verso l'alto}.
+\end{minipage}
+
+\vspace{5pt}
+{\large\bfseries 2. Dalla legge di Stevino alla spinta}
+
+Applichiamo $p=p_0+d_fgh$ alle due basi e calcoliamo la differenza:
+\begin{align*}
+ F_A &= F_{\mathrm{inf}}-F_{\mathrm{sup}}
+ && \text{differenza tra le due forze}\\[2pt]
+ &= p_{\mathrm{inf}}S-p_{\mathrm{sup}}S=S(p_{\mathrm{inf}}-p_{\mathrm{sup}})
+ && \text{raccogliamo l'area }S\\[2pt]
+ &=S\bigl[(p_0+d_fgh_{\mathrm{inf}})-(p_0+d_fgh_{\mathrm{sup}})\bigr]
+ && \text{sostituiamo le due pressioni}\\[2pt]
+ &=S(d_fgh_{\mathrm{inf}}-d_fgh_{\mathrm{sup}})
+ && \text{la pressione }p_0\text{ si elimina}\\[2pt]
+ &=d_fgS(h_{\mathrm{inf}}-h_{\mathrm{sup}})
+ && \text{raccogliamo }d_fg\\[2pt]
+ &=d_fgS\Delta h=d_fgV
+ && h_{\mathrm{inf}}-h_{\mathrm{sup}}=\Delta h,\quad S\Delta h=V.
+\end{align*}
+\vspace{-4pt}
+\[
+ \boxed{\;F_A=d_fgV=m_fg=F_P^{f}\;}
+\]
+Il corpo occupa un volume $V$ che, senza di esso, sarebbe occupato dal fluido.
+Questo \textbf{fluido spostato} avrebbe massa $m_f=d_fV$ e peso $F_P^{f}$:
+la spinta è uguale al suo peso in modulo, ma è diretta verso l'alto.
+Il principio vale anche per corpi di altra forma;
+$V$ indica sempre il \textbf{volume immerso}, cioè quello di fluido spostato.
+
+\vspace{5pt}
+{\large\bfseries 3. Il corpo affonda, resta sospeso o risale?}
+
+Sul corpo agisce anche il \textbf{peso $F_P^{c}$}, esercitato dalla Terra
+sull'intero corpo e diretto verso il basso.
+Se il corpo è \textbf{completamente immerso}, di densità media $d_c$:
+\[
+ F_P^{c}=m_cg=d_cVg,\qquad F_A=d_fVg.
+\]
+Se il corpo è lasciato libero da fermo e agiscono soltanto queste due forze:
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}>{$}l<{$}@{\qquad}>{$}l<{$}@{\qquad}l@{}}
+ d_c>d_f & F_P^{c}>F_A & il corpo affonda;\\
+ d_c=d_f & F_P^{c}=F_A & il corpo resta sospeso in equilibrio;\\
+ d_c<d_f & F_P^{c}<F_A & il corpo risale verso la superficie.
+\end{tabular}
+\end{center}
+\vspace{-3pt}
+Quando \textbf{galleggia in equilibrio}, il corpo è solo parzialmente immerso:
+la spinta si riduce fino a bilanciare il peso,
+$d_fgV_{\mathrm{imm}}=d_cgV_{\mathrm{corpo}}$.
+\end{document}

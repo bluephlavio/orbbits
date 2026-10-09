@@ -1,0 +1,39 @@
+id: archimedes-principle-derivation
+title: La forza di Archimede
+
+kind: document
+role: handout
+engine: latex
+
+status: usable            # draft = local only · usable / curated = published on the site
+default_locale: it   # language of title/description and of the artifact at /bits/archimedes-principle-derivation/
+locales: [it]       # every language the Bit is realised in (docs/localization.md)
+created: 2026-10-09
+
+description: >-
+  La spinta di Archimede ricavata dalla differenza di pressione tra le facce di un
+  parallelepipedo immerso: le forze di pressione sulle due basi e perché la risultante
+  punta verso l'alto, il passaggio dalla legge di Stevino a F = d g V senza salti, e il
+  confronto tra le densità che decide se il corpo affonda, resta sospeso o risale.
+  Appunti della dimostrazione da tenere.
+
+outputs:
+  - format: pdf
+    file: dist/archimedes-principle-derivation.pdf
+
+# build:
+#   main: src/main.tex     # defaults to the only .tex file in src/
+#   compiler: pdflatex     # pdflatex | lualatex | xelatex
+
+subjects: [physics]
+topics: [fluid-mechanics, hydrostatics]
+levels: [upper-secondary]
+tags: [archimedes-principle, buoyancy, hydrostatics, pressure, density, stevino-law]        # concept keywords shared with related Bits (docs/bit-spec.md#tags)
+
+# license: CC BY-SA 4.0     # original content inherits the repository default (docs/licensing.md); set only to override
+# provenance:              # essential for annotated historical sources
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""
