@@ -1,0 +1,145 @@
+% La legge di Stevino
+% OrbBits LaTeX conventions: see docs/style/latex.md
+% Several languages: `orbbits build` defines \orbLocale per localised output; add
+% \providecommand{\orbLocale}{it} here and switch babel and text on it (docs/localization.md).
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,hmargin=2cm,vmargin=1.7cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing}
+
+\hypersetup{pdftitle={La legge di Stevino}}
+
+% The handout is a tuned one-pager: block paragraphs, no page number.
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\pagestyle{empty}
+
+\begin{document}
+
+{\LARGE\bfseries La legge di Stevino}\par
+\vspace{2pt}
+{\large Una colonna di fluido in equilibrio}
+\vspace{8pt}
+
+Consideriamo un \textbf{fluido in quiete}, di densità uniforme $d_f$.
+Immaginiamo una colonna di altezza $h$ e base di area $S$: vogliamo
+ricavare la pressione $p$ alla base, nota quella superiore $p_0$.
+Assumiamo costante $g$. Nel disegno il fluido è un liquido esposto
+all'aria, quindi $p_0=p_{\mathrm{atm}}$.
+
+\vspace{5pt}
+{\large\bfseries 1. Quali forze tengono ferma la colonna?}
+\par\vspace{3pt}
+\begin{minipage}[c]{0.36\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small]
+  \fill[black!4] (-1.1,-0.45) rectangle (3.1,4.4);
+  \fill[black!10] (0,0) rectangle (1.8,4.4);
+  % Superficie libera: continua sopra la colonna, ondulata ai lati.
+  \draw[thick] (-1.1,4.4) .. controls (-0.8,4.49) and (-0.5,4.31) .. (0,4.4)
+    -- (1.8,4.4) .. controls (2.2,4.49) and (2.6,4.31) .. (3.1,4.4);
+  \node[above=6pt,font=\footnotesize] at (0.9,4.4) {aria: $p_0=p_{\mathrm{atm}}$};
+  \node[font=\footnotesize,rotate=90] at (-0.75,2.9) {liquido};
+  \draw[dashed] (0,0) -- (0,4.4);
+  \draw[dashed] (1.8,0) -- (1.8,4.4);
+  \draw[very thick] (0,0) -- (1.8,0);
+  \node[left=5pt] at (0,0) {$S$};
+  \draw[->,very thick] (0.9,4.4) -- (0.9,3.7)
+    node[midway,right=5pt] {$F_0$};
+  \fill (0.9,2.2) circle (1.3pt);
+  \draw[->,very thick] (0.9,2.2) -- (0.9,1.4)
+    node[midway,right=5pt] {$F_P^{f}$};
+  \draw[->,very thick] (0.9,0) -- (0.9,1.2)
+    node[midway,left=5pt] {$R$};
+  \draw[decorate,decoration={brace,amplitude=5pt}] (2.3,4.4) -- (2.3,0)
+    node[midway,right=8pt] {$h$};
+  \node[align=center,font=\footnotesize,text width=5.7cm] at (1,-0.95)
+    {Le forze che agiscono sulla colonna\\di fluido in equilibrio.};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.60\textwidth}
+\textbf{$F_0=p_0S$, verso il basso.} L'aria sopra il liquido esercita
+questa forza sulla \textbf{faccia superiore} della colonna, distribuita
+su tutta la sua area $S$.
+
+\textbf{$F_P^{f}=m_fg$, verso il basso.} La Terra attrae tutto il fluido
+della colonna: il peso agisce sull'\textbf{intero volume}. Nel disegno
+è rappresentato da una sola freccia, applicata al baricentro.
+
+\textbf{$R$, verso l'alto.} Il fluido sottostante esercita questa
+forza di pressione sulla \textbf{faccia inferiore} della colonna,
+distribuita su tutta la sua area $S$.
+
+Il fluido circostante preme anche sulle facce laterali;
+queste forze sono orizzontali e si bilanciano.
+La colonna è ferma: la forza verso l'alto bilancia le due verso il basso.
+\[
+ R-F_0-F_P^{f}=0
+ \quad\Longrightarrow\quad
+ \boxed{R=F_0+F_P^{f}}.
+\]
+\end{minipage}
+
+\vspace{6pt}
+{\large\bfseries 2. Dalla forza sulla base alla pressione}
+
+La pressione $p$ alla base si calcola dividendo $R$, la forza esercitata
+\textbf{su quella faccia}, per la sua area $S$.
+Il volume della colonna è $V=Sh$ e la sua massa è $m_f=d_fV$.
+\begin{align*}
+ p &= \frac{R}{S}
+ && \text{definizione di pressione sulla base}\\[3pt]
+   &= \frac{F_0+F_P^{f}}{S}
+ && \text{per l'equilibrio della colonna}\\[3pt]
+   &= \frac{F_0}{S}+\frac{F_P^{f}}{S}
+ && \text{separiamo i due contributi}\\[3pt]
+   &= p_0+\frac{m_fg}{S}
+ && F_0=p_0S,\quad F_P^{f}=m_fg\\[3pt]
+   &= p_0+\frac{d_fVg}{S}
+ && \text{sostituiamo la massa }m_f=d_fV\\[3pt]
+   &= p_0+\frac{d_fShg}{S}
+ && \text{sostituiamo il volume }V=Sh\\[3pt]
+   &= p_0+d_fgh
+ && \text{semplifichiamo l'area }S.
+\end{align*}
+
+\vspace{5pt}
+\begin{minipage}[c]{0.57\textwidth}
+{\large\bfseries 3. Come varia la pressione?}
+\[
+  \boxed{\;p=p_0+d_fgh\;}
+\]
+Alla profondità $h=0$ la pressione è $p_0$.
+Scendendo, aumenta linearmente: il grafico è una retta
+con intercetta $p_0$ e coefficiente angolare $d_fg$.
+
+È l'\textbf{aumento di pressione} $p-p_0=d_fgh$, rispetto alla faccia
+superiore, a essere legato al peso della colonna.
+\end{minipage}\hfill
+\begin{minipage}[c]{0.39\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small]
+  \draw[->] (-0.25,0) -- (4.15,0) node[below] {$h$};
+  \draw[->] (0,-0.2) -- (0,3.15) node[left] {$p$};
+  \node[below left] at (0,0) {$0$};
+  \draw[very thick] (0,0.85) -- (3.65,2.8575);
+  \fill (0,0.85) circle (1.6pt);
+  \node[left] at (0,0.85) {$p_0$};
+  \draw[dashed] (0.65,1.2075) -- (2.65,1.2075)
+    node[midway,below] {$\Delta h$};
+  \draw[dashed] (2.65,1.2075) -- (2.65,2.3075)
+    node[midway,right] {$\Delta p$};
+  \node[below] at (2,-0.5) {$\displaystyle\frac{\Delta p}{\Delta h}=d_fg$};
+\end{tikzpicture}
+\end{minipage}
+\end{document}

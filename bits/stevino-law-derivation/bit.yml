@@ -1,0 +1,38 @@
+id: stevino-law-derivation
+title: La legge di Stevino
+
+kind: document
+role: handout
+engine: latex
+
+status: usable            # draft = local only · usable / curated = published on the site
+default_locale: it   # language of title/description and of the artifact at /bits/stevino-law-derivation/
+locales: [it]       # every language the Bit is realised in (docs/localization.md)
+created: 2026-10-09
+
+description: >-
+  La dimostrazione completa della legge di Stevino dall'equilibrio di una colonna di
+  fluido: le forze che tengono ferma la colonna e dove sono applicate, il passaggio dalla
+  forza sulla base alla pressione senza salti, e la lettura di p = p0 + d g h come retta
+  con intercetta p0 e pendenza d g. Appunti della dimostrazione da tenere.
+
+outputs:
+  - format: pdf
+    file: dist/stevino-law-derivation.pdf
+
+# build:
+#   main: src/main.tex     # defaults to the only .tex file in src/
+#   compiler: pdflatex     # pdflatex | lualatex | xelatex
+
+subjects: [physics]
+topics: [fluid-mechanics, hydrostatics]
+levels: [upper-secondary]
+tags: [stevino-law, hydrostatics, pressure, density]        # concept keywords shared with related Bits (docs/bit-spec.md#tags)
+
+# license: CC BY-SA 4.0     # original content inherits the repository default (docs/licensing.md); set only to override
+# provenance:              # essential for annotated historical sources
+#   - source: ""
+#     author: ""
+#     url: ""
+#     license: ""
+#     modifications: ""
