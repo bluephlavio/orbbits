@@ -1,4 +1,7 @@
 /* Styles are scoped by the .unit-circle-explorer class so several Bits can share a page. */
+/* The component carries its own light surface: it declares `color-scheme: light` and
+   paints its background, so it stays legible whatever the surrounding page (or the
+   browser's preferred color scheme) does. */
 .unit-circle-explorer {
   display: flex;
   flex-direction: column;
@@ -6,7 +9,12 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem 1.25rem 1.25rem;
+  background: #ffffff;
+  color: #1c1c1c;
+  color-scheme: light;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
 }
 
 /* Top section: circle + symbolic + table */
@@ -60,7 +68,7 @@
 @media (max-width: 1000px) {
   .unit-circle-explorer {
     gap: 1.2rem;
-    padding: 0 0.75rem;
+    padding: 0.875rem 1rem 1rem;
   }
 
   .unit-circle-explorer .workspace {
@@ -82,7 +90,7 @@
 @media (max-width: 500px) {
   .unit-circle-explorer {
     gap: 1rem;
-    padding: 0 0.5rem;
+    padding: 0.75rem;
   }
 
   .unit-circle-explorer .workspace {

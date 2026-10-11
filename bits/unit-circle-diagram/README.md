@@ -46,6 +46,9 @@ just check unit-circle-diagram
   check clearances: dump each named node's four corners (`\pgfgetlastxy` on
   `(name.north west)` etc.) from a scratch copy and test the boxes against each other and
   against rays, axes, circle and points (e.g. with shapely).
+- A white plate (`backgrounds` + `fit`, `overlay` so it stays out of the bounding box) fills
+  the SVG past the standalone border: the white label halos and the dark strokes stay
+  readable on pages with a dark theme (the PDF page is white anyway).
 
 ## Limitations / open issues
 

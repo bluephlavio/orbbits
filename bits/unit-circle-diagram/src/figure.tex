@@ -24,7 +24,7 @@
 % OrbBits TikZ conventions: see docs/style/tikz.md
 \documentclass[tikz,border=10pt]{standalone}
 \usepackage{amsmath,amssymb}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta,backgrounds,fit}
 
 % Project palette (keep colours semantic, not decorative)
 \definecolor{orbPrimary}{HTML}{1F5FBF}
@@ -120,5 +120,14 @@
   % ---- the one general annotation ----
   \node[text=orbMuted, anchor=north east, name=annot] at (1.45,1.36)
     {$P_\theta = (\cos\theta,\ \sin\theta)$};
+
+  % ---- white plate behind everything: the SVG keeps its own background and
+  % ---- the white halos / dark strokes stay readable on a dark page ----
+  % ---- (overlay keeps the plate out of the bounding box; it fills the SVG
+  % ----  past the standalone border, and the viewBox clips the overshoot) ----
+  \begin{scope}[on background layer]
+    \node[overlay, fit=(current bounding box.south west)(current bounding box.north east),
+          fill=white, inner sep=12pt] {};
+  \end{scope}
 \end{tikzpicture}
 \end{document}

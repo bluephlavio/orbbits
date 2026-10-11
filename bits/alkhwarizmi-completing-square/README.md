@@ -20,7 +20,11 @@ End-to-end validation of the TikZ builder (latexmk → PDF → SVG via pdf2svg).
 - The drawing is parametric: `\x` (the solution, 3) and `\h` (half the coefficient, 5) set
   every coordinate, so the proportions are "to scale" and another example is a two-line edit.
 - Palette macros `orbPrimary` / `orbAccent` / `orbMuted` with `!18`–`!20` fills; braces via
-  `decorations.pathreplacing`; the algebra is one `align=left` node beside the figure.
+  `decorations.pathreplacing` (`mirror`: they point away from the figure); the algebra is
+  one `align=left` node beside the figure.
+- A white plate (`backgrounds` + `fit`, `overlay` so it stays out of the bounding box) fills
+  the SVG past the standalone border: the figure keeps its own background and stays readable
+  on pages with a dark theme.
 - Compiles with `pdflatex`; no fonts beyond Computer Modern.
 
 ## Limitations / open issues

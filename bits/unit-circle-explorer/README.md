@@ -33,24 +33,16 @@ subcomponents handle each representation:
   - Exposes `moveTo(angle)` method for slider and table interaction
   - Board config: bounding box `[-1.5, 1.5, 1.5, -1.5]`, fixed ticks at 0.5, pan/zoom disabled
 
-- **SymbolicBox** (`src/components/SymbolicBox.tsx`)
-  - Displays P = (x_P, y_P) with current values (primary)
-  - Shows symbolic naming: x_P = cos α, y_P = sin α (secondary)
-  - Angle in degrees and π notation
-
 - **ObservationTable** (`src/components/ObservationTable.tsx`)
-  - Accumulates observations of (α, x_P, y_P) pairs
-  - Notable angles (0°, 30°, 45°, 60°, 90°, etc.) recorded automatically
-  - Manual "Record" button for deliberate observations
-  - Latest row highlighted; clicking a row jumps to that angle
-  - Max 10 visible rows; older ones scroll away
+  - Canonical angles (0°, 30°, 45°, … 330°) with cos/sin to three decimals
+  - Compact angle display: degrees, exact radians (π fractions) and decimal radians
+  - A 7-row window slides around the current angle; the current row is highlighted
+  - Clicking / Enter on a row jumps to that angle
 
 - **FunctionGraphs** (`src/components/FunctionGraphs.tsx`)
-  - Two Cartesian plots (sin α and cos α) stacked vertically
+  - Two Cartesian plots (cos α and sin α) stacked vertically
   - Shared α-axis (0–360° on x-axis, −1 to +1 on y-axis)
-  - Points traced progressively as learner moves P
-  - Current point highlighted on both graphs
-  - Faint reference curves show the complete functions
+  - Light reference curves of the complete functions, current point highlighted
   - Vertical guide at current α crosses both plots
 
 - **ControlPanel** (`src/components/ControlPanel.tsx`)
@@ -58,25 +50,25 @@ subcomponents handle each representation:
   - Reset button to return to 40°
   - Compact, secondary to the geometric view
 
+(`src/components/SymbolicBox.tsx` is a leftover from an earlier layout and is currently
+not mounted by `index.tsx`.)
+
 ### State Management
 
 ```typescript
 angleDeg                  // single source of truth (0–360)
-observations             // array of {angle, xP, yP, isNotable}
-graphPoints              // {sin: [[α, sin α], ...], cos: [[α, cos α], ...]}
-lastGraphAngle           // track when to add new graph points (5° threshold)
+cosVal, sinVal            // derived per render from angleDeg
 ```
 
-Graph points update frequently to trace curves smoothly. Table observations are sampled more
-sparsely:
-- Always record notable angles
-- Record when learner pauses (implicit) or clicks "Record" (explicit)
-- Up to 10 observations visible
+All views are pure functions of `angleDeg`; the only writers are the board's update
+event (dragging P), the slider and the table rows, all funnelled through
+`handleAngleChange`.
 
 ### Responsive Layout
 
-- **Desktop (≥900px):** Three-column grid: circle (left) | symbolic + table (center) | graphs (right)
-- **Tablet/Mobile (<900px):** Full-width stacked layout
+- **Desktop (>1000px):** board + table in a two-column grid, graphs full width below,
+  controls at the bottom
+- **Tablet/Mobile (≤1000px):** full-width stacked layout
 - All elements readable without horizontal scroll
 
 ### Colors and Styling
@@ -86,6 +78,9 @@ sparsely:
 - cos (projections, table values, graph): `#d1495b` (red) — consistent with `trigonometric-functions`
 - sin (projections, table values, graph): `#2a9d8f` (teal) — consistent with `trigonometric-functions`
 - Muted elements: `#7a7a7a`
+- The component paints its own light surface (`.unit-circle-explorer` has
+  `background`, `color` and `color-scheme: light`): it stays legible when the host page
+  follows a dark theme.
 
 ### Localization
 

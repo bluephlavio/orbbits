@@ -2,7 +2,7 @@
 % OrbBits TikZ conventions: see docs/style/tikz.md
 \documentclass[tikz,border=6pt]{standalone}
 \usepackage{amsmath,amssymb}
-\usetikzlibrary{calc,arrows.meta,decorations.pathreplacing}
+\usetikzlibrary{calc,arrows.meta,decorations.pathreplacing,backgrounds,fit}
 
 \definecolor{orbPrimary}{HTML}{1F5FBF}
 \definecolor{orbAccent}{HTML}{E0A100}
@@ -13,7 +13,7 @@
     scale=0.55,
     line width=0.9pt,
     every node/.style={font=\small},
-    brace/.style={decorate,decoration={brace,amplitude=4pt},orbMuted},
+    brace/.style={decorate,decoration={brace,amplitude=4pt,mirror},orbMuted},
   ]
   % Geometry: x = 3 (the solution), half the coefficient = 5, total side x + 5 = 8.
   \def\x{3}
@@ -38,12 +38,12 @@
   \draw[orbMuted,dashed,fill=orbMuted!10] (\x,\x) rectangle (\s,\s);
   \node at ({\x+\h/2},{\x+\h/2}) {$5\cdot 5 = 25$};
 
-  % Dimensions
-  \draw[brace] (0,-0.25) -- node[below=5pt] {$x$} (\x,-0.25);
-  \draw[brace] (\x,-0.25) -- node[below=5pt] {$5$} (\s,-0.25);
-  \draw[brace] (-0.25,\x) -- node[left=5pt] {$x$} (-0.25,0);
-  \draw[brace] (-0.25,\s) -- node[left=5pt] {$5$} (-0.25,\x);
-  \draw[brace] (\s+0.25,0) -- node[right=5pt] {$x+5$} (\s+0.25,\s);
+  % Dimensions (braces point away from the figure)
+  \draw[brace] (0,-0.25) -- node[below=7pt] {$x$} (\x,-0.25);
+  \draw[brace] (\x,-0.25) -- node[below=7pt] {$5$} (\s,-0.25);
+  \draw[brace] (-0.25,\x) -- node[left=7pt] {$x$} (-0.25,0);
+  \draw[brace] (-0.25,\s) -- node[left=7pt] {$5$} (-0.25,\x);
+  \draw[brace] (\s+0.25,0) -- node[right=7pt] {$x+5$} (\s+0.25,\s);
 
   % The algebra, next to the figure
   \node[anchor=north west,align=left,font=\small] at (\s+2.2,\s) {%
@@ -51,5 +51,14 @@
     $x^2 + 10x + 25 = 39 + 25$\\[4pt]
     $(x+5)^2 = 64$\\[4pt]
     $x + 5 = 8 \;\Rightarrow\; x = 3$};
+
+  % White plate behind everything: the SVG keeps its own background and stays
+  % readable when the page around it is dark (the PDF page is white anyway).
+  % (overlay keeps the plate out of the bounding box; it fills the SVG past
+  % the standalone border, and the viewBox clips the overshoot)
+  \begin{scope}[on background layer]
+    \node[overlay, fit=(current bounding box.south west)(current bounding box.north east),
+          fill=white, inner sep=8pt] {};
+  \end{scope}
 \end{tikzpicture}
 \end{document}
