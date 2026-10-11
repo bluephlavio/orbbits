@@ -15,21 +15,23 @@ concentrano gli errori concettuali.
 - Se sottraggo due misure, gli errori si sottraggono? Cosa dice il conto, passo per passo?
 - Da dove salta fuori il termine $\Delta a\,\Delta b$? Perché possiamo permetterci di
   trascurarlo con incertezze dell'1%?
-- Nel quoziente, perché il denominatore dello scarto superiore è $1 - \varepsilon_b$ e non
-  $1 + \varepsilon_b$?
+- Nel quoziente, perché moltiplichiamo numeratore e denominatore per
+  $1+\frac{\Delta b}{\bar b}$? Cosa guadagniamo al denominatore?
+- Nel quoziente il ragionamento del minimo è simmetrico a quello del massimo: sapresti
+  rifarlo da solo, scegliendo gli estremi giusti?
 - Le formule per prodotto e quoziente sono esatte o approssimate? Dove, esattamente, abbiamo
   approssimato?
 
 ## Didascalie
 
 - «Sottrarre due misure non compensa gli errori: li accumula.»
-- «Nelle quattro operazioni gli errori assoluti si sommano sempre; in prodotto e quoziente
-  — a primo ordine — si sommano quelli relativi.»
-- «Il termine $\varepsilon_a\varepsilon_b$ è piccolo quanto il prodotto di due cose piccole:
-  per questo lo si trascura.»
+- «In somma e differenza si sommano gli errori assoluti; in prodotto e quoziente
+  — al primo ordine — si sommano quelli relativi.»
+- «Il termine $\Delta a\,\Delta b$ è piccolo quanto il prodotto di due cose piccole: per
+  questo lo si trascura.»
 
 ## Note dopo l'uso
 
-Ancora non usata in classe. Da verificare, alla prima occasione: se il passaggio
-«raggruppando» nelle allineate risulta troppo implicito per alcuni studenti, aggiungere un
-passo intermedio esplicito nella differenza (dove il raggruppamento mescola i segni).
+Ancora non usata in classe. Da verificare, alla prima occasione: se il raggruppamento nei
+passaggi delle allineate risulta troppo implicito per alcuni studenti, aggiungere un passo
+intermedio esplicito nella differenza (dove il raggruppamento mescola i segni).
