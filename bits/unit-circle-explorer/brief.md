@@ -75,6 +75,6 @@ mathematics, consolidating the relationship between angle and trigonometric valu
 
 ## Related ideas
 
-- `angle-as-rotation` (video): a narrated version of the same concept, same tags.
+- `trigonometric-functions` (video): a narrated version of the same concept, same tags.
 - `unit-circle-diagram` (figure): a static frozen moment (future).
 - Function notation, mapping diagrams, rate of change of sine/cosine (future, other Bits).

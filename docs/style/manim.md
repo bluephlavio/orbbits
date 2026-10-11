@@ -1,6 +1,6 @@
 # Manim style
 
-Conventions for `engine: manim` Bits. Reference implementation: `bits/angle-as-rotation`.
+Conventions for `engine: manim` Bits. Reference implementation: `bits/trigonometric-functions`.
 
 ## Frame and output
 

@@ -21,16 +21,16 @@ generation) by design, not by code.
 ## Quick start
 
 ```bash
-just setup                        # uv sync + pnpm install
-just new                          # scaffold a Bit (title, slug, template; --tags, --locale, --locales optional)
-just list                         # id · kind · role · engine · status · tags
-just list --tag unit-circle       # related Bits
-just dev unit-circle-explorer     # interactive Bit in the browser
-just build angle-as-rotation      # render through the Bit's engine into dist/
-just export unit-circle-explorer  # standalone static site in bits/<id>/dist/web/
-just check                        # validate every manifest and publication readiness
-just site && just site-preview    # the public site, exactly as CI builds it
-just test                         # pytest + ruff
+just setup                          # uv sync + pnpm install
+just new                            # scaffold a Bit (title, slug, template; --tags, --locale, --locales optional)
+just list                           # id · kind · role · engine · status · tags
+just list --tag unit-circle         # related Bits
+just dev unit-circle-explorer       # interactive Bit in the browser
+just build trigonometric-functions  # render through the Bit's engine into dist/
+just export unit-circle-explorer    # standalone static site in bits/<id>/dist/web/
+just check                          # validate every manifest and publication readiness
+just site && just site-preview      # the public site, exactly as CI builds it
+just test                           # pytest + ruff
 ```
 
 Requirements: [uv](https://docs.astral.sh/uv/), [pnpm](https://pnpm.io), [just](https://just.systems)
@@ -55,7 +55,7 @@ docs/             architecture, bit-spec, authoring, localization, web-runtime, 
 | id | kind | engine | shows |
 |----|------|--------|-------|
 | `unit-circle-explorer` | interactive | jsxgraph | drag *P* on the unit circle, read θ, cos θ, sin θ (locales it, en) |
-| `angle-as-rotation` | video | manim | the same idea as a 22 s animation |
+| `trigonometric-functions` | video | manim | sine, cosine and tangent as moving coordinates |
 | `alkhwarizmi-completing-square` | figure | tikz | the geometric argument for x² + 10x = 39 |
 
 ## Publishing

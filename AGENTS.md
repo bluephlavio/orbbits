@@ -93,4 +93,4 @@ and inspectable results.
 | Public site, URLs, GitHub Pages, CI | `docs/publishing.md` |
 | Provenance and licences | `docs/provenance.md`, `docs/licensing.md`, `CONTENT-LICENSE.md` |
 | Engine conventions | `docs/style/*.md` and `.agents/skills/*/SKILL.md` |
-| Reference Bits | `bits/unit-circle-explorer` (jsxgraph, localised it/en), `bits/alkhwarizmi-completing-square` (tikz, provenance), `bits/angle-as-rotation` (manim) — each with a filled `brief.md` |
+| Reference Bits | `bits/unit-circle-explorer` (jsxgraph, localised it/en), `bits/alkhwarizmi-completing-square` (tikz, provenance), `bits/trigonometric-functions` (manim) — each with a filled `brief.md` |

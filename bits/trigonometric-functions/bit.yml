@@ -1,0 +1,27 @@
+id: trigonometric-functions
+title: Funzioni goniometriche
+
+kind: video
+role: animation
+engine: manim
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-09-18
+
+description: >-
+  Seno, coseno e tangente sulla circonferenza goniometrica: P e Q si muovono con
+  l’angolo, mentre le loro coordinate mostrano le funzioni e i valori corrispondenti.
+
+outputs:
+  - format: mp4
+    file: dist/trigonometric-functions.mp4
+  - format: webp
+    file: dist/poster.webp
+    description: poster frame (last frame of the animation)
+
+subjects: [mathematics]
+topics: [trigonometry, unit-circle, sine, cosine, tangent, rotation]
+levels: [upper-secondary]
+tags: [unit-circle, trigonometry, sine, cosine, tangent, rotation, projection]

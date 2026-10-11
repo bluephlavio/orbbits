@@ -6,7 +6,7 @@ Everything goes through `just` (see `justfile`), which delegates to the Python C
 ## Setup
 
 ```bash
-just setup            # uv sync (Python, incl. manim) + pnpm install (Astro, React, JSXGraph)
+just setup  # uv sync (Python, incl. manim) + pnpm install (Astro, React, JSXGraph)
 ```
 
 External toolchains used by engines: a TeX distribution with `latexmk` (TikZ/LaTeX),
@@ -18,8 +18,8 @@ The same concept often deserves several Bits (an explorer, an animation, a diagr
 handout). Before creating one, look for relatives and read their briefs:
 
 ```bash
-just list                                    # every Bit with its tags
-just list --tag unit-circle                  # Bits sharing a tag (repeat --tag to narrow)
+just list                    # every Bit with its tags
+just list --tag unit-circle  # Bits sharing a tag (repeat --tag to narrow)
 cat bits/unit-circle-explorer/brief.md       # the concept, independent of the engine
 ```
 
@@ -30,14 +30,14 @@ rather than porting the implementation. Give the new Bit the same concept tags.
 ## Create a Bit
 
 ```bash
-just new                                     # interactive: title, slug, template
-just new --title "Moto del proiettile" --template web            # non-interactive (agents)
+just new                                                                        # interactive: title, slug, template
+just new --title "Moto del proiettile" --template web                           # non-interactive (agents)
 just new --title "Hubble 1929" --id hubble-1929-plot --template tikz --role plot
 just new --title "Circonferenza goniometrica" --id unit-circle-animation --template manim \
          --tags "unit-circle,trigonometry,rotation"
-just new --title "Projectile motion" --template web --locale en          # English-only Bit
-just new --title "Circonferenza goniometrica" --template manim --locales it,en   # two languages, default it
-just new --list                              # available templates
+just new --title "Projectile motion" --template web --locale en                 # English-only Bit
+just new --title "Circonferenza goniometrica" --template manim --locales it,en  # two languages, default it
+just new --list                                                                 # available templates
 ```
 
 `new` creates `bits/<id>/` from `templates/<template>/`, substitutes placeholders, refuses to
@@ -79,17 +79,17 @@ published Bit says something about itself" (a `description` is enough).
 ## Inspect
 
 ```bash
-just list                                    # id · kind · role · engine · status · tags · title
+just list              # id · kind · role · engine · status · tags · title
 just list --kind interactive --status usable
-just list --published                        # what the public site shows
-just list --json                             # for scripts and agents (adds published, path, brief, narrative)
+just list --published  # what the public site shows
+just list --json       # for scripts and agents (adds published, path, brief, narrative)
 ```
 
 ## Develop
 
 ```bash
 just dev unit-circle-explorer     # interactive: Astro dev server, opens /bits/<id>/
-just dev angle-as-rotation        # manim: quick 480p render into .build/preview/
+just dev trigonometric-functions  # manim: quick 480p render into .build/preview/
 just web                          # the whole local catalog at http://localhost:4321 (drafts included)
 ```
 
@@ -99,11 +99,11 @@ When run by an AI agent, Astro starts the dev server in the background and retur
 ## Build
 
 ```bash
-just build alkhwarizmi-completing-square     # tikz → dist/figure.svg + dist/figure.pdf
-just build angle-as-rotation                 # manim → dist/<id>.mp4 + dist/poster.webp
-just build angle-as-rotation --quick         # fast low-quality render, stays in .build/
-just build unit-circle-explorer              # web → same as export
-just export unit-circle-explorer             # standalone site in dist/web/ (not versioned)
+just build alkhwarizmi-completing-square    # tikz → dist/figure.svg + dist/figure.pdf
+just build trigonometric-functions          # manim → dist/<id>.mp4 + dist/poster.webp
+just build trigonometric-functions --quick  # fast low-quality render, stays in .build/
+just build unit-circle-explorer             # web → same as export
+just export unit-circle-explorer            # standalone site in dist/web/ (not versioned)
 ```
 
 Engine-specific options live under `build:` in `bit.yml`:
@@ -128,9 +128,9 @@ patterns: docs/localization.md.
 ## Validate
 
 ```bash
-just check                        # whole repository
-just check angle-as-rotation      # one Bit
-just check --strict               # warnings are errors
+just check                          # whole repository
+just check trigonometric-functions  # one Bit
+just check --strict                 # warnings are errors
 ```
 
 ## Publish
@@ -159,7 +159,7 @@ keep `README.md` technical, keep sources in `src/` and outputs in `dist/`.
 ## Tests
 
 ```bash
-just test                         # pytest (incl. a site build into a temp dir) + ruff
-just web-check                    # astro check: types for the runtime and every interactive Bit
-just ci                           # test + check + web-check + site
+just test       # pytest (incl. a site build into a temp dir) + ruff
+just web-check  # astro check: types for the runtime and every interactive Bit
+just ci         # test + check + web-check + site
 ```

@@ -2,7 +2,7 @@
 
 Engine-independent specification. This Bit is the **static reference chart** of the unit
 circle: the one page a learner keeps while doing trigonometry. The dynamic counterparts
-(`unit-circle-explorer`, `angle-as-rotation`) build the concept; this figure freezes it
+(`unit-circle-explorer`, `trigonometric-functions`) build the concept; this figure freezes it
 into something printable and projectable.
 
 ## Intent
@@ -64,5 +64,5 @@ signs, in all four quadrants.
 
 - `unit-circle-explorer` (interactive, same tags): the dynamic counterpart that discovers
   these values.
-- `angle-as-rotation` (video): why the angle is a rotation from the positive x-axis.
+- `trigonometric-functions` (video): why the angle is a rotation from the positive x-axis.
 - Future: a values table handout; a tangent-line construction.

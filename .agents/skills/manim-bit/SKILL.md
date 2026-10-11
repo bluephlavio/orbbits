@@ -5,7 +5,7 @@ description: Author, render and validate a Manim video Bit (kind video, engine m
 
 # Manim Bit
 
-Reference: `bits/angle-as-rotation` (its `brief.md` shows how the interactive
+Reference: `bits/trigonometric-functions` (its `brief.md` shows how the interactive
 `unit-circle-explorer` concept was adapted to a narrated sequence). Style:
 `docs/style/manim.md`. Spec: `docs/bit-spec.md`. Flow (relatives, naming, brief,
 publication): `create-bit` skill.

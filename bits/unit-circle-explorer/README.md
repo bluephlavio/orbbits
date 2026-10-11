@@ -83,8 +83,8 @@ sparsely:
 
 - Circle: `#1f5fbf` (blue)
 - Point P: `#e0a100` (gold)
-- cos (projections, table values, graph): `#d1495b` (red) — consistent with `angle-as-rotation`
-- sin (projections, table values, graph): `#2a9d8f` (teal) — consistent with `angle-as-rotation`
+- cos (projections, table values, graph): `#d1495b` (red) — consistent with `trigonometric-functions`
+- sin (projections, table values, graph): `#2a9d8f` (teal) — consistent with `trigonometric-functions`
 - Muted elements: `#7a7a7a`
 
 ### Localization
