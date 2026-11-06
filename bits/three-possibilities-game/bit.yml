@@ -1,0 +1,22 @@
+id: three-possibilities-game
+title: Tre possibilità
+
+kind: interactive
+role: game
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-05
+
+description: >-
+  Una pietra venuta dalle stelle, due nate dalla Terra. Scegli, il gioco rivela una delle due
+  pietre, e tu puoi confermare o cambiare: ne restano due, quindi fa lo stesso? Da provare di
+  persona, da verificare con i propri dati e con migliaia di partite simulate, e poi da capire
+  con un ragionamento elementare.
+
+subjects: [mathematics, civic-education]
+topics: [probability, monty-hall-problem, law-of-large-numbers, decision-making]
+levels: [upper-secondary]
+tags: [probability, monty-hall, law-of-large-numbers, game-of-chance, decision-making, civic-education]

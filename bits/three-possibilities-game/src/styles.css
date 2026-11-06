@@ -1,0 +1,1885 @@
+/*
+ * Tre possibilità. A small object of contemporary design: three satin ceramic drums on a night
+ * blue, ivory and mineral greys, one warm accent kept for the meteorite. Everything is scoped under
+ * .three-possibilities-game; sizes on the stage follow the stage itself (cq units), so the same
+ * layout reads on a phone and on a LIM.
+ *
+ * A vessel is seen from 20° above, with no perspective, so a disc lying flat is an ellipse with
+ * ratio sin 20° ≈ 0.34 and SVG shapes and CSS 3D agree exactly. --w is its width.
+ */
+.three-possibilities-game {
+  --tp-bg: #0a1024;
+  --tp-surface: #0e1430;
+  --tp-raised: #161d40;
+  --tp-line: #2a3360;
+  --tp-grid: #1d2548;
+  --tp-axis: #8089ad;
+  --tp-fg: #f4f1e9;
+  --tp-muted: #b6bcd2;
+  --tp-warm: #edb872;
+  --tp-brass: #edb872;
+  --tp-stay: #d0822f;
+  --tp-switch: #14a99a;
+  --tp-win: #f4c98e;
+  --tp-lab: #aab0f5;
+  --tp-lab-soft: rgb(170 176 245 / 0.11);
+  --tp-focus: #9cc0ff;
+  --tp-danger: #f58f9e;
+  --tp-shadow: rgb(0 0 0 / 0.6);
+  --tp-button: #f4f1e9;
+  --tp-button-fg: #0a1024;
+  --tp-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'URW Palladio L', P052, 'Book Antiqua', Georgia, serif;
+
+  /* The ceramic */
+  --tp-glaze-1: #5e5b55;
+  --tp-glaze-2: #aba69a;
+  --tp-glaze-3: #f1ebde;
+  --tp-glaze-4: #dfd8c9;
+  --tp-glaze-5: #9b968b;
+  --tp-glaze-6: #514f4a;
+
+  color-scheme: dark;
+  container: tp / inline-size;
+  position: relative;
+  width: 100%;
+  height: clamp(37rem, 88svh, 50rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: var(--tp-bg);
+  color: var(--tp-fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.three-possibilities-game:fullscreen {
+  height: 100dvh;
+  border-radius: 0;
+  font-size: clamp(1rem, 1.95vmin, 1.6rem);
+}
+
+.three-possibilities-game *,
+.three-possibilities-game *::before,
+.three-possibilities-game *::after {
+  box-sizing: border-box;
+}
+
+.three-possibilities-game h3,
+.three-possibilities-game p,
+.three-possibilities-game dl,
+.three-possibilities-game dd,
+.three-possibilities-game ol,
+.three-possibilities-game ul,
+.three-possibilities-game figure,
+.three-possibilities-game fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+.three-possibilities-game ol,
+.three-possibilities-game ul {
+  list-style: none;
+}
+
+.three-possibilities-game fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+.three-possibilities-game button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.three-possibilities-game button:focus-visible,
+.three-possibilities-game input:focus-visible + span,
+.three-possibilities-game svg:focus-visible,
+.three-possibilities-game summary:focus-visible {
+  outline: 2px solid var(--tp-theory);
+  outline-offset: 2px;
+}
+
+.three-possibilities-game .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.three-possibilities-game .tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.85em;
+  padding: 0 0.95em;
+  font-size: 0.875em;
+  font-weight: 600;
+  border: 1px solid var(--tp-line);
+  border-radius: 999px;
+  background: var(--tp-surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.three-possibilities-game .tool:hover {
+  border-color: var(--tp-axis);
+}
+
+.three-possibilities-game .tool[aria-expanded='true'] {
+  background: var(--tp-button);
+  border-color: var(--tp-button);
+  color: var(--tp-button-fg);
+}
+
+.three-possibilities-game .tool-icon {
+  width: 2.85em;
+  padding: 0;
+  justify-content: center;
+}
+
+.three-possibilities-game svg path {
+  vector-effect: non-scaling-stroke;
+}
+
+.three-possibilities-game .tool svg,
+.three-possibilities-game .icon svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.three-possibilities-game .ghost {
+  min-height: 2.85em;
+  padding: 0 1em;
+  border-radius: 0.65em;
+  border: 1px solid var(--tp-line);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--tp-fg);
+  transition: border-color 0.15s;
+}
+
+.three-possibilities-game .ghost:hover {
+  border-color: var(--tp-axis);
+}
+
+.three-possibilities-game .primary {
+  min-height: 2.75em;
+  padding: 0 1.15em;
+  border-radius: 0.7em;
+  background: var(--tp-button);
+  color: var(--tp-button-fg);
+  font-size: 0.95em;
+  font-weight: 650;
+}
+
+.three-possibilities-game .primary[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.three-possibilities-game .chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+}
+
+.three-possibilities-game .chips legend {
+  float: left;
+  padding: 0;
+  margin-right: 0.5em;
+  font-size: 0.82em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .chips label {
+  position: relative;
+  cursor: pointer;
+}
+
+.three-possibilities-game .chips input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.three-possibilities-game .chips span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.85em;
+  height: 2.6em;
+  padding: 0 0.75em;
+  border: 1px solid var(--tp-line);
+  border-radius: 999px;
+  font-size: 0.875em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .chips input:checked + span {
+  background: var(--tp-button);
+  border-color: var(--tp-button);
+  color: var(--tp-button-fg);
+}
+
+
+/* Layout: the panel docks beside the stage on wide containers, covers it on narrow ones. */
+.three-possibilities-game .shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100%;
+}
+
+@container tp (min-width: 54rem) {
+  .three-possibilities-game .shell[data-panel='docked'] {
+    grid-template-columns: minmax(22rem, 5fr) minmax(0, 7fr);
+  }
+  .three-possibilities-game .shell[data-panel='focus'] {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+}
+
+/* The stage. A container cannot restyle itself, so the grid lives on .stage-grid. */
+.three-possibilities-game .stage {
+  container: stage / size;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: clip;
+  background:
+    radial-gradient(70% 62% at 68% 62%, #1b2552 0, transparent 72%),
+    linear-gradient(172deg, #0c1330, #080d20 74%);
+}
+
+.three-possibilities-game .vessel-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.three-possibilities-game .stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.three-possibilities-game .stars i {
+  position: absolute;
+  border-radius: 50%;
+  background: #f4f1e9;
+  opacity: 0.6;
+}
+
+.three-possibilities-game .stage-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  height: 100%;
+  padding: 0 clamp(1rem, 4cqmin, 3rem);
+}
+
+.three-possibilities-game .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: clamp(0.7rem, 2.6cqmin, 1.6rem);
+}
+
+.three-possibilities-game .wordmark {
+  font-family: var(--tp-serif);
+  font-size: clamp(1.05rem, 2.8cqmin, 1.6rem);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.three-possibilities-game .tools {
+  display: flex;
+  gap: 0.4em;
+  flex: none;
+  margin-left: auto;
+}
+
+@container stage (max-width: 26rem) {
+  .three-possibilities-game .wordmark {
+    display: none;
+  }
+}
+
+/* What the game says. Fixed heights: the length of a sentence must never move the vessels. */
+.three-possibilities-game .prompt {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0.25em;
+  height: clamp(6.4rem, 19cqmin, 10rem);
+  padding-top: clamp(0.4rem, 2cqmin, 1rem);
+  text-align: center;
+  animation: tp-rise 0.26s ease-out;
+}
+
+.three-possibilities-game .prompt h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-family: var(--tp-serif);
+  font-size: clamp(1.5rem, 6.4cqmin, 4.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+}
+
+.three-possibilities-game .prompt p {
+  font-size: clamp(1rem, 2.9cqmin, 1.8rem);
+  color: var(--tp-muted);
+  text-wrap: balance;
+}
+
+.three-possibilities-game .stage[data-result='win'] .prompt h3 {
+  color: var(--tp-win);
+}
+
+/* The outcome has a shape as well as words and a colour. */
+.three-possibilities-game .outcome-mark {
+  flex: none;
+  width: 0.72em;
+  height: 0.72em;
+  animation: tp-mark 0.5s 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+}
+
+.three-possibilities-game .stage[data-result='win'] .outcome-mark {
+  background: currentColor;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+
+.three-possibilities-game .stage[data-result='loss'] .outcome-mark {
+  border: 0.07em solid currentColor;
+  border-radius: 50%;
+}
+
+@keyframes tp-mark {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes tp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.2em);
+  }
+}
+
+/* The row of vessels */
+.three-possibilities-game .display {
+  --w: clamp(4.6rem, min(27.5cqw, 27cqh), 30rem);
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  min-height: 0;
+}
+
+.three-possibilities-game .vessels {
+  --slot: clamp(3.8rem, 10cqmin, 6.4rem);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, var(--w));
+  justify-content: center;
+  gap: clamp(0.5rem, 3.4cqw, 4rem);
+  isolation: isolate;
+}
+
+/* A surface to stand on: a faint change of tone, not a set. */
+.three-possibilities-game .vessels::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: -100cqw;
+  right: -100cqw;
+  top: calc(100% - var(--slot) - var(--w) * 0.24);
+  bottom: -100cqh;
+  background: linear-gradient(transparent, rgb(150 165 225 / 0.1) 7%, rgb(150 165 225 / 0.02) 38%, transparent 64%);
+  pointer-events: none;
+}
+
+.three-possibilities-game .vessel {
+  --lid: 0deg;
+  --wall-h: calc(var(--w) * 0.9);
+  --rim-y: calc(var(--w) * 0.73);
+  --lid-t: calc(var(--w) * 0.075);
+  position: relative;
+  display: grid;
+  grid-template-rows: auto var(--slot);
+  width: var(--w);
+  padding: 0;
+  touch-action: manipulation;
+  border-radius: 0.5rem;
+}
+
+.three-possibilities-game .vessel[aria-disabled='true'] {
+  cursor: default;
+}
+
+.three-possibilities-game .vessel:focus-visible {
+  outline: 3px solid var(--tp-focus);
+  outline-offset: 2px;
+}
+
+.three-possibilities-game .scene {
+  position: relative;
+  display: block;
+  width: var(--w);
+  height: calc(var(--w) * 1.86);
+}
+
+/* Shadow and, when chosen, the warm ring at the foot */
+.three-possibilities-game .ground,
+.three-possibilities-game .ring {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--w) * -0.03);
+  height: calc(var(--w) * 0.4);
+  transform: translateX(-50%);
+  border-radius: 50%;
+}
+
+.three-possibilities-game .ground {
+  width: 110%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.3) 62%, transparent);
+}
+
+.three-possibilities-game .ring {
+  width: 122%;
+  height: calc(var(--w) * 0.46);
+  bottom: calc(var(--w) * -0.06);
+  border: max(2px, calc(var(--w) * 0.009)) solid var(--tp-warm);
+  background: radial-gradient(closest-side, rgb(237 184 114 / 0.2), rgb(237 184 114 / 0.04) 80%, transparent);
+  opacity: 0;
+  transform: translateX(-50%) scale(0.9);
+  transition: opacity 0.25s ease-out, transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1.15);
+}
+
+.three-possibilities-game .vessel[data-chosen] .ring {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* The inside and the front wall are drawn; the object rises between them. */
+.three-possibilities-game .inside,
+.three-possibilities-game .wall {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  width: var(--w);
+  height: var(--wall-h);
+  overflow: visible;
+}
+
+.three-possibilities-game .numeral {
+  font-family: var(--tp-serif);
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  fill: #2a2e3a;
+  text-anchor: middle;
+}
+
+/* The lid: a stack of discs on a hinge at the back of the rim */
+.three-possibilities-game .lid {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--rim-y) - var(--w) / 2);
+  width: var(--w);
+  height: var(--w);
+  transform-style: preserve-3d;
+  transform: rotateX(70deg);
+}
+
+.three-possibilities-game .lid-arm {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 0;
+  transform: rotateX(var(--lid));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.3, 1);
+}
+
+.three-possibilities-game .vessel[data-open] {
+  --lid: 101deg;
+}
+
+.three-possibilities-game .vessel[data-open] .lid-arm {
+  transition: transform 0.68s cubic-bezier(0.3, 0.05, 0.2, 1.08);
+}
+
+.three-possibilities-game .lid-disc,
+.three-possibilities-game .lid-cap,
+.three-possibilities-game .lid-under {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.three-possibilities-game .lid-disc {
+  background: linear-gradient(
+    90deg,
+    var(--tp-glaze-1),
+    var(--tp-glaze-2) 9%,
+    var(--tp-glaze-3) 32%,
+    var(--tp-glaze-4) 52%,
+    var(--tp-glaze-5) 86%,
+    var(--tp-glaze-6)
+  );
+  transform: translateZ(calc(var(--lid-t) * var(--i)));
+}
+
+/* The seam between lid and body */
+.three-possibilities-game .lid-disc[data-seam] {
+  background: #3b3934;
+}
+
+.three-possibilities-game .lid-cap {
+  background:
+    radial-gradient(ellipse 70% 62% at 36% 74%, #fbf6ea, transparent 72%),
+    linear-gradient(100deg, #cfc9bb, #e9e3d5 40%, #c2bcaf);
+  box-shadow: inset 0 0 0 max(1px, calc(var(--w) * 0.006)) rgb(255 255 255 / 0.5);
+  transform: translateZ(var(--lid-t));
+  backface-visibility: hidden;
+}
+
+/* The underside of the lid: the backdrop of whatever is revealed */
+.three-possibilities-game .lid-under {
+  background: radial-gradient(circle at 50% 46%, #535f83 0, #3b4567 52%, #2b3250 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--w) * 0.022) #b8b2a4,
+    inset 0 0 0 calc(var(--w) * 0.028) #2b3250;
+  transform: rotateX(180deg) translateZ(1px);
+  backface-visibility: hidden;
+}
+
+/* Only the meteorite is lit from behind: its own light, whoever chose it. */
+.three-possibilities-game .glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, #ffe8c9 0, #e8b880 32%, #94674f 64%, #3f3a50 100%);
+  box-shadow: inset 0 0 0 calc(var(--w) * 0.022) #d9cdb6;
+  opacity: 0;
+  transform: rotateX(180deg) translateZ(2px);
+  backface-visibility: hidden;
+  transition: opacity 0.5s 0.25s ease-out;
+}
+
+.three-possibilities-game .vessel[data-content='meteorite'] .glow {
+  opacity: 0.74;
+}
+
+.three-possibilities-game .vessel[data-verdict='won'] .glow {
+  opacity: 1;
+}
+
+/* What the vessel holds rises from behind the front wall. */
+.three-possibilities-game .held {
+  --size: calc(var(--w) * 0.76);
+  position: absolute;
+  left: calc(50% - var(--size) / 2);
+  bottom: calc(var(--rim-y) - var(--size) / 2 + var(--w) * 0.13);
+  display: block;
+  width: var(--size);
+  height: var(--size);
+  pointer-events: none;
+  transform: translateY(calc(var(--w) * 0.62));
+  transition: transform 0.3s ease-in;
+}
+
+.three-possibilities-game .vessel[data-content='meteorite'] .held {
+  --size: calc(var(--w) * 0.9);
+}
+
+.three-possibilities-game .vessel[data-open] .held {
+  transform: none;
+  transition: transform 0.62s 0.2s cubic-bezier(0.22, 0.7, 0.2, 1.04);
+}
+
+/* The meteorite stands a little higher than a stone, and in a win a little higher still. */
+.three-possibilities-game .vessel[data-open][data-content='meteorite'] .held {
+  transform: translateY(calc(var(--w) * -0.06));
+}
+
+.three-possibilities-game .vessel[data-verdict='won'] .held {
+  animation: tp-present 1s 0.15s cubic-bezier(0.25, 0.7, 0.2, 1) both;
+}
+
+@keyframes tp-present {
+  from {
+    transform: translateY(calc(var(--w) * -0.06));
+  }
+  55% {
+    transform: translateY(calc(var(--w) * -0.13)) scale(1.1);
+  }
+  to {
+    transform: translateY(calc(var(--w) * -0.11)) scale(1.07);
+  }
+}
+
+.three-possibilities-game .specimen-art {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 calc(var(--w) * 0.02) calc(var(--w) * 0.03) rgb(0 0 0 / 0.55));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* A single sweep of light across the metal, cut out by the meteorite's own shape */
+.three-possibilities-game .sheen {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: linear-gradient(112deg, transparent 38%, rgb(255 226 176 / 0.85) 50%, transparent 62%) no-repeat;
+  background-size: 300% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+  -webkit-mask: var(--art) center / contain no-repeat;
+  mask: var(--art) center / contain no-repeat;
+  animation: tp-sweep 1.2s 0.45s ease-in-out both;
+}
+
+@keyframes tp-sweep {
+  to {
+    background-position: -20% 0;
+  }
+}
+
+/* The ending: what is not part of the story steps back. */
+.three-possibilities-game .scene {
+  transition: filter 0.5s ease-out;
+}
+
+.three-possibilities-game .stage[data-phase='done'] .vessel[data-verdict='other'] .scene {
+  filter: brightness(0.5) saturate(0.7);
+}
+
+.three-possibilities-game .stage[data-phase='done'] .vessel[data-verdict='other'] .tag {
+  color: var(--tp-muted);
+}
+
+/* Under each vessel */
+.three-possibilities-game .slot {
+  display: grid;
+  place-items: start center;
+  width: 100%;
+  height: var(--slot);
+  padding-top: calc(var(--w) * 0.12);
+  text-align: center;
+}
+
+.three-possibilities-game .slot-mark {
+  color: var(--tp-warm);
+  font-size: clamp(0.9rem, 2.7cqmin, 1.65rem);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The two decisions: same outline, same size, same text. Nothing is filled until pressed. */
+.three-possibilities-game .slot-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 15rem);
+  min-height: clamp(2.7rem, 8cqmin, 4.6rem);
+  padding: 0 0.3em;
+  border: max(1.5px, 0.2cqmin) solid var(--tp-fg);
+  border-radius: 999px;
+  color: var(--tp-fg);
+  font-size: clamp(1rem, 3.1cqmin, 2rem);
+  font-weight: 550;
+  transition: background 0.15s, color 0.15s, transform 0.12s ease-out;
+}
+
+.three-possibilities-game .vessel:active .slot-action {
+  background: var(--tp-fg);
+  color: var(--tp-bg);
+  transform: translateY(1px) scale(0.985);
+}
+
+/* The tags of the ending: legible from the back of the room, and never colour alone */
+.three-possibilities-game .tag {
+  display: inline-grid;
+  gap: 0.05em;
+  max-width: 100%;
+  font-size: clamp(0.82rem, 2.7cqmin, 1.7rem);
+  line-height: 1.2;
+  animation: tp-rise 0.3s 0.5s ease-out backwards;
+}
+
+.three-possibilities-game .tag b {
+  font-family: var(--tp-serif);
+  font-weight: 500;
+}
+
+.three-possibilities-game .tag small {
+  font-size: 0.8em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .tag[data-verdict='won'],
+.three-possibilities-game .tag[data-verdict='missed'] {
+  color: var(--tp-win);
+}
+
+.three-possibilities-game .tag[data-verdict='won'] b::before,
+.three-possibilities-game .tag[data-verdict='missed'] b::before {
+  content: '✦ ';
+  font-size: 0.8em;
+}
+
+@media (hover: hover) {
+  .three-possibilities-game .vessel[data-action]:hover {
+    --lid: 8deg;
+  }
+  .three-possibilities-game .vessel[data-action]:hover .slot-action {
+    background: var(--tp-fg);
+    color: var(--tp-bg);
+  }
+}
+
+/* The rule, and the next game */
+.three-possibilities-game .actions {
+  display: grid;
+  place-items: center;
+  height: 5.6rem;
+  padding: 0.35rem 0;
+}
+
+.three-possibilities-game .rule {
+  max-width: 44em;
+  font-size: clamp(0.85rem, 2.3cqmin, 1.4rem);
+  color: var(--tp-muted);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.three-possibilities-game .next {
+  min-width: min(100%, 15rem);
+  min-height: clamp(3rem, 9cqmin, 4.8rem);
+  padding: 0 1.9em;
+  border-radius: 999px;
+  background: var(--tp-button);
+  color: var(--tp-button-fg);
+  font-size: clamp(1.05rem, 3.2cqmin, 1.9rem);
+  font-weight: 650;
+  animation: tp-rise 0.3s 0.4s ease-out backwards;
+}
+
+/* The register */
+.three-possibilities-game .trail {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0 clamp(0.6rem, 2.2cqmin, 1.2rem);
+  border-top: 1px solid var(--tp-line);
+}
+
+.three-possibilities-game .trail-count {
+  flex: none;
+  font-size: 0.82em;
+  color: var(--tp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .trail-count b {
+  color: var(--tp-fg);
+  font-weight: 650;
+}
+
+/* Newest on the right; older ones wrap out of sight whole, never cut in half. */
+.three-possibilities-game .trail-rounds {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  gap: 0.2em;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 1.55em;
+  overflow: hidden;
+}
+
+.three-possibilities-game .trail-rounds li {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid var(--tp-axis);
+  border-radius: 0.3em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .trail-rounds li[data-win] {
+  border-color: var(--tp-warm);
+  background: var(--tp-warm);
+  color: var(--tp-bg);
+}
+
+.three-possibilities-game .trail-rounds svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.three-possibilities-game .trail-rounds circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Wide stages are a page: the words on the left, the objects on the right. Phones on their side
+   use the same arrangement, smaller. */
+@container stage (min-width: 60rem) {
+  .three-possibilities-game .stage-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 9fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    column-gap: clamp(1.5rem, 3cqw, 4rem);
+  }
+  .three-possibilities-game .topbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .three-possibilities-game .prompt {
+    grid-column: 1;
+    grid-row: 2;
+    align-content: center;
+    justify-items: start;
+    height: auto;
+    gap: 0.45em;
+    padding: 0;
+    text-align: left;
+  }
+  .three-possibilities-game .display {
+    --w: clamp(4.6rem, min(16.5cqw, 37cqh), 30rem);
+    grid-column: 2;
+    grid-row: 2 / 5;
+  }
+  .three-possibilities-game .actions {
+    grid-column: 1;
+    grid-row: 3;
+    place-items: center start;
+    height: clamp(9.4rem, 18cqmin, 11rem);
+  }
+  .three-possibilities-game .rule {
+    text-align: left;
+  }
+  .three-possibilities-game .trail {
+    grid-column: 1;
+    grid-row: 4;
+  }
+}
+
+@container stage (max-height: 29rem) and (min-width: 34rem) {
+  .three-possibilities-game .stage-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    column-gap: 1rem;
+  }
+  .three-possibilities-game .topbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .three-possibilities-game .prompt {
+    grid-column: 1;
+    grid-row: 2;
+    align-content: center;
+    justify-items: start;
+    height: auto;
+    padding: 0;
+    text-align: left;
+  }
+  .three-possibilities-game .prompt h3 {
+    font-size: 1.35rem;
+  }
+  .three-possibilities-game .prompt p {
+    font-size: 0.9rem;
+  }
+  .three-possibilities-game .display {
+    --w: clamp(3.8rem, min(15cqw, 33cqh), 10rem);
+    grid-column: 2;
+    grid-row: 2 / 5;
+    align-self: end;
+  }
+  .three-possibilities-game .vessels {
+    --slot: 3.1rem;
+  }
+  .three-possibilities-game .slot {
+    padding-top: 0.45rem;
+  }
+  .three-possibilities-game .slot-action {
+    min-height: 2.4rem;
+  }
+  .three-possibilities-game .actions {
+    grid-column: 1;
+    grid-row: 3;
+    place-items: center start;
+    height: auto;
+    min-height: 3.2rem;
+  }
+  .three-possibilities-game .rule {
+    display: none;
+  }
+  .three-possibilities-game .stage[data-phase='choose'] .rule {
+    display: block;
+    font-size: 0.74rem;
+    text-align: left;
+  }
+  .three-possibilities-game .next {
+    min-height: 2.8rem;
+    font-size: 1rem;
+  }
+  .three-possibilities-game .trail {
+    grid-column: 1;
+    grid-row: 4;
+  }
+}
+
+/* Compact stage, while a panel has the centre */
+.three-possibilities-game .stage[data-compact] {
+  border-right: 1px solid var(--tp-line);
+}
+
+.three-possibilities-game .stage[data-compact] .stage-grid {
+  padding: 0 0.7rem;
+}
+
+.three-possibilities-game .stage[data-compact] .wordmark,
+.three-possibilities-game .stage[data-compact] .rule,
+.three-possibilities-game .stage[data-compact] .trail-rounds {
+  display: none;
+}
+
+.three-possibilities-game .stage[data-compact] .tool:not(.tool-icon) {
+  padding: 0 0.7em;
+}
+
+.three-possibilities-game .stage[data-compact] .prompt {
+  height: 7.5rem;
+}
+
+.three-possibilities-game .stage[data-compact] .prompt h3 {
+  font-size: 1.15rem;
+}
+
+.three-possibilities-game .stage[data-compact] .prompt p {
+  font-size: 0.85rem;
+}
+
+.three-possibilities-game .stage[data-compact] .actions {
+  height: 4rem;
+}
+
+.three-possibilities-game .stage[data-compact] .slot-action {
+  font-size: 0.75rem;
+}
+
+/* The Analysis panel */
+.three-possibilities-game .panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--tp-surface);
+  animation: tp-panel 0.2s ease-out;
+}
+
+@container tp (max-width: 53.99rem) {
+  .three-possibilities-game .panel {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+  .three-possibilities-game .panel-tools .focus-toggle {
+    display: none;
+  }
+}
+
+@container tp (min-width: 54rem) {
+  .three-possibilities-game .shell:not([data-panel='focus']) .panel {
+    border-left: 1px solid var(--tp-line);
+  }
+}
+
+@keyframes tp-panel {
+  from {
+    opacity: 0;
+    transform: translateX(0.6em);
+  }
+}
+
+.three-possibilities-game .panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+  padding: 0.7em 0.9em;
+  border-bottom: 1px solid var(--tp-line);
+}
+
+.three-possibilities-game .tabs {
+  display: flex;
+  gap: 0.15em;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.three-possibilities-game .tabs button {
+  flex: none;
+  min-height: 2.85em;
+  padding: 0 0.75em;
+  border-radius: 0.55em;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .tabs button:hover {
+  color: var(--tp-fg);
+}
+
+.three-possibilities-game .tabs button[aria-selected='true'] {
+  color: var(--tp-fg);
+  background: var(--tp-bg);
+}
+
+.three-possibilities-game .tabs button[data-lab][aria-selected='true'] {
+  color: var(--tp-lab);
+  background: var(--tp-lab-soft);
+}
+
+.three-possibilities-game .panel-tools {
+  display: flex;
+  flex: none;
+  gap: 0.3em;
+  align-items: center;
+}
+
+.three-possibilities-game .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.55em;
+}
+
+.three-possibilities-game .focus-toggle[aria-pressed='true'] {
+  background: var(--tp-bg);
+}
+
+.three-possibilities-game .icon:hover {
+  background: var(--tp-bg);
+}
+
+.three-possibilities-game .panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1em 1.1em 1.5em;
+  display: grid;
+  gap: 1.15em;
+  /* Not `auto`: an overflowing grid would squash the scrollable tables to nothing. */
+  grid-auto-rows: max-content;
+  align-content: start;
+  overscroll-behavior: contain;
+}
+
+.three-possibilities-game .empty {
+  padding: 2em 1em;
+  text-align: center;
+  color: var(--tp-muted);
+  text-wrap: balance;
+}
+
+.three-possibilities-game .note {
+  font-size: 0.82em;
+  color: var(--tp-muted);
+}
+
+/* Stat tiles */
+.three-possibilities-game .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.75em, 1fr));
+  gap: 0.9em 1.1em;
+}
+
+.three-possibilities-game .stat dt {
+  font-size: 0.78em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .stat dd {
+  display: grid;
+}
+
+.three-possibilities-game .stat-value {
+  font-size: 1.45em;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .stat small {
+  font-size: 0.75em;
+  color: var(--tp-muted);
+}
+
+/* Charts */
+.three-possibilities-game .charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24em), 1fr));
+  gap: 1.4em 1.6em;
+}
+
+.three-possibilities-game .chart {
+  display: grid;
+  gap: 0.35em;
+  min-width: 0;
+}
+
+.three-possibilities-game .chart h3 {
+  font-size: 0.95em;
+  font-weight: 620;
+}
+
+.three-possibilities-game .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15em 0.85em;
+  margin-top: 0.2em;
+  font-size: 0.75em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.three-possibilities-game .key {
+  display: inline-block;
+  width: 1.1em;
+  border-top: 2px solid;
+}
+
+.three-possibilities-game .key[data-dashed] {
+  border-top-style: dashed;
+}
+
+.three-possibilities-game .key-band {
+  height: 0.7em;
+  border: 0;
+  border-radius: 2px;
+}
+
+.three-possibilities-game .plot {
+  position: relative;
+  height: 18em;
+  min-width: 0;
+  font-size: 0.8em;
+}
+
+.three-possibilities-game .shell[data-panel='focus'] .plot {
+  height: clamp(18em, 38vh, 32em);
+}
+
+/* Charts side by side keep their plots level, whatever the length of their legends. */
+.three-possibilities-game .shell[data-panel='focus'] .legend {
+  min-height: 3.1em;
+  align-content: start;
+}
+
+.three-possibilities-game .plot svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  touch-action: pan-y;
+}
+
+.three-possibilities-game .plot .tick {
+  fill: var(--tp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .plot .axis-title {
+  fill: var(--tp-muted);
+  font-size: 0.92em;
+}
+
+.three-possibilities-game .plot .grid {
+  stroke: var(--tp-grid);
+  stroke-width: 1;
+}
+
+.three-possibilities-game .plot .grid[data-zero] {
+  stroke: var(--tp-axis);
+}
+
+.three-possibilities-game .plot .axis {
+  stroke: var(--tp-axis);
+  stroke-width: 1;
+}
+
+.three-possibilities-game .plot .end-dot {
+  stroke: var(--tp-surface);
+  stroke-width: 2;
+}
+
+.three-possibilities-game .plot .crosshair {
+  stroke: var(--tp-axis);
+  stroke-width: 1;
+}
+
+.three-possibilities-game .plot .hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.three-possibilities-game .tooltip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 0.1em;
+  max-width: 15em;
+  padding: 0.4em 0.55em;
+  border: 1px solid var(--tp-line);
+  border-radius: 0.5em;
+  background: var(--tp-raised);
+  box-shadow: 0 0.2em 0.7em rgb(0 0 0 / 0.14);
+  color: var(--tp-muted);
+  pointer-events: none;
+}
+
+.three-possibilities-game .tooltip strong,
+.three-possibilities-game .tooltip b {
+  color: var(--tp-fg);
+  font-weight: 620;
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .caption {
+  font-size: 0.8em;
+  color: var(--tp-muted);
+}
+
+/* Tables */
+.three-possibilities-game table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .table-wrap {
+  max-height: 16em;
+  overflow: auto;
+}
+
+.three-possibilities-game th,
+.three-possibilities-game td {
+  padding: 0.35em 0.5em;
+  text-align: right;
+  border-bottom: 1px solid var(--tp-grid);
+  white-space: nowrap;
+}
+
+.three-possibilities-game th:first-child,
+.three-possibilities-game td:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+
+.three-possibilities-game thead th {
+  font-weight: 500;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game tbody th {
+  font-weight: 500;
+  white-space: normal;
+}
+
+.three-possibilities-game .compare td:nth-child(3) {
+  font-weight: 620;
+}
+
+.three-possibilities-game tr[data-current] th,
+.three-possibilities-game tr[data-current] td {
+  font-weight: 620;
+}
+
+.three-possibilities-game .link {
+  padding: 0.15em 0;
+  font-weight: inherit;
+  color: var(--tp-theory);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.three-possibilities-game .row-end {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5em;
+}
+
+.three-possibilities-game .danger[data-armed] {
+  border-color: var(--tp-loss);
+  color: var(--tp-loss);
+}
+
+/* Simulation: its own visual register, so that it cannot be mistaken for the game */
+.three-possibilities-game .lab-banner {
+  padding: 0.6em 0.75em;
+  border-left: 3px solid var(--tp-lab);
+  border-radius: 0 0.5em 0.5em 0;
+  background: var(--tp-lab-soft);
+  font-size: 0.85em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .lab-banner strong {
+  color: var(--tp-lab);
+  margin-right: 0.3em;
+}
+
+.three-possibilities-game .lab-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.7em 1.25em;
+}
+
+.three-possibilities-game .lab-controls .chips {
+  justify-content: flex-start;
+}
+
+.three-possibilities-game .lab-controls .chips legend {
+  float: none;
+  margin: 0 0 0.25em;
+}
+
+.three-possibilities-game .run-title {
+  font-size: 1em;
+  font-weight: 620;
+}
+
+
+/* The theory switch: off by default, and deliberately not a tab */
+.three-possibilities-game .theory-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 2.75em;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--tp-muted);
+  cursor: pointer;
+  justify-self: start;
+}
+
+.three-possibilities-game .theory-switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.three-possibilities-game .theory-switch span {
+  position: relative;
+  flex: none;
+  width: 2.5em;
+  height: 1.4em;
+  border-radius: 999px;
+  background: var(--tp-line);
+  transition: background 0.15s;
+}
+
+.three-possibilities-game .theory-switch span::after {
+  content: '';
+  position: absolute;
+  left: 0.15em;
+  top: 0.15em;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  background: var(--tp-raised);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  transition: transform 0.15s;
+}
+
+.three-possibilities-game .theory-switch input:checked + span {
+  background: var(--tp-button);
+}
+
+.three-possibilities-game .theory-switch input:checked + span::after {
+  transform: translateX(1.1em);
+}
+
+.three-possibilities-game .theory-switch input:focus-visible + span {
+  outline: 2px solid var(--tp-focus);
+  outline-offset: 2px;
+}
+
+.three-possibilities-game .panel-title {
+  font-family: var(--tp-serif);
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+.three-possibilities-game .reading {
+  padding: 0.6em 0.75em;
+  border-left: 3px solid var(--tp-axis);
+  border-radius: 0 0.5em 0.5em 0;
+  background: var(--tp-bg);
+  font-size: 0.9em;
+  text-wrap: pretty;
+}
+
+.three-possibilities-game .swatch {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+}
+
+.three-possibilities-game table caption {
+  padding-bottom: 0.4em;
+  text-align: left;
+  font-size: 1.05em;
+  font-weight: 620;
+  color: var(--tp-fg);
+  white-space: normal;
+}
+
+/* Both strategies on one game: the empty corners are the finding. */
+.three-possibilities-game .crossing td,
+.three-possibilities-game .crossing tbody th {
+  padding-top: 0.55em;
+  padding-bottom: 0.55em;
+}
+
+.three-possibilities-game .crossing tbody td {
+  font-size: 1.15em;
+  font-weight: 620;
+}
+
+.three-possibilities-game .crossing td[data-empty] {
+  color: var(--tp-muted);
+  font-weight: 400;
+}
+
+.three-possibilities-game .table-note {
+  margin-top: 0.6em;
+  text-wrap: pretty;
+}
+
+.three-possibilities-game .table-plain {
+  max-height: none;
+}
+
+.three-possibilities-game .verdict-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .verdict-mark::before {
+  content: '';
+  width: 0.6em;
+  height: 0.6em;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.three-possibilities-game .verdict-mark[data-win] {
+  color: var(--tp-win);
+  font-weight: 620;
+}
+
+.three-possibilities-game .verdict-mark[data-win]::before {
+  background: currentColor;
+}
+
+/* Rate plot */
+.three-possibilities-game .rp {
+  display: grid;
+  gap: 0.55em;
+  padding-top: 0.4em;
+}
+
+.three-possibilities-game .rp-row {
+  display: grid;
+  grid-template-columns: 7.2em minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9em;
+}
+
+.three-possibilities-game .rp-label {
+  display: grid;
+  font-size: 0.85em;
+}
+
+.three-possibilities-game .rp-label b {
+  font-weight: 620;
+}
+
+.three-possibilities-game .rp-label small {
+  font-size: 0.85em;
+  color: var(--tp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .rp-track {
+  position: relative;
+  display: block;
+  height: 2.75em;
+  margin: 0 0.7em;
+}
+
+.three-possibilities-game .rp-track i {
+  position: absolute;
+  display: block;
+}
+
+.three-possibilities-game .rp-grid {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--tp-grid);
+}
+
+.three-possibilities-game .rp-whisker {
+  top: 50%;
+  height: 0.5em;
+  transform: translateY(-50%);
+  border-radius: 0.25em;
+  background: var(--rp-color);
+  opacity: 0.32;
+}
+
+.three-possibilities-game .rp-dot,
+.three-possibilities-game .rp-mark {
+  top: 50%;
+  border-radius: 50%;
+  background: var(--rp-color);
+  transform: translate(-50%, -50%);
+}
+
+.three-possibilities-game .rp-dot {
+  width: 0.95em;
+  height: 0.95em;
+  box-shadow: 0 0 0 2px var(--tp-surface);
+}
+
+.three-possibilities-game .rp-row[data-faint] .rp-dot {
+  background: var(--tp-surface);
+  box-shadow: inset 0 0 0 2px var(--rp-color);
+}
+
+.three-possibilities-game .rp-mark {
+  width: 0.6em;
+  height: 0.6em;
+  opacity: 0.55;
+  box-shadow: 0 0 0 1px var(--tp-surface);
+}
+
+.three-possibilities-game .rp-theory {
+  top: 50%;
+  width: 0.72em;
+  height: 0.72em;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--tp-fg);
+  box-shadow: 0 0 0 2px var(--tp-surface);
+}
+
+.three-possibilities-game .rp-axis {
+  position: relative;
+  display: block;
+  height: 1.3em;
+  margin: 0 0.7em;
+  font-size: 0.8em;
+  color: var(--tp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .rp-axis span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.three-possibilities-game .legend-dot,
+.three-possibilities-game .legend-whisker,
+.three-possibilities-game .legend-diamond {
+  display: inline-block;
+  flex: none;
+  background: var(--tp-muted);
+}
+
+.three-possibilities-game .legend-dot {
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+}
+
+.three-possibilities-game .legend-small {
+  width: 0.55em;
+  height: 0.55em;
+  opacity: 0.7;
+}
+
+.three-possibilities-game .legend-whisker {
+  width: 1.3em;
+  height: 0.4em;
+  border-radius: 0.2em;
+  opacity: 0.45;
+}
+
+.three-possibilities-game .legend-diamond {
+  width: 0.55em;
+  height: 0.55em;
+  transform: rotate(45deg);
+  background: var(--tp-fg);
+}
+
+/* The reasoning */
+.three-possibilities-game .claim {
+  margin: 0;
+  font-family: var(--tp-serif);
+  font-size: 1.35em;
+  line-height: 1.25;
+}
+
+.three-possibilities-game .claim small {
+  display: block;
+  margin-top: 0.45em;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.62em;
+  line-height: 1.4;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .cases {
+  display: grid;
+  gap: 0.55em;
+  padding: 0.8em 0.6em;
+  border: 1px solid var(--tp-line);
+  border-radius: 0.7em;
+  background: var(--tp-raised);
+}
+
+.three-possibilities-game .cases-head,
+.three-possibilities-game .cases-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4em;
+  text-align: center;
+}
+
+.three-possibilities-game .cases-head {
+  font-size: 0.8em;
+  font-weight: 620;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .cases-row {
+  animation: tp-rise 0.25s ease-out;
+}
+
+.three-possibilities-game .cases-row h4 {
+  grid-column: 1 / -1;
+  margin: 0.2em 0 -0.15em;
+  font-size: 0.74em;
+  font-weight: 600;
+  color: var(--tp-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.three-possibilities-game .cell {
+  font-size: 0.92em;
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .cases-row[data-row='stay'] .cell,
+.three-possibilities-game .cases-row[data-row='switch'] .cell {
+  font-size: 1em;
+}
+
+.three-possibilities-game .minis {
+  display: flex;
+  justify-content: center;
+  gap: 0.12em;
+}
+
+.three-possibilities-game .mini {
+  display: block;
+  flex: 1 1 0;
+  max-width: 2.6em;
+  min-width: 0;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.1em;
+}
+
+.three-possibilities-game .mini[data-mine] {
+  border-bottom-color: var(--tp-brass);
+}
+
+.three-possibilities-game .mini svg {
+  display: block;
+  width: 100%;
+}
+
+.three-possibilities-game .mini-box {
+  fill: #e6e0d3;
+  fill-opacity: 0.2;
+  stroke: var(--tp-muted);
+  stroke-width: 1.1;
+}
+
+.three-possibilities-game .mini-lid {
+  fill: #e6e0d3;
+  fill-opacity: 0.55;
+  stroke: var(--tp-muted);
+  stroke-width: 1.1;
+}
+
+.three-possibilities-game .mini[data-open] .mini-box {
+  fill-opacity: 0;
+  stroke-dasharray: 2.5 2;
+}
+
+.three-possibilities-game .mini[data-open] .mini-lid {
+  fill-opacity: 0.2;
+}
+
+.three-possibilities-game .mini-meteorite {
+  fill: var(--tp-warm);
+}
+
+.three-possibilities-game .mini-stone {
+  fill: #c2c3c9;
+  fill-opacity: 0.8;
+}
+
+.three-possibilities-game .step-text {
+  min-height: 6.4em;
+}
+
+.three-possibilities-game .step-text h4,
+.three-possibilities-game .reasoning-text h4 {
+  margin: 0;
+  font-family: var(--tp-serif);
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.three-possibilities-game .step-text p,
+.three-possibilities-game .reasoning-text p {
+  margin-top: 0.2em;
+  max-width: 44em;
+  font-size: 0.95em;
+  color: var(--tp-muted);
+  text-wrap: pretty;
+}
+
+.three-possibilities-game .reasoning-text {
+  display: grid;
+  gap: 0.75em;
+}
+
+.three-possibilities-game .reasoning-text p b {
+  color: var(--tp-fg);
+  font-weight: 620;
+}
+
+.three-possibilities-game .step-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+}
+
+.three-possibilities-game .step-count {
+  font-size: 0.85em;
+  color: var(--tp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.three-possibilities-game .tallies {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75em;
+}
+
+.three-possibilities-game .tally {
+  display: grid;
+  gap: 0.1em;
+  padding: 0.6em 0.75em;
+  border: 1px solid var(--tp-line);
+  border-radius: 0.6em;
+}
+
+.three-possibilities-game .tally span {
+  font-size: 0.85em;
+  color: var(--tp-muted);
+}
+
+.three-possibilities-game .tally b {
+  font-family: var(--tp-serif);
+  font-size: 1.4em;
+  font-weight: 600;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .three-possibilities-game *,
+  .three-possibilities-game *::before,
+  .three-possibilities-game *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}
