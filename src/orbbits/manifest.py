@@ -43,6 +43,7 @@ PUBLISHED_STATUSES = ("usable", "curated")
 SUGGESTED_ROLES = (
     "animation",
     "simulation",
+    "game",
     "explorable",
     "dynamic-geometry",
     "diagram",

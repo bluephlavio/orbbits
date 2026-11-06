@@ -1,0 +1,1331 @@
+/*
+ * Il dado del banco. The identity is a quiet table under a soft light: warm paper by day, ink
+ * by night, one ivory die, and gold reserved for the player's tokens. No felt, no neon.
+ * Everything is scoped under .house-dice-game; sizes on the stage follow the stage itself
+ * (cqmin), so the same layout reads on a phone and on a LIM.
+ */
+.house-dice-game {
+  --hdg-bg: #f4efe4;
+  --hdg-glow: #fffaf0;
+  --hdg-surface: #fbf8f1;
+  --hdg-raised: #ffffff;
+  --hdg-line: #ded7c8;
+  --hdg-grid: #e8e2d5;
+  --hdg-axis: #8d8a82;
+  --hdg-fg: #1b1d24;
+  --hdg-muted: #5f6470;
+  --hdg-you: #a56f00;
+  --hdg-series-you: #a56f00;
+  --hdg-series-loss: #bc3348;
+  --hdg-token: #d9a21f;
+  --hdg-token-edge: #a97a0c;
+  --hdg-theory: #1f5fbf;
+  --hdg-band: rgb(31 95 191 / 0.12);
+  --hdg-win: #0d7a69;
+  --hdg-loss: #bc3348;
+  --hdg-lab: #1f5fbf;
+  --hdg-lab-soft: rgb(31 95 191 / 0.09);
+  --hdg-die: #fdf9ef;
+  --hdg-die-edge: #e2d9c4;
+  --hdg-pip: #20232c;
+  --hdg-pip-six: #a56f00;
+  --hdg-shadow: rgb(60 45 20 / 0.34);
+  --hdg-button: #1b1d24;
+  --hdg-button-fg: #fbf8f1;
+
+  container: hdg / inline-size;
+  position: relative;
+  width: 100%;
+  height: clamp(37rem, 88svh, 48rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: var(--hdg-bg);
+  color: var(--hdg-fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .house-dice-game {
+    --hdg-bg: #0f1218;
+    --hdg-glow: #232936;
+    --hdg-surface: #151922;
+    --hdg-raised: #1c212c;
+    --hdg-line: #2c3340;
+    --hdg-grid: #232935;
+    --hdg-axis: #7d8594;
+    --hdg-fg: #f2efe8;
+    --hdg-muted: #a3aab7;
+    --hdg-you: #efbc4d;
+    --hdg-series-you: #bd8a17;
+    --hdg-series-loss: #e0607a;
+    --hdg-token: #f0bd4f;
+    --hdg-token-edge: #b98a23;
+    --hdg-theory: #5f92e6;
+    --hdg-band: rgb(95 146 230 / 0.17);
+    --hdg-win: #4fcdb4;
+    --hdg-loss: #f27f90;
+    --hdg-lab: #8fb6f5;
+    --hdg-lab-soft: rgb(134 179 255 / 0.11);
+    --hdg-shadow: rgb(0 0 0 / 0.6);
+    --hdg-button: #f2efe8;
+    --hdg-button-fg: #14171e;
+  }
+}
+
+.house-dice-game:fullscreen {
+  height: 100dvh;
+  border-radius: 0;
+  font-size: clamp(1rem, 1.95vmin, 1.6rem);
+}
+
+.house-dice-game *,
+.house-dice-game *::before,
+.house-dice-game *::after {
+  box-sizing: border-box;
+}
+
+.house-dice-game h3,
+.house-dice-game p,
+.house-dice-game dl,
+.house-dice-game dd,
+.house-dice-game ol,
+.house-dice-game ul,
+.house-dice-game figure,
+.house-dice-game fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+.house-dice-game ol,
+.house-dice-game ul {
+  list-style: none;
+}
+
+.house-dice-game fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+.house-dice-game button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.house-dice-game button:focus-visible,
+.house-dice-game input:focus-visible + span,
+.house-dice-game svg:focus-visible,
+.house-dice-game summary:focus-visible {
+  outline: 2px solid var(--hdg-theory);
+  outline-offset: 2px;
+}
+
+.house-dice-game .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Layout: the panel docks beside the stage on wide containers, covers it on narrow ones. */
+.house-dice-game .shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100%;
+}
+
+@container hdg (min-width: 54rem) {
+  .house-dice-game .shell[data-panel='docked'] {
+    grid-template-columns: minmax(21rem, 5fr) minmax(0, 7fr);
+  }
+  .house-dice-game .shell[data-panel='focus'] {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+}
+
+/* The stage */
+.house-dice-game .stage {
+  container: stage / size;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 clamp(1rem, 5cqmin, 2.5rem);
+  background: radial-gradient(70% 58% at 50% 46%, var(--hdg-glow), transparent 100%), var(--hdg-bg);
+}
+
+.house-dice-game .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: clamp(0.7rem, 3cqmin, 1.4rem);
+}
+
+.house-dice-game .wordmark {
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--hdg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.house-dice-game .tools {
+  display: flex;
+  gap: 0.4em;
+  flex: none;
+  margin-left: auto;
+}
+
+.house-dice-game .tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.85em;
+  padding: 0 0.95em;
+  font-size: 0.875em;
+  font-weight: 600;
+  border: 1px solid var(--hdg-line);
+  border-radius: 999px;
+  background: var(--hdg-surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.house-dice-game .tool:hover {
+  border-color: var(--hdg-axis);
+}
+
+.house-dice-game .tool[aria-expanded='true'] {
+  background: var(--hdg-button);
+  border-color: var(--hdg-button);
+  color: var(--hdg-button-fg);
+}
+
+.house-dice-game .tool-icon {
+  width: 2.85em;
+  padding: 0;
+  justify-content: center;
+}
+
+.house-dice-game svg path {
+  vector-effect: non-scaling-stroke;
+}
+
+.house-dice-game .tool svg,
+.house-dice-game .icon svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The two purses */
+.house-dice-game .ledger {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-top: clamp(0.6rem, 3.5cqmin, 1.6rem);
+}
+
+.house-dice-game .purse {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.house-dice-game .purse[data-who='house'] {
+  justify-items: end;
+  text-align: right;
+}
+
+.house-dice-game .purse-label {
+  font-size: clamp(0.72rem, 2.1cqmin, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .purse-amount {
+  font-size: clamp(2.5rem, 12cqmin, 5.6rem);
+  line-height: 1.02;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .purse[data-who='you'] .purse-amount {
+  color: var(--hdg-you);
+}
+
+.house-dice-game .purse[data-who='house'] .purse-amount {
+  font-size: clamp(1.5rem, 6.6cqmin, 3.1rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.house-dice-game .purse-unit {
+  font-size: clamp(0.75rem, 2cqmin, 0.95rem);
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .purse-amount[data-flash] {
+  animation: hdg-flash 0.5s ease-out;
+}
+
+.house-dice-game .purse-amount[data-flash='loss'] {
+  --hdg-flash: var(--hdg-loss);
+}
+
+.house-dice-game .purse-amount[data-flash='win'] {
+  --hdg-flash: var(--hdg-win);
+}
+
+@keyframes hdg-flash {
+  0% {
+    color: var(--hdg-flash);
+    transform: translateY(0.04em);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* The table and the die */
+.house-dice-game .table {
+  --die: clamp(5rem, min(42cqw, 23cqh), 17rem);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: center;
+  align-items: center;
+  min-height: 0;
+  gap: clamp(0.3rem, 2cqmin, 1rem);
+  padding-top: 0.25rem;
+}
+
+.house-dice-game .die-scene {
+  position: relative;
+  z-index: 1;
+  width: var(--die);
+  height: var(--die);
+  perspective: calc(var(--die) * 5.5);
+}
+
+.house-dice-game .die-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -11%;
+  width: 104%;
+  height: 22%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--hdg-shadow), transparent);
+}
+
+.house-dice-game .die-hop,
+.house-dice-game .die-pose,
+.house-dice-game .die-cube {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.house-dice-game .die-hop {
+  will-change: transform;
+}
+
+.house-dice-game .die-pose {
+  transform: rotateX(-17deg) rotateY(20deg);
+}
+
+.house-dice-game .die-cube {
+  will-change: transform;
+}
+
+.house-dice-game .die-core {
+  position: absolute;
+  inset: 3%;
+  background: var(--hdg-die-edge);
+}
+
+.house-dice-game .die-core-x {
+  transform: rotateY(90deg);
+}
+
+.house-dice-game .die-core-y {
+  transform: rotateX(90deg);
+}
+
+.house-dice-game .die-face {
+  --half: calc(var(--die) / 2);
+  --shade: 0;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  place-items: center;
+  padding: 11%;
+  border-radius: 17%;
+  background: var(--hdg-die);
+  backface-visibility: hidden;
+}
+
+/* The light: --shade comes from where the face is pointing (dieMotion.ts). */
+.house-dice-game .die-face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(52 42 28 / var(--shade));
+  box-shadow: inset 0 0 calc(var(--die) * 0.05) rgb(90 70 40 / 0.22);
+}
+
+.house-dice-game .die-face i {
+  width: 74%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--hdg-pip);
+  box-shadow: inset 0 calc(var(--die) * 0.008) calc(var(--die) * 0.012) rgb(0 0 0 / 0.5);
+}
+
+.house-dice-game .die-face[data-face='6'] i {
+  background: var(--hdg-pip-six);
+}
+
+.house-dice-game .die-face[data-face='1'] {
+  transform: translateZ(var(--half));
+}
+
+.house-dice-game .die-face[data-face='6'] {
+  transform: rotateY(180deg) translateZ(var(--half));
+}
+
+.house-dice-game .die-face[data-face='3'] {
+  transform: rotateY(90deg) translateZ(var(--half));
+}
+
+.house-dice-game .die-face[data-face='4'] {
+  transform: rotateY(-90deg) translateZ(var(--half));
+}
+
+.house-dice-game .die-face[data-face='2'] {
+  transform: rotateX(90deg) translateZ(var(--half));
+}
+
+.house-dice-game .die-face[data-face='5'] {
+  transform: rotateX(-90deg) translateZ(var(--half));
+}
+
+/* One ring per settled roll, same size and duration for a win and a loss. */
+.house-dice-game .table > .die-scene,
+.house-dice-game .table > .pulse {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.house-dice-game .pulse {
+  width: calc(var(--die) * 1.5);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--hdg-pulse);
+  opacity: 0;
+  pointer-events: none;
+  animation: hdg-pulse 0.65s ease-out;
+}
+
+.house-dice-game .pulse[data-win] {
+  --hdg-pulse: var(--hdg-win);
+}
+
+.house-dice-game .pulse:not([data-win]) {
+  --hdg-pulse: var(--hdg-loss);
+}
+
+@keyframes hdg-pulse {
+  from {
+    opacity: 0.8;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+.house-dice-game .verdict {
+  min-height: 1.5em;
+  font-size: clamp(1rem, 3.4cqmin, 1.6rem);
+  font-weight: 550;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--hdg-muted);
+  animation: hdg-rise 0.22s ease-out;
+}
+
+.house-dice-game .stage[data-result='win'] .verdict {
+  color: var(--hdg-win);
+}
+
+.house-dice-game .stage[data-result='loss'] .verdict {
+  color: var(--hdg-fg);
+}
+
+@keyframes hdg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.25em);
+  }
+}
+
+/* Tokens travelling between the purses and the table */
+.house-dice-game .flights {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.house-dice-game .token {
+  --from-x: 50cqw;
+  --from-y: 50cqh;
+  --to-x: 50cqw;
+  --to-y: 50cqh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(1.1rem, 5cqmin, 2rem);
+  aspect-ratio: 1;
+  margin: calc(clamp(1.1rem, 5cqmin, 2rem) / -2);
+  border-radius: 50%;
+  background: var(--hdg-token);
+  box-shadow: inset 0 0 0 0.16em var(--hdg-token-edge), 0 0.08em 0.2em var(--hdg-shadow);
+  opacity: 0;
+  animation: hdg-fly 0.5s cubic-bezier(0.3, 0.6, 0.3, 1) both;
+}
+
+.house-dice-game .flight-stake {
+  --from-x: 18cqw;
+  --from-y: 24cqh;
+  --to-x: 50cqw;
+  --to-y: 44cqh;
+}
+
+.house-dice-game .flight-lost {
+  --from-x: 50cqw;
+  --from-y: 44cqh;
+  --to-x: 84cqw;
+  --to-y: 22cqh;
+}
+
+.house-dice-game .flight-won {
+  --from-x: 50cqw;
+  --from-y: 44cqh;
+  --to-x: 18cqw;
+  --to-y: 24cqh;
+}
+
+@keyframes hdg-fly {
+  0% {
+    opacity: 0;
+    transform: translate(var(--from-x), var(--from-y)) scale(0.7);
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--to-x), var(--to-y)) scale(0.85);
+  }
+}
+
+/* Controls */
+.house-dice-game .actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: clamp(0.4rem, 1.6cqmin, 0.8rem);
+  padding-top: clamp(0.3rem, 2cqmin, 1rem);
+  min-height: clamp(9rem, 28cqmin, 13rem);
+  align-content: start;
+}
+
+.house-dice-game .roll {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.7rem;
+  width: min(100%, 24rem);
+  min-height: clamp(3.5rem, 11cqmin, 5.5rem);
+  padding: 0 1.5rem;
+  border-radius: 1rem;
+  background: var(--hdg-button);
+  color: var(--hdg-button-fg);
+  font-size: clamp(1.2rem, 4.2cqmin, 1.9rem);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  align-items: center;
+  transition: transform 0.12s ease-out, opacity 0.15s;
+}
+
+.house-dice-game .roll small {
+  font-size: 0.62em;
+  font-weight: 500;
+  opacity: 0.68;
+}
+
+.house-dice-game .roll:hover:not([aria-disabled='true']) {
+  transform: translateY(-1px);
+}
+
+.house-dice-game .roll:active:not([aria-disabled='true']) {
+  transform: translateY(1px) scale(0.99);
+}
+
+.house-dice-game .roll[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.house-dice-game .rule {
+  font-size: clamp(0.82rem, 2.3cqmin, 1.05rem);
+  color: var(--hdg-muted);
+  text-align: center;
+}
+
+.house-dice-game .ghost {
+  min-height: 2.85em;
+  padding: 0 1em;
+  border-radius: 0.65em;
+  border: 1px solid var(--hdg-line);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--hdg-fg);
+  transition: border-color 0.15s;
+}
+
+.house-dice-game .ghost:hover {
+  border-color: var(--hdg-axis);
+}
+
+.house-dice-game .primary {
+  min-height: 2.75em;
+  padding: 0 1.15em;
+  border-radius: 0.7em;
+  background: var(--hdg-button);
+  color: var(--hdg-button-fg);
+  font-size: 0.95em;
+  font-weight: 650;
+}
+
+.house-dice-game .primary[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.house-dice-game .chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+}
+
+.house-dice-game .chips legend {
+  float: left;
+  padding: 0;
+  margin-right: 0.5em;
+  font-size: 0.82em;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .chips label {
+  position: relative;
+  cursor: pointer;
+}
+
+.house-dice-game .chips input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.house-dice-game .chips span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.85em;
+  height: 2.6em;
+  padding: 0 0.75em;
+  border: 1px solid var(--hdg-line);
+  border-radius: 999px;
+  font-size: 0.875em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .chips input:checked + span {
+  background: var(--hdg-button);
+  border-color: var(--hdg-button);
+  color: var(--hdg-button-fg);
+}
+
+.house-dice-game .end-card {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  max-width: 28rem;
+  text-align: center;
+}
+
+.house-dice-game .end-card h3 {
+  font-size: clamp(1.15rem, 3.8cqmin, 1.7rem);
+  font-weight: 650;
+}
+
+.house-dice-game .end-card p {
+  font-size: clamp(0.9rem, 2.5cqmin, 1.1rem);
+  color: var(--hdg-muted);
+  text-wrap: balance;
+}
+
+.house-dice-game .end-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: 0.4em;
+}
+
+.house-dice-game .end-actions .ghost {
+  min-height: 2.75em;
+}
+
+/* The trail: roll count, last faces, trend */
+.house-dice-game .trail {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0 clamp(0.6rem, 2.5cqmin, 1.2rem);
+  border-top: 1px solid var(--hdg-line);
+}
+
+.house-dice-game .trail-count {
+  flex: none;
+  font-size: 0.82em;
+  color: var(--hdg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .trail-count b {
+  color: var(--hdg-fg);
+  font-weight: 650;
+}
+
+.house-dice-game .trail-rolls {
+  display: flex;
+  gap: 0.2em;
+  overflow: hidden;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.house-dice-game .trail-rolls li {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: 0.3em;
+  border: 1px solid var(--hdg-line);
+  font-size: 0.72em;
+  font-weight: 600;
+  color: var(--hdg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .trail-rolls li[data-win] {
+  border-color: var(--hdg-you);
+  color: var(--hdg-you);
+}
+
+.house-dice-game .spark {
+  flex: 1 1 3em;
+  min-width: 0;
+  height: 1.8em;
+}
+
+.house-dice-game .spark line {
+  stroke: var(--hdg-line);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.house-dice-game .spark path {
+  fill: none;
+  stroke: var(--hdg-series-you);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* A wide stage has room between the purses: the die rises into it */
+@container stage (min-width: 40rem) and (min-height: 29rem) {
+  .house-dice-game .ledger {
+    grid-row: 2;
+    grid-column: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .house-dice-game .table {
+    --die: clamp(5rem, min(30cqw, 33cqh), 22rem);
+    grid-row: 2 / 4;
+    grid-column: 1;
+  }
+}
+
+/* Compact stage, while the analysis has the centre */
+.house-dice-game .stage[data-compact] {
+  padding: 0 0.85rem;
+  border-right: 1px solid var(--hdg-line);
+}
+
+.house-dice-game .stage[data-compact] .wordmark,
+.house-dice-game .stage[data-compact] .rule,
+.house-dice-game .stage[data-compact] .chips,
+.house-dice-game .stage[data-compact] .trail-rolls,
+.house-dice-game .stage[data-compact] .purse-unit,
+.house-dice-game .stage[data-compact] .flights {
+  display: none;
+}
+
+.house-dice-game .stage[data-compact] .ledger {
+  gap: 0.5rem;
+}
+
+.house-dice-game .stage[data-compact] .purse-amount {
+  font-size: 2.1rem;
+}
+
+.house-dice-game .stage[data-compact] .purse[data-who='house'] .purse-amount {
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+
+.house-dice-game .stage[data-compact] .table {
+  --die: 5.5rem;
+}
+
+.house-dice-game .stage[data-compact] .verdict {
+  font-size: 0.9rem;
+}
+
+.house-dice-game .stage[data-compact] .actions {
+  min-height: 7.5rem;
+}
+
+.house-dice-game .stage[data-compact] .roll {
+  min-height: 3.25rem;
+  font-size: 1.1rem;
+  padding: 0 0.75rem;
+}
+
+.house-dice-game .stage[data-compact] .end-actions {
+  display: grid;
+  width: 100%;
+}
+
+/* Short, wide stages (a phone on its side): the table moves beside the ledger */
+@container stage (max-height: 29rem) and (min-width: 34rem) {
+  .house-dice-game .stage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    column-gap: 1.5rem;
+  }
+  .house-dice-game .topbar {
+    grid-column: 1 / -1;
+  }
+  .house-dice-game .ledger {
+    grid-column: 1;
+  }
+  .house-dice-game .table {
+    --die: clamp(5rem, min(24cqw, 48cqh), 14rem);
+    grid-column: 2;
+    grid-row: 2 / 5;
+  }
+  .house-dice-game .actions {
+    grid-column: 1;
+    min-height: 0;
+  }
+  .house-dice-game .trail {
+    grid-column: 1;
+  }
+  .house-dice-game .flights {
+    display: none;
+  }
+}
+
+/* The Analysis panel */
+.house-dice-game .panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--hdg-surface);
+  animation: hdg-panel 0.2s ease-out;
+}
+
+@container hdg (max-width: 53.99rem) {
+  .house-dice-game .panel {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+  .house-dice-game .panel-tools .focus-toggle {
+    display: none;
+  }
+}
+
+@container hdg (min-width: 54rem) {
+  .house-dice-game .shell:not([data-panel='focus']) .panel {
+    border-left: 1px solid var(--hdg-line);
+  }
+}
+
+@keyframes hdg-panel {
+  from {
+    opacity: 0;
+    transform: translateX(0.6em);
+  }
+}
+
+.house-dice-game .panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+  padding: 0.7em 0.9em;
+  border-bottom: 1px solid var(--hdg-line);
+}
+
+.house-dice-game .tabs {
+  display: flex;
+  gap: 0.15em;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.house-dice-game .tabs button {
+  flex: none;
+  min-height: 2.85em;
+  padding: 0 0.75em;
+  border-radius: 0.55em;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .tabs button:hover {
+  color: var(--hdg-fg);
+}
+
+.house-dice-game .tabs button[aria-selected='true'] {
+  color: var(--hdg-fg);
+  background: var(--hdg-bg);
+}
+
+.house-dice-game .tabs button[data-lab][aria-selected='true'] {
+  color: var(--hdg-lab);
+  background: var(--hdg-lab-soft);
+}
+
+.house-dice-game .panel-tools {
+  display: flex;
+  flex: none;
+  gap: 0.3em;
+  align-items: center;
+}
+
+.house-dice-game .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 0.55em;
+}
+
+.house-dice-game .focus-toggle[aria-pressed='true'] {
+  background: var(--hdg-bg);
+}
+
+.house-dice-game .icon:hover {
+  background: var(--hdg-bg);
+}
+
+.house-dice-game .panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1em 1.1em 1.5em;
+  display: grid;
+  gap: 1.15em;
+  /* Not `auto`: an overflowing grid would squash the scrollable tables to nothing. */
+  grid-auto-rows: max-content;
+  align-content: start;
+  overscroll-behavior: contain;
+}
+
+.house-dice-game .empty {
+  padding: 2em 1em;
+  text-align: center;
+  color: var(--hdg-muted);
+  text-wrap: balance;
+}
+
+.house-dice-game .note {
+  font-size: 0.82em;
+  color: var(--hdg-muted);
+}
+
+/* Stat tiles */
+.house-dice-game .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.75em, 1fr));
+  gap: 0.9em 1.1em;
+}
+
+.house-dice-game .stat dt {
+  font-size: 0.78em;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .stat dd {
+  display: grid;
+}
+
+.house-dice-game .stat-value {
+  font-size: 1.45em;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .stat small {
+  font-size: 0.75em;
+  color: var(--hdg-muted);
+}
+
+/* Charts */
+.house-dice-game .charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24em), 1fr));
+  gap: 1.4em 1.6em;
+}
+
+.house-dice-game .chart {
+  display: grid;
+  gap: 0.35em;
+  min-width: 0;
+}
+
+.house-dice-game .chart h3 {
+  font-size: 0.95em;
+  font-weight: 620;
+}
+
+.house-dice-game .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15em 0.85em;
+  margin-top: 0.2em;
+  font-size: 0.75em;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.house-dice-game .key {
+  display: inline-block;
+  width: 1.1em;
+  border-top: 2px solid;
+}
+
+.house-dice-game .key[data-dashed] {
+  border-top-style: dashed;
+}
+
+.house-dice-game .key-band {
+  height: 0.7em;
+  border: 0;
+  border-radius: 2px;
+}
+
+.house-dice-game .plot {
+  position: relative;
+  height: 18em;
+  min-width: 0;
+  font-size: 0.8em;
+}
+
+.house-dice-game .shell[data-panel='focus'] .plot {
+  height: clamp(18em, 38vh, 32em);
+}
+
+/* Charts side by side keep their plots level, whatever the length of their legends. */
+.house-dice-game .shell[data-panel='focus'] .legend {
+  min-height: 3.1em;
+  align-content: start;
+}
+
+.house-dice-game .plot svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  touch-action: pan-y;
+}
+
+.house-dice-game .plot .tick {
+  fill: var(--hdg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .plot .axis-title {
+  fill: var(--hdg-muted);
+  font-size: 0.92em;
+}
+
+.house-dice-game .plot .grid {
+  stroke: var(--hdg-grid);
+  stroke-width: 1;
+}
+
+.house-dice-game .plot .grid[data-zero] {
+  stroke: var(--hdg-axis);
+}
+
+.house-dice-game .plot .axis {
+  stroke: var(--hdg-axis);
+  stroke-width: 1;
+}
+
+.house-dice-game .plot .end-dot {
+  stroke: var(--hdg-surface);
+  stroke-width: 2;
+}
+
+.house-dice-game .plot .crosshair {
+  stroke: var(--hdg-axis);
+  stroke-width: 1;
+}
+
+.house-dice-game .plot .hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.house-dice-game .tooltip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 0.1em;
+  max-width: 15em;
+  padding: 0.4em 0.55em;
+  border: 1px solid var(--hdg-line);
+  border-radius: 0.5em;
+  background: var(--hdg-raised);
+  box-shadow: 0 0.2em 0.7em rgb(0 0 0 / 0.14);
+  color: var(--hdg-muted);
+  pointer-events: none;
+}
+
+.house-dice-game .tooltip strong,
+.house-dice-game .tooltip b {
+  color: var(--hdg-fg);
+  font-weight: 620;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .caption {
+  font-size: 0.8em;
+  color: var(--hdg-muted);
+}
+
+/* Why the house wins */
+.house-dice-game .why {
+  border-top: 1px solid var(--hdg-line);
+  padding-top: 0.75em;
+  font-size: 0.92em;
+}
+
+.house-dice-game .why summary {
+  font-weight: 620;
+  cursor: pointer;
+  min-height: 1.75em;
+}
+
+.house-dice-game .why p {
+  margin-top: 0.6em;
+  color: var(--hdg-muted);
+  max-width: 44em;
+}
+
+.house-dice-game .why .formula {
+  color: var(--hdg-fg);
+  font-size: 1.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .frac {
+  display: inline-grid;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 0.82em;
+  line-height: 1.1;
+}
+
+.house-dice-game .frac span:first-child {
+  border-bottom: 1px solid currentColor;
+  padding: 0 0.15em;
+}
+
+/* Tables */
+.house-dice-game table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-dice-game .table-wrap {
+  max-height: 16em;
+  overflow: auto;
+}
+
+.house-dice-game th,
+.house-dice-game td {
+  padding: 0.35em 0.5em;
+  text-align: right;
+  border-bottom: 1px solid var(--hdg-grid);
+  white-space: nowrap;
+}
+
+.house-dice-game th:first-child,
+.house-dice-game td:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+
+.house-dice-game thead th {
+  font-weight: 500;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game tbody th {
+  font-weight: 500;
+  white-space: normal;
+}
+
+.house-dice-game .compare td:nth-child(3) {
+  font-weight: 620;
+}
+
+.house-dice-game tr[data-current] th,
+.house-dice-game tr[data-current] td {
+  font-weight: 620;
+}
+
+.house-dice-game .link {
+  padding: 0.15em 0;
+  font-weight: inherit;
+  color: var(--hdg-theory);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.house-dice-game .row-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.house-dice-game .danger[data-armed] {
+  border-color: var(--hdg-loss);
+  color: var(--hdg-loss);
+}
+
+/* Simulation: its own visual register, so that it cannot be mistaken for the game */
+.house-dice-game .lab-banner {
+  padding: 0.6em 0.75em;
+  border-left: 3px solid var(--hdg-lab);
+  border-radius: 0 0.5em 0.5em 0;
+  background: var(--hdg-lab-soft);
+  font-size: 0.85em;
+  color: var(--hdg-muted);
+}
+
+.house-dice-game .lab-banner strong {
+  color: var(--hdg-lab);
+  margin-right: 0.3em;
+}
+
+.house-dice-game .lab-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.7em 1.25em;
+}
+
+.house-dice-game .lab-controls .chips {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: auto auto;
+  justify-content: start;
+}
+
+.house-dice-game .lab-controls .chips legend {
+  grid-column: 1 / -1;
+  float: none;
+  margin: 0 0 0.25em;
+}
+
+.house-dice-game .run-title {
+  font-size: 1em;
+  font-weight: 620;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .house-dice-game *,
+  .house-dice-game *::before,
+  .house-dice-game *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  .house-dice-game .flights {
+    display: none;
+  }
+}

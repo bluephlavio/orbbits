@@ -32,6 +32,14 @@ component tree is how you make that happen. For Bits where the internal structur
 for understanding the pedagogical intent, describe it in `README.md` so the next author or agent
 can grasp the design without decoding the React.
 
+## Logic and tests
+
+When being right matters more than looking right (a game's accounting, a simulation), keep the
+logic in plain TypeScript modules under `src/` that import nothing from React or the DOM, and test
+them in `bits/<id>/tests/*.test.ts` with Node's own runner (`node:test`, no dependency). `.ts`
+extensions on relative imports let both Vite and Node load them. `tests/test_bit_logic.py` runs
+every Bit's tests, so `just test` and CI pick them up. Reference: `bits/house-dice-game`.
+
 ## Layout and responsiveness
 
 - Fill the container width (`width: 100%`), keep an aspect ratio (`aspect-ratio`), cap with a
@@ -156,6 +164,8 @@ Unicode for simple symbols (θ, π, ≤); for real typesetting add KaTeX at the 
 - One lazily loaded chunk per Bit is automatic; keep dependencies light.
 - Throttle expensive redraws (JSXGraph `resize.throttle`, `requestAnimationFrame` for p5).
 - No network requests at runtime; data ships in `src/`.
+- `localStorage` is fine for state that belongs to one device, under a key naming the Bit. Wrap
+  every access in `try`/`catch`, and treat what you read as untrusted input.
 
 ## Language
 

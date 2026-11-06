@@ -44,6 +44,7 @@ orbbits/
 │   ├── narrative.md      classroom prose, questions, notes after use (optional)
 │   ├── locales/          per-language strings, <tag>.yml (only when the Bit has translatable text)
 │   ├── src/              editable material
+│   ├── tests/            logic tests of an interactive Bit (optional)
 │   ├── dist/             classroom-ready outputs (versioned, except dist/web/)
 │   └── .build/           scratch space, never versioned
 ├── orbits/               reserved for future lessons

@@ -10,6 +10,7 @@ bits/<id>/
 ├── narrative.md   reusable classroom prose and notes after use (optional)
 ├── locales/       per-language strings, <tag>.yml, only for Bits with translatable text (optional)
 ├── src/           editable material (required unless engine is static/external)
+├── tests/         logic tests of an interactive Bit, *.test.ts (optional, docs/style/interactive.md)
 ├── dist/          classroom-ready outputs (created on demand, versioned except dist/web/)
 └── .build/        scratch space (ignored by git)
 ```
@@ -135,7 +136,7 @@ See `docs/web-runtime.md` for how web engines are added. Do not add a new engine
 
 ### `role` (open, suggested)
 
-`animation`, `simulation`, `explorable`, `dynamic-geometry`, `diagram`, `plot`,
+`animation`, `simulation`, `game`, `explorable`, `dynamic-geometry`, `diagram`, `plot`,
 `data-visualization`, `map`, `illustration`, `model`, `annotated-source`, `handout`.
 Other values are allowed; `check` only warns, to keep the vocabulary from drifting silently.
 

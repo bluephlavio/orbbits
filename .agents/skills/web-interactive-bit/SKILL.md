@@ -19,7 +19,8 @@ bits/<id>/
 ├── narrative.md       what to say/ask while students use it (optional)
 ├── locales/<tag>.yml  the strings the learner reads, one file per locale (only if localised)
 ├── src/index.tsx      default export = the whole Bit (stage + controls + readout)
-└── src/styles.css     scoped under .<id>
+├── src/styles.css     scoped under .<id>
+└── tests/*.test.ts    logic tests with node:test, when rules must be right (optional)
 ```
 
 Start from the brief: an interactive is the medium for *letting the learner vary* the

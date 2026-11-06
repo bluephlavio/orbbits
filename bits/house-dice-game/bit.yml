@@ -1,0 +1,21 @@
+id: house-dice-game
+title: Il dado del banco
+
+kind: interactive
+role: game
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-05
+
+description: >-
+  Paghi un gettone, lanci il dado, e se esce 6 ne ricevi cinque: conviene? Un gioco da provare
+  di persona, con gettoni fittizi, e poi da analizzare con i propri dati e con migliaia di lanci
+  simulati, per scoprire perché il banco vince nel lungo periodo.
+
+subjects: [mathematics, civic-education]
+topics: [probability, expected-value, law-of-large-numbers, gambling-awareness]
+levels: [upper-secondary]
+tags: [probability, expected-value, law-of-large-numbers, house-edge, game-of-chance, civic-education]
