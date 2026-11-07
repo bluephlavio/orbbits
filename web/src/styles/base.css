@@ -64,13 +64,47 @@ h2 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
 .orb-related { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
 .orb-provenance { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.15rem; }
 
-/* Tags: buttons on the home page (filter), links on Bit pages */
+/* Tags: buttons on the catalog cards (select the tag filter), links on Bit pages */
 .orb-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .orb-tag { font: inherit; font-size: 0.78rem; color: var(--orb-fg); background: var(--orb-soft); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.1rem 0.6rem; cursor: pointer; text-decoration: none; line-height: 1.4; }
 .orb-tag:hover { border-color: var(--orb-accent); }
 .orb-tag[aria-pressed="true"] { background: var(--orb-accent); color: var(--orb-bg); border-color: var(--orb-accent); }
 .orb-tag small { opacity: 0.7; }
-.orb-filter { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+
+/* Catalog toolbar: search, filters, sort (components/CatalogToolbar.astro) */
+.orb-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.orb-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.orb-toolbar input, .orb-toolbar select { font: inherit; font-size: 0.86rem; height: 2.25rem; color: var(--orb-fg); background: var(--orb-bg); border: 1px solid var(--orb-line); border-radius: 999px; }
+.orb-toolbar input:hover, .orb-toolbar select:hover { border-color: var(--orb-muted); }
+.orb-toolbar input:focus-visible, .orb-toolbar select:focus-visible, .orb-toolbar button:focus-visible, .orb-reset:focus-visible { outline: 2px solid var(--orb-accent); outline-offset: 1px; border-color: var(--orb-accent); }
+.orb-toolbar .orb-icon { position: absolute; left: 0.75rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); fill: none; stroke: var(--orb-muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.orb-search { position: relative; flex: 1 1 16rem; min-width: 0; }
+.orb-search input { width: 100%; padding: 0 2.25rem 0 2.2rem; }
+.orb-search input::placeholder { color: var(--orb-muted); opacity: 1; }
+.orb-search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.orb-search-clear { position: absolute; right: 0.3rem; top: 50%; transform: translateY(-50%); width: 1.65rem; height: 1.65rem; display: grid; place-items: center; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--orb-muted); cursor: pointer; }
+.orb-search-clear:hover { background: var(--orb-soft); color: var(--orb-fg); }
+.orb-search-clear[hidden] { display: none; }
+.orb-search-clear svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.orb-select { position: relative; flex: 0 1 10.75rem; min-width: 0; }
+.orb-select select { appearance: none; -webkit-appearance: none; width: 100%; padding: 0 1.9rem 0 0.85rem; text-overflow: ellipsis; cursor: pointer; }
+.orb-select::after { content: ""; position: absolute; right: 0.85rem; top: 50%; width: 0.38rem; height: 0.38rem; border-right: 1.5px solid var(--orb-muted); border-bottom: 1.5px solid var(--orb-muted); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+.orb-select select[data-active] { border-color: var(--orb-accent); color: var(--orb-accent); background: color-mix(in srgb, var(--orb-accent) 7%, var(--orb-bg)); }
+.orb-select select option { color: var(--orb-fg); background: var(--orb-bg); }
+.orb-sort { flex-basis: 9.75rem; }
+.orb-sort select { padding-left: 2.1rem; }
+.orb-results { display: flex; align-items: baseline; gap: 0.9rem; min-height: 1.6rem; margin: 0.45rem 0.25rem 0.8rem; font-size: 0.82rem; color: var(--orb-muted); }
+.orb-reset { font: inherit; padding: 0; border: 0; background: none; color: var(--orb-accent); cursor: pointer; }
+.orb-reset:hover { text-decoration: underline; }
+.orb-reset[hidden], .orb-drafts[hidden], .orb-empty[hidden] { display: none; }
+@media (max-width: 56rem) {
+  /* Search on its own row, the selects below in as many equal columns as fit (4 → 2 on phones). */
+  .orb-toolbar { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); }
+  .orb-search { grid-column: 1 / -1; }
+  .orb-select select { padding: 0 1.7rem 0 0.7rem; }
+  .orb-select::after { right: 0.75rem; }
+  .orb-sort select { padding-left: 1.95rem; }
+}
 
 /* Catalog */
 .orb-catalog { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }

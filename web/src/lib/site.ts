@@ -54,8 +54,25 @@ export const SITE = {
     'Ogni Bit ha un indirizzo stabile da condividere in classe.',
   home: 'Tutti i Bit',
   drafts: 'Bozze (solo in locale)',
-  filterAll: 'tutti',
-  filterHint: 'Filtra per tag',
+  catalog: {
+    toolbar: 'Cerca e filtra i Bit',
+    searchPlaceholder: 'Cerca nel catalogo…',
+    searchHint: 'Cerca per titolo, descrizione o tag',
+    clearSearch: 'Cancella la ricerca',
+    kind: 'Tipologia',
+    kindAll: 'Tutte le tipologie',
+    subject: 'Disciplina',
+    subjectAll: 'Tutte le discipline',
+    tag: 'Tag',
+    tagAll: 'Tutti i tag',
+    sort: 'Ordina',
+    sortNewest: 'Più recenti',
+    sortOldest: 'Meno recenti',
+    sortTitleAsc: 'Titolo A–Z',
+    sortTitleDesc: 'Titolo Z–A',
+    reset: 'Azzera filtri',
+    noMatch: 'Nessun Bit corrisponde alla ricerca.',
+  },
   related: 'Bit collegati',
   about: 'Scheda',
   downloads: 'File',
@@ -89,6 +106,21 @@ export const KIND_LABEL: Record<BitKind, string> = {
   figure: 'figura',
   document: 'documento',
 };
+
+/** Italian names of the `subjects` used in bit.yml; an unknown subject is shown as written. */
+export const SUBJECT_LABEL: Record<string, string> = {
+  mathematics: 'matematica',
+  physics: 'fisica',
+  'civic-education': 'educazione civica',
+  'history-of-science': 'storia della scienza',
+  chemistry: 'chimica',
+  biology: 'biologia',
+  'computer-science': 'informatica',
+};
+
+export function subjectLabel(subject: string): string {
+  return SUBJECT_LABEL[subject] ?? subject.replace(/-/g, ' ');
+}
 
 export const STATUS_LABEL: Record<BitStatus, string> = {
   draft: 'bozza',

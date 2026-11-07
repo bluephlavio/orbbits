@@ -1,0 +1,226 @@
+---
+/**
+ * Catalog toolbar: text search, filters (kind, subject, tag), sort, live result count and a
+ * reset. It works on the cards already in the page (the data-* attributes of BitCard), in a
+ * few lines of vanilla JS: no framework, no index, nothing fetched.
+ *
+ * Search, filters and every `.orb-catalog` list on the page combine; the state lives in the
+ * URL hash (#q=…&kind=…&subject=…&tag=…&sort=…) so a filtered view can be shared. Bit pages
+ * link their tags as #tag=<tag>, and a tag clicked on a card selects (or clears) that tag.
+ */
+import type { BitManifest } from '../lib/catalog';
+import { valueCounts } from '../lib/catalog';
+import { KIND_LABEL, SITE, subjectLabel } from '../lib/site';
+
+interface Props {
+  /** Every Bit listed on the page: the options are derived from them. */
+  bits: BitManifest[];
+}
+const { bits } = Astro.props;
+const t = SITE.catalog;
+
+const kinds = (Object.keys(KIND_LABEL) as (keyof typeof KIND_LABEL)[]).filter((k) =>
+  bits.some((b) => b.kind === k),
+);
+const subjects = valueCounts(bits, (b) => b.subjects)
+  .map(({ value }) => value)
+  .sort((a, b) => subjectLabel(a).localeCompare(subjectLabel(b), 'it'));
+const tags = valueCounts(bits, (b) => b.tags)
+  .map(({ value }) => value)
+  .sort((a, b) => a.localeCompare(b));
+---
+<form class="orb-toolbar" role="search" aria-label={t.toolbar}>
+  <div class="orb-search">
+    <svg class="orb-icon" viewBox="0 0 20 20" aria-hidden="true">
+      <circle cx="8.5" cy="8.5" r="5.5" />
+      <path d="M12.6 12.6 17 17" />
+    </svg>
+    <input
+      type="search"
+      name="q"
+      placeholder={t.searchPlaceholder}
+      aria-label={t.searchHint}
+      title={t.searchHint}
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button type="button" class="orb-search-clear" aria-label={t.clearSearch} title={t.clearSearch} hidden>
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8" /></svg>
+    </button>
+  </div>
+
+  {kinds.length > 1 && (
+    <label class="orb-select">
+      <span class="orb-sr">{t.kind}</span>
+      <select name="kind">
+        <option value="">{t.kindAll}</option>
+        {kinds.map((k) => <option value={k}>{KIND_LABEL[k]}</option>)}
+      </select>
+    </label>
+  )}
+  {subjects.length > 1 && (
+    <label class="orb-select">
+      <span class="orb-sr">{t.subject}</span>
+      <select name="subject">
+        <option value="">{t.subjectAll}</option>
+        {subjects.map((s) => <option value={s}>{subjectLabel(s)}</option>)}
+      </select>
+    </label>
+  )}
+  {tags.length > 0 && (
+    <label class="orb-select">
+      <span class="orb-sr">{t.tag}</span>
+      <select name="tag">
+        <option value="">{t.tagAll}</option>
+        {tags.map((tag) => <option value={tag}>{tag}</option>)}
+      </select>
+    </label>
+  )}
+  <label class="orb-select orb-sort">
+    <span class="orb-sr">{t.sort}</span>
+    <svg class="orb-icon" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M6 4v12M3 13l3 3 3-3M14 16V4M11 7l3-3 3 3" />
+    </svg>
+    <select name="sort">
+      <option value="newest">{t.sortNewest}</option>
+      <option value="oldest">{t.sortOldest}</option>
+      <option value="title">{t.sortTitleAsc}</option>
+      <option value="title-desc">{t.sortTitleDesc}</option>
+    </select>
+  </label>
+</form>
+
+<div class="orb-results">
+  <span class="orb-count" aria-live="polite" aria-atomic="true">{bits.length} Bit</span>
+  <button type="button" class="orb-reset" hidden>{t.reset}</button>
+</div>
+
+<script>
+  import { foldText } from '../lib/search';
+
+  type Sort = 'newest' | 'oldest' | 'title' | 'title-desc';
+  const FILTERS = ['kind', 'subject', 'tag'] as const;
+  const DEFAULT_SORT: Sort = 'newest';
+
+  const form = document.querySelector<HTMLFormElement>('.orb-toolbar')!;
+  const query = form.elements.namedItem('q') as HTMLInputElement;
+  const clear = form.querySelector<HTMLButtonElement>('.orb-search-clear')!;
+  const sort = form.elements.namedItem('sort') as HTMLSelectElement;
+  const selects = FILTERS.map((name) => form.elements.namedItem(name) as HTMLSelectElement | null);
+  const count = document.querySelector<HTMLElement>('.orb-count')!;
+  const reset = document.querySelector<HTMLButtonElement>('.orb-reset')!;
+  const noMatch = document.querySelector<HTMLElement>('.orb-nomatch');
+  const lists = [...document.querySelectorAll<HTMLElement>('.orb-catalog')];
+  const cards = lists.flatMap((l) => [...l.querySelectorAll<HTMLElement>(':scope > .orb-card')]);
+  const words = (value: string | undefined) => (value ?? '').split(' ').filter(Boolean);
+  // "9 Bit" / "3 di 9 Bit" (the chrome is Italian, like SITE in lib/site.ts).
+  const label = (shown: number, total: number) =>
+    shown === total ? `${total} Bit` : `${shown} di ${total} Bit`;
+
+  const compare: Record<Sort, (a: HTMLElement, b: HTMLElement) => number> = {
+    title: (a, b) => (a.dataset.title ?? '').localeCompare(b.dataset.title ?? '', 'it', { sensitivity: 'base' }),
+    'title-desc': (a, b) => compare.title(b, a),
+    // Undated Bits last in both directions; same day → by title.
+    newest: (a, b) => byDate(a, b, -1),
+    oldest: (a, b) => byDate(a, b, 1),
+  };
+  function byDate(a: HTMLElement, b: HTMLElement, dir: 1 | -1): number {
+    const x = a.dataset.created ?? '';
+    const y = b.dataset.created ?? '';
+    if (x !== y) return !x ? 1 : !y ? -1 : dir * x.localeCompare(y);
+    return compare.title(a, b);
+  }
+
+  function setSelect(select: HTMLSelectElement | null, value: string) {
+    if (!select) return;
+    // A tag linked from a Bit page may be missing from the options (e.g. only on a draft).
+    if (value && ![...select.options].some((o) => o.value === value)) select.add(new Option(value, value));
+    select.value = value;
+  }
+
+  /** Form ← URL hash (#q=…&tag=…). Unknown keys are ignored, missing ones reset. */
+  function read() {
+    const params = new URLSearchParams(location.hash.slice(1));
+    query.value = params.get('q') ?? '';
+    FILTERS.forEach((name, i) => setSelect(selects[i], params.get(name) ?? ''));
+    const s = params.get('sort') ?? DEFAULT_SORT;
+    sort.value = s in compare ? s : DEFAULT_SORT;
+  }
+
+  /** URL hash ← form; only non-default values, nothing at all for the plain catalog. */
+  function write() {
+    const params = new URLSearchParams();
+    if (query.value.trim()) params.set('q', query.value.trim());
+    FILTERS.forEach((name, i) => selects[i]?.value && params.set(name, selects[i]!.value));
+    if (sort.value !== DEFAULT_SORT) params.set('sort', sort.value);
+    const hash = params.toString();
+    history.replaceState(null, '', hash ? `#${hash}` : location.pathname + location.search);
+  }
+
+  function apply() {
+    const terms = words(foldText(query.value));
+    const [kind, subject, tag] = selects.map((s) => s?.value ?? '');
+    let shown = 0;
+    for (const card of cards) {
+      const ok =
+        (!kind || card.dataset.kind === kind) &&
+        (!subject || words(card.dataset.subjects).includes(subject)) &&
+        (!tag || words(card.dataset.tags).includes(tag)) &&
+        terms.every((term) => (card.dataset.search ?? '').includes(term));
+      card.hidden = !ok;
+      if (ok) shown++;
+      card.querySelectorAll<HTMLButtonElement>('.orb-tag').forEach((b) => {
+        b.setAttribute('aria-pressed', String(!!tag && b.dataset.tag === tag));
+      });
+    }
+    const by = compare[sort.value as Sort] ?? compare[DEFAULT_SORT];
+    for (const list of lists) {
+      const items = [...list.querySelectorAll<HTMLElement>(':scope > .orb-card')];
+      list.append(...items.sort(by));
+      // A secondary list (drafts) disappears with its heading when nothing in it matches.
+      const section = list.closest<HTMLElement>('section');
+      if (section) section.hidden = items.every((c) => c.hidden);
+    }
+
+    const filtered = terms.length > 0 || selects.some((s) => s?.value);
+    count.textContent = label(shown, cards.length);
+    reset.hidden = !filtered;
+    clear.hidden = !query.value;
+    if (noMatch) noMatch.hidden = shown > 0 || cards.length === 0;
+    for (const s of selects) s?.toggleAttribute('data-active', !!s.value);
+  }
+
+  const update = () => {
+    write();
+    apply();
+  };
+
+  form.addEventListener('submit', (e) => e.preventDefault());
+  form.addEventListener('input', update);
+  clear.addEventListener('click', () => {
+    query.value = '';
+    query.focus();
+    update();
+  });
+  reset.addEventListener('click', () => {
+    query.value = '';
+    selects.forEach((s) => s && (s.value = ''));
+    update();
+  });
+  // A tag on a card selects that tag, or clears it when it is already the selected one.
+  document.addEventListener('click', (e) => {
+    const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.orb-card .orb-tag');
+    const tagSelect = selects[FILTERS.indexOf('tag')];
+    if (!button || !tagSelect) return;
+    const tag = button.dataset.tag ?? '';
+    setSelect(tagSelect, tagSelect.value === tag ? '' : tag);
+    update();
+  });
+  window.addEventListener('hashchange', () => {
+    read();
+    apply();
+  });
+
+  read();
+  apply();
+</script>

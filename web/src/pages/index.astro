@@ -1,22 +1,27 @@
 ---
 /**
- * Home: the OrbBits library. Lists every published Bit (usable/curated) with a tag filter;
- * the local dev server also shows drafts in a separate section. Derived from bits/<id>/bit.yml.
+ * Home: the OrbBits library. Lists every published Bit (usable/curated) under a toolbar for
+ * search, filters and sorting; the local dev server also shows drafts in a separate section.
+ * Derived from bits/<id>/bit.yml.
  *
  * In export mode (`just export <id>`) the site root is the exported Bit instead.
  */
 import Shell from '../layouts/Shell.astro';
 import BitView from '../components/BitView.astro';
 import BitCard from '../components/BitCard.astro';
-import { bits, exportBitId, getBit, isPublished, publishedBits, tagCounts } from '../lib/catalog';
+import CatalogToolbar from '../components/CatalogToolbar.astro';
+import { bits, exportBitId, getBit, isPublished, publishedBits, type BitManifest } from '../lib/catalog';
 import { SITE } from '../lib/site';
 
 const exported = exportBitId ? getBit(exportBitId) : undefined;
 if (exportBitId && !exported) {
   throw new Error(`ORBBITS_EXPORT_BIT=${exportBitId} does not match any bits/*/bit.yml`);
 }
-const drafts = import.meta.env.DEV ? bits.filter((b) => !isPublished(b)) : [];
-const tags = tagCounts(publishedBits);
+// Server order = the toolbar's default sort (newest first, then by title), so nothing moves on load.
+const newestFirst = (a: BitManifest, b: BitManifest) =>
+  (b.created ?? '').localeCompare(a.created ?? '') || a.title.localeCompare(b.title, 'it');
+const published = [...publishedBits].sort(newestFirst);
+const drafts = import.meta.env.DEV ? bits.filter((b) => !isPublished(b)).sort(newestFirst) : [];
 ---
 {exported ? (
   <Shell title={exported.title} bit={exported} standalone>
@@ -26,21 +31,13 @@ const tags = tagCounts(publishedBits);
   <Shell title={SITE.name}>
     <p class="orb-description">{SITE.tagline}</p>
 
-    {tags.length > 0 && (
-      <nav class="orb-filter" aria-label={SITE.filterHint}>
-        <button type="button" class="orb-tag" data-tag="" aria-pressed="true">{SITE.filterAll}</button>
-        {tags.map(({ tag, count }) => (
-          <button type="button" class="orb-tag" data-tag={tag} aria-pressed="false">
-            {tag} <small>{count}</small>
-          </button>
-        ))}
-      </nav>
-    )}
+    {published.length + drafts.length > 1 && <CatalogToolbar bits={[...published, ...drafts]} />}
 
     <ul class="orb-catalog">
-      {publishedBits.map((bit) => <BitCard bit={bit} />)}
+      {published.map((bit) => <BitCard bit={bit} />)}
     </ul>
     {publishedBits.length === 0 && <p class="orb-empty">Nessun Bit pubblicato.</p>}
+    <p class="orb-empty orb-nomatch" hidden>{SITE.catalog.noMatch}</p>
 
     {drafts.length > 0 && (
       <section class="orb-drafts">
@@ -53,35 +50,3 @@ const tags = tagCounts(publishedBits);
   </Shell>
 )}
 
-<script>
-  // Tag filter: click a tag (in the bar or on a card) to show only the Bits having it.
-  // The choice lives in the URL hash (#tag=unit-circle) so a filtered view can be shared.
-  const cards = [...document.querySelectorAll<HTMLElement>('.orb-card')];
-  const bar = document.querySelector<HTMLElement>('.orb-filter');
-
-  function apply(tag: string) {
-    for (const card of cards) {
-      const has = !tag || (card.dataset.tags ?? '').split(' ').includes(tag);
-      card.hidden = !has;
-    }
-    bar?.querySelectorAll<HTMLButtonElement>('.orb-tag').forEach((b) => {
-      b.setAttribute('aria-pressed', String((b.dataset.tag ?? '') === tag));
-    });
-  }
-
-  function current(): string {
-    const m = /(?:^#|&)tag=([^&]*)/.exec(location.hash);
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-
-  document.addEventListener('click', (e) => {
-    const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.orb-tag');
-    if (!button) return;
-    const tag = button.dataset.tag ?? '';
-    const next = tag && tag === current() && !bar?.contains(button) ? '' : tag;
-    history.replaceState(null, '', next ? `#tag=${encodeURIComponent(next)}` : location.pathname);
-    apply(next);
-  });
-  window.addEventListener('hashchange', () => apply(current()));
-  apply(current());
-</script>

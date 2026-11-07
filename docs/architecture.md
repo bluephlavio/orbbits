@@ -112,7 +112,7 @@ without localised outputs builds exactly once, in its default language.
 
 - **dev** (`just web`, `just dev <id>`): every Bit, drafts included, at `/bits/<id>/`;
 - **site** (`just site`, CI): the public library — home page with the published Bits and a
-  tag filter, one canonical page `/bits/<id>/` per published Bit (interactive mount, video,
+  search/filter/sort toolbar, one canonical page `/bits/<id>/` per published Bit (interactive mount, video,
   figure or PDF, downloads, related Bits). Base path and origin come from the environment;
 - **export** (`just export <id>`): one interactive Bit as a self-contained folder.
 

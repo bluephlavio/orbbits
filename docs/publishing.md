@@ -67,7 +67,8 @@ maturity then; not before.
 `web/` is the Astro runtime (docs/web-runtime.md). The site is deliberately minimal:
 
 - `/` — title, one-line description, the published Bits as cards (title, kind, role, status,
-  description, tags, id) with a client-side tag filter (`#tag=<tag>` in the URL);
+  description, tags, id), newest first, with a client-side toolbar to search, filter by kind,
+  subject and tag, and sort (state in the URL hash, e.g. `#tag=<tag>`, so a view can be shared);
 - `/bits/<id>/` — the Bit (interactive mount, video, figure or PDF) in its default locale,
   download links (every output, localised ones labelled), a short metadata box (tags, date,
   languages, licence of the original content, provenance, canonical address) and related

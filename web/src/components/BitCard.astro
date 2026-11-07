@@ -1,18 +1,29 @@
 ---
 /**
  * One entry of the catalog: title (link to the canonical page), badges, description, tags.
- * `data-tags` lets the home page filter cards client-side without any framework.
+ * The data-* attributes let the catalog toolbar search, filter and sort the cards client-side
+ * without any framework (components/CatalogToolbar.astro).
  */
 import { bitPath, type BitManifest } from '../lib/catalog';
 import { KIND_LABEL, STATUS_LABEL, withBase } from '../lib/site';
+import { foldText } from '../lib/search';
 
 interface Props {
   bit: BitManifest;
 }
 const { bit } = Astro.props;
 const tags = bit.tags ?? [];
+const search = foldText([bit.title, bit.description ?? '', ...tags].join(' '));
 ---
-<li class="orb-card" data-tags={tags.join(' ')} data-kind={bit.kind}>
+<li
+  class="orb-card"
+  data-tags={tags.join(' ')}
+  data-kind={bit.kind}
+  data-subjects={(bit.subjects ?? []).join(' ')}
+  data-title={bit.title}
+  data-created={bit.created ?? ''}
+  data-search={search}
+>
   <a class="orb-card-title" href={withBase(bitPath(bit.id))}>{bit.title}</a>
   <span class="orb-badges">
     <span class="orb-badge" data-kind={bit.kind}>{KIND_LABEL[bit.kind]}</span>

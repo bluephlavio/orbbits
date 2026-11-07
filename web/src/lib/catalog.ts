@@ -154,13 +154,16 @@ export function firstOutput(list: BitOutput[], ...formats: string[]): BitOutput 
   return undefined;
 }
 
-/** Tags used by the given Bits with their frequency, most used first. */
-export function tagCounts(list: BitManifest[]): { tag: string; count: number }[] {
+/** Values of a list field (tags, subjects, …) across the given Bits with their frequency, most used first. */
+export function valueCounts(
+  list: BitManifest[],
+  pick: (bit: BitManifest) => readonly string[] | undefined,
+): { value: string; count: number }[] {
   const counts = new Map<string, number>();
-  for (const bit of list) for (const tag of bit.tags ?? []) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  for (const bit of list) for (const value of pick(bit) ?? []) counts.set(value, (counts.get(value) ?? 0) + 1);
   return [...counts.entries()]
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 }
 
 /** Other visible Bits sharing at least one tag, most shared tags first. */

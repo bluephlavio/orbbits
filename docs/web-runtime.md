@@ -46,9 +46,13 @@ Rules (details in `docs/style/interactive.md`):
   `<img>`, PDF frame with an "open" link) in one locale — the Bit's default unless told
   otherwise — choosing among that locale's outputs, then the download links for every
   output (localised ones labelled with their tag) with proper file names.
-- `web/src/components/BitCard.astro` — a catalog entry (`data-tags` for the filter).
-- `web/src/pages/index.astro` — home / library: published Bits, tag filter (a few lines of
-  vanilla JS, state in `#tag=…`); drafts in a separate section in the dev server only.
+- `web/src/components/BitCard.astro` — a catalog entry (`data-*` attributes for the toolbar).
+- `web/src/components/CatalogToolbar.astro` — search (title, description, tags; accent- and
+  case-insensitive), filters by kind, subject and tag, sort (newest, oldest, title A–Z/Z–A),
+  live count and reset; vanilla JS over the cards in the page, state in the URL hash
+  (`#q=…&kind=…&subject=…&tag=…&sort=…`, defaults omitted). Bit pages link tags as `#tag=…`.
+- `web/src/pages/index.astro` — home / library: published Bits (newest first) under the
+  toolbar; drafts in a separate section in the dev server only.
 - `web/src/pages/bits/[id].astro` — the canonical Bit page: artifact, downloads, metadata box
   (tags, date, languages, licence of the original content, provenance with its licences,
   canonical address), related Bits by shared tags.
