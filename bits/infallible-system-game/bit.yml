@@ -1,0 +1,22 @@
+id: infallible-system-game
+title: Il sistema infallibile
+
+kind: interactive
+role: game
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-08
+
+description: >-
+  Una roulette con gettoni fittizi e un sistema che promette di non perdere mai: raddoppiare dopo
+  ogni sconfitta. Da provare di persona, da guardare all'opera in automatico e poi da mettere alla
+  prova con migliaia di giocatori simulati, per scoprire che vincere spesso e guadagnare sono due
+  cose diverse.
+
+subjects: [mathematics, civic-education]
+topics: [probability, expected-value, betting-systems, law-of-large-numbers, gambling-awareness]
+levels: [upper-secondary]
+tags: [probability, expected-value, law-of-large-numbers, house-edge, game-of-chance, martingale, roulette, civic-education]
