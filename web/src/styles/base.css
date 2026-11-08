@@ -114,3 +114,36 @@ h2 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
 .orb-card-description { margin: 0; font-size: 0.9rem; color: var(--orb-muted); }
 .orb-id { font-family: var(--orb-mono); font-size: 0.78rem; color: var(--orb-muted); }
 .orb-drafts { margin-top: 2rem; padding-top: 1rem; border-top: 1px dashed var(--orb-line); }
+
+/* QR code of a Bit's public address, for projecting in class (components/BitQr.astro) */
+.orb-qr-open, .orb-qr-icon { flex: none; -webkit-tap-highlight-color: transparent; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; padding: 0; border: 1px solid var(--orb-line); border-radius: 999px; background: transparent; color: var(--orb-muted); cursor: pointer; }
+.orb-qr-open { margin-left: auto; align-self: center; }
+.orb-qr-open:hover, .orb-qr-icon:hover { border-color: var(--orb-accent); color: var(--orb-accent); }
+.orb-qr-open:focus-visible, .orb-qr button:focus-visible { outline: 2px solid var(--orb-accent); outline-offset: 1px; }
+.orb-qr-open svg, .orb-qr-icon svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.orb-qr {
+  /* Side of the code: comfortable by default, nearly the whole screen when enlarged. */
+  --qr: min(30rem, 100vw - 4rem, 100vh - 10rem);
+  --qr: min(30rem, 100vw - 4rem, 100dvh - 10rem);
+  max-width: none; max-height: none; padding: 0.75rem 1rem 1rem; border: 1px solid var(--orb-line); border-radius: 14px;
+  background: var(--orb-bg); color: var(--orb-fg); box-shadow: 0 10px 40px rgb(0 0 0 / 0.18);
+}
+.orb-qr[data-zoom] { --qr: min(100vw - 3rem, 100vh - 8rem); --qr: min(100vw - 3rem, 100dvh - 8rem); }
+.orb-qr[open] { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+.orb-qr::backdrop { background: color-mix(in srgb, var(--orb-soft, #f5f6f8) 94%, transparent); }
+.orb-qr-bar { display: flex; align-items: center; gap: 0.4rem; width: var(--qr); }
+.orb-qr-bar h2 { flex: 1; margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--orb-muted); }
+.orb-qr .orb-qr-shrink, .orb-qr[data-zoom] .orb-qr-grow { display: none; }
+.orb-qr[data-zoom] .orb-qr-shrink { display: inline; }
+/* Always dark on white, whatever the theme: that is what phone cameras read best. */
+.orb-qr-code { display: block; width: var(--qr); height: var(--qr); border-radius: 6px; background: #fff; cursor: zoom-in; }
+.orb-qr[data-zoom] .orb-qr-code { cursor: zoom-out; }
+.orb-qr-url { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: var(--qr); font-size: clamp(0.85rem, 1.8vmin, 1.35rem); }
+.orb-qr-url code { min-width: 0; overflow-wrap: anywhere; user-select: all; }
+.orb-qr-copy { flex: none; font: inherit; font-size: 0.85rem; color: var(--orb-fg); background: var(--orb-soft); border: 1px solid var(--orb-line); border-radius: 999px; padding: 0.25rem 0.9rem; cursor: pointer; }
+.orb-qr-copy:hover { border-color: var(--orb-accent); }
+@media (max-width: 40rem) {
+  /* On a phone the code already spans the width: no point in enlarging it. */
+  .orb-qr-zoom { display: none; }
+  .orb-qr-code { cursor: default; }
+}

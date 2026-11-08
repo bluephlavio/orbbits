@@ -6,8 +6,9 @@
  * `standalone` is the single-Bit export (`just export <id>`): no site navigation, no base.
  */
 import '../styles/base.css';
+import BitQr from '../components/BitQr.astro';
 import type { BitManifest } from '../lib/catalog';
-import { bitLocale, bitPath } from '../lib/catalog';
+import { bitLocale, bitPath, isPublished } from '../lib/catalog';
 import { KIND_LABEL, LICENSES, SITE, STATUS_LABEL, absoluteUrl, repoUrl, withBase } from '../lib/site';
 
 interface Props {
@@ -19,6 +20,8 @@ const { title, bit, standalone = false } = Astro.props;
 
 const path = bit ? bitPath(bit.id) : '/';
 const canonical = standalone ? undefined : absoluteUrl(path);
+// The QR code encodes the public address only: known (ORBBITS_SITE) and published.
+const qrUrl = bit && canonical && isPublished(bit) ? canonical : undefined;
 const showStatus = bit && (bit.status !== 'usable' || import.meta.env.DEV);
 // The page speaks the Bit's default language; the chrome is Italian (docs/localization.md).
 const lang = bit ? bitLocale(bit) : 'it';
@@ -53,6 +56,7 @@ const lang = bit ? bitLocale(bit) : 'it';
             )}
           </div>
         )}
+        {qrUrl && <BitQr url={qrUrl} />}
       </header>
       {bit?.description && <p class="orb-description">{bit.description}</p>}
       <main>

@@ -72,7 +72,9 @@ maturity then; not before.
 - `/bits/<id>/` — the Bit (interactive mount, video, figure or PDF) in its default locale,
   download links (every output, localised ones labelled), a short metadata box (tags, date,
   languages, licence of the original content, provenance, canonical address) and related
-  Bits by shared tags.
+  Bits by shared tags. A QR button in the header opens an overlay with the code of the
+  canonical address (encoded at build time, so only when `ORBBITS_SITE` is known), to project
+  in class and let students open the page on their phones.
 
 Every page's footer links the source repository and states the licence split — software
 MIT, original content CC BY-SA 4.0 unless otherwise indicated, third-party material under

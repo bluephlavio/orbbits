@@ -1,0 +1,109 @@
+---
+/**
+ * QR code of a Bit's canonical public URL, for projecting in class (LIM) so that students can
+ * open the page on their phones: a discreet icon button and a native <dialog> overlay with
+ * the code, the readable URL and a copy button.
+ *
+ * The code is encoded at build time into an inline SVG (uqr, build-time only): no client
+ * library, nothing fetched. Shell renders it only when the public URL is known (ORBBITS_SITE)
+ * and the Bit is published, so it never encodes a local or development address.
+ */
+import { encode } from 'uqr';
+import { SITE } from '../lib/site';
+
+interface Props {
+  /** Absolute canonical URL of the Bit page. */
+  url: string;
+}
+const { url } = Astro.props;
+const t = SITE.qr;
+
+// ECC M is plenty for a projected code; a 4-module quiet zone as the spec asks.
+const qr = encode(url, { ecc: 'M', border: 4 });
+// One path, one run of dark modules per segment: a few hundred bytes for a typical URL.
+const modules = qr.data
+  .flatMap((row, y) => {
+    const runs: string[] = [];
+    for (let x = 0; x < row.length; x++) {
+      if (!row[x]) continue;
+      const start = x;
+      while (x + 1 < row.length && row[x + 1]) x++;
+      runs.push(`M${start} ${y}h${x - start + 1}v1h${start - x - 1}z`);
+    }
+    return runs;
+  })
+  .join('');
+---
+<button type="button" class="orb-qr-open" aria-haspopup="dialog" aria-label={t.open} title={t.open}>
+  <svg viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M3 3h5v5H3zM12 3h5v5h-5zM3 12h5v5H3z" />
+    <path d="M12 12h2v2h-2zM15 15h2v2h-2zM12 16h1M16 12h1" />
+  </svg>
+</button>
+
+<dialog class="orb-qr" aria-labelledby="orb-qr-title">
+  <div class="orb-qr-bar">
+    <h2 id="orb-qr-title">{t.title}</h2>
+    <button type="button" class="orb-qr-icon orb-qr-zoom" aria-pressed="false" aria-label={t.enlarge} title={t.enlarge} data-on={t.shrink} data-off={t.enlarge}>
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path class="orb-qr-grow" d="M12 3h5v5M8 17H3v-5M17 3l-5 5M3 17l5-5" /><path class="orb-qr-shrink" d="M17 8h-5V3M3 12h5v5M12 8l5-5M8 12l-5 5" /></svg>
+    </button>
+    <button type="button" class="orb-qr-icon orb-qr-close" aria-label={t.close} title={t.close}>
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" /></svg>
+    </button>
+  </div>
+  <svg class="orb-qr-code" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label={`${t.title}: ${url}`} shape-rendering="crispEdges">
+    <rect width={qr.size} height={qr.size} fill="#fff" />
+    <path d={modules} fill="#000" />
+  </svg>
+  <div class="orb-qr-url">
+    <code>{url}</code>
+    <button type="button" class="orb-qr-copy" data-url={url} data-done={t.copied}>{t.copy}</button>
+  </div>
+</dialog>
+
+<script>
+  const open = document.querySelector<HTMLButtonElement>('.orb-qr-open');
+  const dialog = document.querySelector<HTMLDialogElement>('dialog.orb-qr');
+
+  if (open && dialog) {
+    const zoom = dialog.querySelector<HTMLButtonElement>('.orb-qr-zoom')!;
+    const copy = dialog.querySelector<HTMLButtonElement>('.orb-qr-copy')!;
+    const code = dialog.querySelector('code')!;
+    const copyLabel = copy.textContent;
+    let copyTimer: number | undefined;
+
+    const setZoom = (on: boolean) => {
+      dialog.toggleAttribute('data-zoom', on);
+      zoom.setAttribute('aria-pressed', String(on));
+      const label = (on ? zoom.dataset.on : zoom.dataset.off) ?? '';
+      zoom.title = label;
+      zoom.setAttribute('aria-label', label);
+    };
+
+    open.addEventListener('click', () => dialog.showModal());
+    dialog.querySelector('.orb-qr-close')!.addEventListener('click', () => dialog.close());
+    zoom.addEventListener('click', () => setZoom(!dialog.hasAttribute('data-zoom')));
+    // Tapping the code on a touch board enlarges or shrinks it, like the zoom button.
+    dialog.querySelector('.orb-qr-code')!.addEventListener('click', () => zoom.click());
+    // A click on the backdrop lands on the <dialog> itself, outside its box: close. (Esc is native.)
+    dialog.addEventListener('click', (e) => {
+      if (e.target !== dialog) return;
+      const r = dialog.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) dialog.close();
+    });
+    dialog.addEventListener('close', () => setZoom(false));
+
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(copy.dataset.url ?? '');
+        copy.textContent = copy.dataset.done ?? copyLabel;
+        clearTimeout(copyTimer);
+        copyTimer = window.setTimeout(() => (copy.textContent = copyLabel), 2000);
+      } catch {
+        // No clipboard (insecure context, permission denied): select the URL to copy by hand.
+        getSelection()?.selectAllChildren(code);
+      }
+    });
+  }
+</script>
