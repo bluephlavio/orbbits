@@ -1,0 +1,22 @@
+id: vector-trigonometry-explorer
+title: Trigonometria e componenti di un vettore
+
+kind: interactive
+role: dynamic-geometry
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-13
+
+description: >-
+  Il triangolo rettangolo di un vettore letto nei due sensi: dal modulo e dall'angolo alle
+  componenti con seno e coseno, e dalle componenti al modulo con Pitagora e all'angolo con la
+  tangente inversa. Negli altri quadranti l'angolo di riferimento dà le lunghezze e il verso
+  delle proiezioni dà i segni, senza bisogno della circonferenza goniometrica.
+
+subjects: [mathematics, physics]
+topics: [vectors, vector-components, trigonometric-ratios, inverse-tangent, cartesian-plane]
+levels: [upper-secondary]
+tags: [vectors, vector-components, trigonometry, cartesian-plane, right-triangle, inverse-tangent]

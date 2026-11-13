@@ -1,0 +1,915 @@
+/*
+ * Trigonometria e componenti di un vettore. The vector suite's precision sheet (same tokens,
+ * same layout, same grammar: blue for v⃗, ochre for everything about x, teal for y, grey for
+ * construction lines), plus violet for the angle. Lengths of the legs are plain segments,
+ * scalar components are bands on the axes with a signed value, vector components are arrows.
+ * Everything is scoped under .vector-trigonometry-explorer.
+ */
+.vector-trigonometry-explorer {
+  --bg: #f3f2ee;
+  --stage: #fcfcfa;
+  --surface: #ffffff;
+  --line: #e2dfd7;
+  --line-strong: #cfcbc1;
+  --grid: #ecebe6;
+  --grid-major: #dcd9d1;
+  --axis: #575b64;
+  --fg: #1c1e25;
+  --muted: #646a76;
+  --soft: #8a8f99;
+  --c-v: #2b62cc;
+  --c-v-soft: rgb(43 98 204 / 0.1);
+  --c-x: #c0700f;
+  --c-x-deep: #8c4d04;
+  --c-x-soft: rgb(192 112 15 / 0.12);
+  --c-y: #0d8577;
+  --c-y-deep: #075d53;
+  --c-y-soft: rgb(13 133 119 / 0.12);
+  --c-aux: #8b909a;
+  --c-ang: #5b4bb5;
+  --c-ang-soft: rgb(91 75 181 / 0.13);
+  --tri-fill: rgb(43 98 204 / 0.06);
+  --q-tint: rgb(91 75 181 / 0.035);
+  --lit: rgb(43 98 204 / 0.07);
+  --lit-edge: rgb(43 98 204 / 0.35);
+  --term: rgb(43 98 204 / 0.14);
+  --mask: #e9e6de;
+  --button: #1c1e25;
+  --button-fg: #fbfaf7;
+  --shadow: 0 1px 2px rgb(30 30 40 / 0.06), 0 4px 14px rgb(30 30 40 / 0.05);
+
+  container: vte / inline-size;
+  position: relative;
+  width: 100%;
+  border-radius: 1.25rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .vector-trigonometry-explorer {
+    --bg: #101319;
+    --stage: #151921;
+    --surface: #1a1f29;
+    --line: #2a303c;
+    --line-strong: #3a4250;
+    --grid: #1e232d;
+    --grid-major: #2a303b;
+    --axis: #a6adba;
+    --fg: #eef0f4;
+    --muted: #a3aab7;
+    --soft: #7d8594;
+    --c-v: #7ea8ff;
+    --c-v-soft: rgb(126 168 255 / 0.14);
+    --c-x: #eaa64b;
+    --c-x-deep: #f5c27c;
+    --c-x-soft: rgb(234 166 75 / 0.16);
+    --c-y: #43c6b3;
+    --c-y-deep: #7fe0d1;
+    --c-y-soft: rgb(67 198 179 / 0.16);
+    --c-aux: #7d8594;
+    --c-ang: #b3a6ff;
+    --c-ang-soft: rgb(179 166 255 / 0.16);
+    --tri-fill: rgb(126 168 255 / 0.08);
+    --q-tint: rgb(179 166 255 / 0.05);
+    --lit: rgb(126 168 255 / 0.1);
+    --lit-edge: rgb(126 168 255 / 0.45);
+    --term: rgb(126 168 255 / 0.22);
+    --mask: #2a303c;
+    --button: #eef0f4;
+    --button-fg: #12151b;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.25);
+  }
+}
+
+.vector-trigonometry-explorer:fullscreen {
+  border-radius: 0;
+  overflow: auto;
+}
+
+.vector-trigonometry-explorer *,
+.vector-trigonometry-explorer *::before,
+.vector-trigonometry-explorer *::after {
+  box-sizing: border-box;
+}
+
+.vector-trigonometry-explorer :is(h3, h4, p, ul) {
+  margin: 0;
+  padding: 0;
+}
+
+.vector-trigonometry-explorer ul {
+  list-style: none;
+}
+
+.vector-trigonometry-explorer button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.vector-trigonometry-explorer button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.vector-trigonometry-explorer :is(button, input, li, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-v);
+  outline-offset: 2px;
+}
+
+.vector-trigonometry-explorer .icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Layout: stage and panel side by side when there is room, stacked otherwise. */
+.vector-trigonometry-explorer .shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.vector-trigonometry-explorer .stage-wrap {
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  max-height: 78svh;
+}
+
+@container vte (min-width: 50rem) {
+  .vector-trigonometry-explorer .shell {
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 24rem);
+    height: clamp(36rem, 90svh, 54rem);
+  }
+  .vector-trigonometry-explorer .stage-wrap {
+    aspect-ratio: auto;
+    max-height: none;
+  }
+  .vector-trigonometry-explorer .side {
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+.vector-trigonometry-explorer:fullscreen .shell {
+  height: 100dvh;
+  max-height: none;
+  font-size: clamp(1rem, 1.6vmin, 1.35rem);
+}
+
+/* The stage */
+.vector-trigonometry-explorer .stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--stage);
+  box-shadow: var(--shadow);
+}
+
+.vector-trigonometry-explorer .board {
+  position: absolute;
+  inset: 0;
+  display: block;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vector-trigonometry-explorer .grid {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.vector-trigonometry-explorer .grid-major {
+  stroke: var(--grid-major);
+}
+
+.vector-trigonometry-explorer .axis {
+  stroke: var(--axis);
+  stroke-width: 1.4;
+}
+
+.vector-trigonometry-explorer .axis-head {
+  fill: var(--axis);
+}
+
+.vector-trigonometry-explorer .tick {
+  stroke: var(--axis);
+  stroke-width: 1.2;
+}
+
+.vector-trigonometry-explorer .tick-label {
+  fill: var(--muted);
+  font-size: calc(var(--label) * 0.66);
+  font-variant-numeric: tabular-nums;
+}
+
+.vector-trigonometry-explorer .arrow-shaft {
+  fill: none;
+  stroke-linecap: butt;
+}
+
+.vector-trigonometry-explorer .vec-v .arrow-shaft { stroke: var(--c-v); }
+.vector-trigonometry-explorer .vec-v :is(.arrow-head, .arrow-point) { fill: var(--c-v); }
+.vector-trigonometry-explorer .vec-vx .arrow-shaft { stroke: var(--c-x); }
+.vector-trigonometry-explorer .vec-vx :is(.arrow-head, .arrow-point) { fill: var(--c-x); }
+.vector-trigonometry-explorer .vec-vy .arrow-shaft { stroke: var(--c-y); }
+.vector-trigonometry-explorer .vec-vy :is(.arrow-head, .arrow-point) { fill: var(--c-y); }
+
+.vector-trigonometry-explorer .vec-v .arrow-point {
+  fill: var(--stage);
+  stroke: var(--c-v);
+  stroke-width: 3;
+}
+
+.vector-trigonometry-explorer .proj-line {
+  stroke: var(--c-aux);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 4;
+}
+
+.vector-trigonometry-explorer .proj-band {
+  stroke-width: 7;
+  stroke-linecap: butt;
+}
+
+.vector-trigonometry-explorer .proj-x .proj-band { stroke: var(--c-x-soft); stroke: color-mix(in srgb, var(--c-x) 34%, transparent); }
+.vector-trigonometry-explorer .proj-y .proj-band { stroke: var(--c-y-soft); stroke: color-mix(in srgb, var(--c-y) 34%, transparent); }
+
+.vector-trigonometry-explorer .proj-foot {
+  fill: var(--stage);
+  stroke: var(--c-aux);
+  stroke-width: 1.4;
+}
+
+/* Highlighting: what is pointed at stays, the rest steps back. */
+.vector-trigonometry-explorer :is(g, .label) {
+  transition: opacity 0.16s ease;
+}
+
+.vector-trigonometry-explorer .is-preview {
+  opacity: 0.6;
+}
+
+.vector-trigonometry-explorer .is-dim {
+  opacity: 0.18;
+}
+
+.vector-trigonometry-explorer .hit {
+  stroke: transparent;
+  stroke-width: 18;
+  stroke-linecap: round;
+  pointer-events: stroke;
+}
+
+/* Handles */
+
+.vector-trigonometry-explorer .handle {
+  cursor: grab;
+  outline: none;
+}
+
+.vector-trigonometry-explorer .handle-hit {
+  fill: transparent;
+}
+
+.vector-trigonometry-explorer .handle-ring {
+  fill: var(--c-v-soft);
+  stroke: var(--c-v);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.vector-trigonometry-explorer .handle:is(:hover, :focus-visible, [data-active]) .handle-ring {
+  opacity: 0.75;
+}
+
+.vector-trigonometry-explorer .handle:focus-visible .handle-ring {
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.vector-trigonometry-explorer .board[data-dragging],
+.vector-trigonometry-explorer .board[data-dragging] * {
+  cursor: grabbing;
+}
+
+/* Labels over the drawing */
+.vector-trigonometry-explorer .labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.vector-trigonometry-explorer .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--label);
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow:
+    0 0 2px var(--stage),
+    0 0 3px var(--stage),
+    0 0 5px var(--stage);
+}
+
+.vector-trigonometry-explorer .label .katex {
+  font-size: 1em;
+}
+
+.vector-trigonometry-explorer .lab-v { color: var(--c-v); font-size: calc(var(--label) * 1.12); }
+.vector-trigonometry-explorer .lab-x { color: var(--c-x); }
+.vector-trigonometry-explorer .lab-y { color: var(--c-y); }
+
+.vector-trigonometry-explorer .lab-axis { color: var(--axis); font-size: calc(var(--label) * 0.82); }
+
+/* Floating tools on the stage */
+.vector-trigonometry-explorer .stage-tools {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.vector-trigonometry-explorer .tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.4rem;
+  padding: 0 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vector-trigonometry-explorer .tool:hover {
+  border-color: var(--line-strong);
+}
+
+.vector-trigonometry-explorer .tool[aria-pressed='true'] {
+  background: var(--button);
+  border-color: var(--button);
+  color: var(--button-fg);
+}
+
+.vector-trigonometry-explorer .tool-icon {
+  width: 2.4rem;
+  padding: 0;
+  justify-content: center;
+}
+
+@container vte (max-width: 34rem) {
+  .vector-trigonometry-explorer .tool-text {
+    display: none;
+  }
+  .vector-trigonometry-explorer .tool {
+    width: 2.4rem;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+.vector-trigonometry-explorer .zoom {
+  position: absolute;
+  right: calc(var(--ruler-beside, 0px) + 0.6rem);
+  bottom: calc(var(--ruler-below, 0px) + 0.6rem);
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.vector-trigonometry-explorer .zoom button {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .zoom button + button {
+  border-top: 1px solid var(--line);
+}
+
+.vector-trigonometry-explorer .zoom button:not(:disabled):hover {
+  color: var(--fg);
+  background: var(--lit);
+}
+
+/* The panel */
+.vector-trigonometry-explorer .side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.vector-trigonometry-explorer .card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.vector-trigonometry-explorer .card h3 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .katex {
+  font-size: 1.12em;
+}
+
+/* Layer chips */
+.vector-trigonometry-explorer .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.vector-trigonometry-explorer .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 2.05rem;
+  padding: 0.12rem 0.6rem 0.12rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 550;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vector-trigonometry-explorer .chip:hover {
+  border-color: var(--line-strong);
+}
+
+.vector-trigonometry-explorer .chip-dot {
+  --dot: var(--c-aux);
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  border: 1.6px solid var(--dot);
+  transition: background 0.15s;
+}
+
+.vector-trigonometry-explorer .chip[aria-pressed='true'] {
+  border-color: var(--line-strong);
+  background: var(--lit);
+}
+
+.vector-trigonometry-explorer .chip[aria-pressed='true'] .chip-dot {
+  background: var(--dot);
+}
+
+.vector-trigonometry-explorer .chip-tex .katex {
+  font-size: 1em;
+}
+
+.vector-trigonometry-explorer .segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 0.2rem;
+  border-radius: 0.75rem;
+  background: var(--bg);
+}
+
+.vector-trigonometry-explorer .segmented button {
+  min-height: 2.1rem;
+  padding: 0 0.6rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 0.6rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vector-trigonometry-explorer .segmented button[aria-checked='true'] {
+  color: var(--fg);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+/* Values */
+.vector-trigonometry-explorer .value-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 0.5rem 0.55rem;
+  align-items: center;
+}
+
+.vector-trigonometry-explorer .number-field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.vector-trigonometry-explorer .number-field-label .katex {
+  font-size: 1.12em;
+}
+
+.vector-trigonometry-explorer .number-field-box {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(2.5rem, 1fr) 1.9rem;
+  align-items: center;
+  height: 2.3rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--stage);
+  overflow: hidden;
+}
+
+.vector-trigonometry-explorer .number-field-box:focus-within {
+  border-color: var(--c-v);
+}
+
+.vector-trigonometry-explorer .number-field-box button {
+  height: 100%;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .number-field-box button:not(:disabled):hover {
+  color: var(--fg);
+  background: var(--lit);
+}
+
+.vector-trigonometry-explorer .number-field-box input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--fg);
+  border: 0;
+  background: none;
+  outline: none;
+}
+
+.vector-trigonometry-explorer .number-field-box input:disabled {
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .tint-x .number-field-label { color: var(--c-x); }
+.vector-trigonometry-explorer .tint-y .number-field-label { color: var(--c-y); }
+
+/* Relations */
+.vector-trigonometry-explorer .relations {
+  gap: 0.35rem;
+}
+
+.vector-trigonometry-explorer .formula-group + .formula-group {
+  padding-top: 0.3rem;
+  border-top: 1px dashed var(--line);
+}
+
+.vector-trigonometry-explorer .formula-group h4 {
+  margin: 0 0 0.05rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--soft);
+}
+
+.vector-trigonometry-explorer .formula {
+  padding: 0.16rem 0.45rem;
+  border-radius: 0.55rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  overflow-x: auto;
+  scrollbar-width: none;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.vector-trigonometry-explorer .formula:hover,
+.vector-trigonometry-explorer .formula.is-lit {
+  background: var(--lit);
+}
+
+.vector-trigonometry-explorer .formula.is-pinned {
+  border-color: var(--lit-edge);
+}
+
+.vector-trigonometry-explorer .formula .katex {
+  font-size: 1.08em;
+}
+
+.vector-trigonometry-explorer .formula-main {
+  padding-block: 0.4rem;
+}
+
+.vector-trigonometry-explorer .formula-main .katex {
+  font-size: 1.3em;
+}
+
+.vector-trigonometry-explorer .notes {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  border-radius: 0.6rem;
+  background: var(--bg);
+}
+
+.vector-trigonometry-explorer .notes .katex {
+  font-size: 1.04em;
+}
+
+/* Colours inside formulas (\htmlClass in format.ts) */
+.vector-trigonometry-explorer .c-v { color: var(--c-v); }
+.vector-trigonometry-explorer .c-x { color: var(--c-x); }
+.vector-trigonometry-explorer .c-y { color: var(--c-y); }
+
+.vector-trigonometry-explorer .mask {
+  display: inline-block;
+  min-width: 1.5em;
+  margin: 0 0.12em;
+  padding: 0 0.15em;
+  text-align: center;
+  color: var(--muted);
+  background: var(--mask);
+  border-radius: 0.3em;
+}
+
+/* Term highlighting inside formulas: the term that names a highlighted object. */
+.vector-trigonometry-explorer :is(.relations, .notes) [class*='hk-'] {
+  border-radius: 0.2em;
+  transition: background 0.12s, box-shadow 0.12s;
+}
+
+/* KaTeX draws boxes and stretchy accents as layers over the symbols: let the pointer through. */
+.vector-trigonometry-explorer .relations :is(.katex-stretchy, .fbox, svg) {
+  pointer-events: none;
+}
+
+
+/* ------------------------------------------------------------------------------------------ */
+/* This Bit: triangle, angle, quadrants, signed components and the calculation.               */
+
+.vector-trigonometry-explorer .quadrant-tint {
+  fill: var(--q-tint);
+}
+
+.vector-trigonometry-explorer .quadrant-numeral {
+  fill: var(--soft);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: calc(var(--label) * 0.95);
+  opacity: 0.45;
+  user-select: none;
+}
+
+.vector-trigonometry-explorer .quadrant-numeral.is-current {
+  fill: var(--c-ang);
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.vector-trigonometry-explorer .triangle {
+  fill: var(--tri-fill);
+}
+
+.vector-trigonometry-explorer .leg-line {
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+.vector-trigonometry-explorer .leg-x .leg-line { stroke: var(--c-x); }
+.vector-trigonometry-explorer .leg-y .leg-line { stroke: var(--c-y); }
+
+.vector-trigonometry-explorer .right-mark {
+  fill: none;
+  stroke: var(--axis);
+  stroke-width: 1.3;
+}
+
+.vector-trigonometry-explorer .angle-sector {
+  fill: var(--c-ang-soft);
+}
+
+.vector-trigonometry-explorer .angle-arc {
+  fill: none;
+  stroke: var(--c-ang);
+  stroke-width: 2.2;
+}
+
+.vector-trigonometry-explorer .angle-right {
+  stroke: var(--c-ang);
+  stroke-width: 1.8;
+}
+
+.vector-trigonometry-explorer .handle-ring {
+  fill: var(--c-v-soft);
+  stroke: var(--c-v);
+}
+
+.vector-trigonometry-explorer .lab-v { color: var(--c-v); font-size: calc(var(--label) * 1.12); }
+.vector-trigonometry-explorer .lab-x { color: var(--c-x); }
+.vector-trigonometry-explorer .lab-y { color: var(--c-y); }
+.vector-trigonometry-explorer .lab-axis { color: var(--axis); font-size: calc(var(--label) * 0.82); }
+.vector-trigonometry-explorer .lab-angle { color: var(--c-ang); font-size: calc(var(--label) * 0.9); font-weight: 600; }
+.vector-trigonometry-explorer .lab-len { font-size: calc(var(--label) * 0.82); }
+.vector-trigonometry-explorer .lab-len-x { color: var(--c-x-deep); }
+.vector-trigonometry-explorer .lab-len-y { color: var(--c-y-deep); }
+.vector-trigonometry-explorer .lab-signed { font-size: calc(var(--label) * 0.82); font-weight: 600; }
+.vector-trigonometry-explorer .lab-signed-x { color: var(--c-x); }
+.vector-trigonometry-explorer .lab-signed-y { color: var(--c-y); }
+
+/* Panel */
+.vector-trigonometry-explorer .value-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.vector-trigonometry-explorer .quadrants {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3rem;
+}
+
+.vector-trigonometry-explorer .quadrants button {
+  height: 2.2rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+}
+
+.vector-trigonometry-explorer .quadrants button:hover {
+  color: var(--fg);
+  border-color: var(--line-strong);
+}
+
+.vector-trigonometry-explorer .quadrants button[aria-checked='true'] {
+  color: var(--c-ang);
+  border-color: var(--c-ang);
+  background: var(--c-ang-soft);
+}
+
+.vector-trigonometry-explorer .given {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .tint-v .number-field-label { color: var(--c-v); }
+.vector-trigonometry-explorer .tint-ang .number-field-label { color: var(--c-ang); }
+
+.vector-trigonometry-explorer .chip[data-swatch='tri'] .chip-dot { --dot: var(--c-v); border-radius: 0.15rem; }
+.vector-trigonometry-explorer .chip[data-swatch='x'] .chip-dot { --dot: var(--c-x); }
+.vector-trigonometry-explorer .chip[data-swatch='scalar'] .chip-dot { --dot: var(--c-y); border-style: dotted; }
+
+.vector-trigonometry-explorer .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.vector-trigonometry-explorer .switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 1.9rem;
+  padding: 0 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.vector-trigonometry-explorer .switch-track {
+  position: relative;
+  width: 1.9rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: var(--line-strong);
+  transition: background 0.15s;
+}
+
+.vector-trigonometry-explorer .switch-track::after {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--surface);
+  transition: transform 0.15s;
+}
+
+.vector-trigonometry-explorer .switch[aria-checked='true'] {
+  color: var(--fg);
+}
+
+.vector-trigonometry-explorer .switch[aria-checked='true'] .switch-track {
+  background: var(--c-ang);
+}
+
+.vector-trigonometry-explorer .switch[aria-checked='true'] .switch-track::after {
+  transform: translateX(0.8rem);
+}
+
+.vector-trigonometry-explorer .c-ang { color: var(--c-ang); }
+
+.vector-trigonometry-explorer .relations[data-focus~='v'] .hk-v,
+.vector-trigonometry-explorer .relations[data-focus~='ang'] .hk-ang,
+.vector-trigonometry-explorer .relations[data-focus~='lx'] .hk-lx,
+.vector-trigonometry-explorer .relations[data-focus~='ly'] .hk-ly,
+.vector-trigonometry-explorer .relations[data-focus~='sx'] .hk-sx,
+.vector-trigonometry-explorer .relations[data-focus~='sy'] .hk-sy,
+.vector-trigonometry-explorer .relations[data-focus~='vx'] .hk-vx,
+.vector-trigonometry-explorer .relations[data-focus~='vy'] .hk-vy,
+.vector-trigonometry-explorer .relations[data-focus~='q'] .hk-q {
+  background: var(--term);
+  box-shadow: 0 0 0 0.12em var(--term);
+}
+
+.vector-trigonometry-explorer .relations :is(.katex-stretchy, .frac-line) {
+  pointer-events: none;
+}
+
+/* The four quadrants and their signs, laid out as on the plane. */
+.vector-trigonometry-explorer .signs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--line);
+  font-size: 0.82rem;
+}
+
+.vector-trigonometry-explorer .signs-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.3rem 0.5rem;
+  background: var(--surface);
+  color: var(--muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.vector-trigonometry-explorer .signs-cell.is-current {
+  background: var(--c-ang-soft);
+  color: var(--fg);
+}
+
+.vector-trigonometry-explorer .signs-q {
+  min-width: 1.7em;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+}
+
+.vector-trigonometry-explorer .signs-cell.is-current .signs-q {
+  color: var(--c-ang);
+}
+
+.vector-trigonometry-explorer .signs .katex {
+  font-size: 0.98em;
+}

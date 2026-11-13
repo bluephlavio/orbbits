@@ -221,5 +221,8 @@ without a concrete current need:
   (`vector-components-explorer`, `vector-operations-explorer`, `vector-sum-magnitude-explorer`)
   share a small SVG core — view transform, arrows, parallel tracks, label placement, KaTeX
   wrapper, Italian number formatting — as identical copies marked `[shared]` in their READMEs,
-  because Bits import only from their own `src/`. That core is the concrete candidate for
-  extraction; where shared Bit code may live is the decision still open.
+  because Bits import only from their own `src/`. Two trigonometry Bits (2026-11-13,
+  `right-triangle-trigonometry`, `vector-trigonometry-explorer`) copy it too — the first only
+  the part it uses — and share a small `marks.ts` (angle arcs, right-angle squares) between
+  them. That core is the concrete candidate for extraction; where shared Bit code may live is
+  the decision still open, kept open on purpose (no common platform yet).

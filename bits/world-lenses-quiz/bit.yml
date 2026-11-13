@@ -1,0 +1,42 @@
+id: world-lenses-quiz
+title: Cambiare le lenti
+
+kind: interactive
+role: game
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-08
+
+description: >-
+  Prototipo di un quiz sul mondo presente, per mettere alla prova le immagini che abbiamo di
+  società e aree geografiche. Il motore è completo: percorsi pronti, scelta dalla banca o
+  estrazione casuale, spiegazione dopo ogni risposta, una domanda aperta per la discussione,
+  anno e fonti. Le domande sono invece materiale provvisorio, in revisione editoriale: non una
+  raccolta verificata.
+
+subjects: [civic-education, geography, history]
+topics: [world-geography, global-inequality, migration, geopolitics, development, misconceptions]
+levels: [upper-secondary]
+tags: [world-geography, misconceptions, global-inequality, migration, geopolitics, quiz, civic-education]
+
+provenance:
+  - source: "Banca di domande provvisoria «Un atlante delle idee sbagliate sul mondo», 5ª edizione (2026-11-08), schema world-lenses-bank-1.1"
+    author: Flavio Grandin, con generazione assistita da AI
+    license: CC BY-SA 4.0 (original content of this repository)
+    modifications: >-
+      src/data/bank.json is kept as supplied. The Bit's own src/data/review.json marks the bank
+      as provisional (not editorially approved), holds back from play the items whose decisive
+      figure is documented only through a secondary reproduction (D45, D67: kept in the file,
+      never played, drawn or offered in presets), and drops two links to unofficial copies of
+      IOM reports whose official links the same items cite (D22, D24).
+    retrieved: 2026-11-08
+    notes: >-
+      The texts (questions, alternatives, answers, explanations, open questions, teacher notes)
+      are original, AI-assisted writing for this repository. The facts and figures they report
+      belong to the cited sources (statistical offices, UN agencies, international reports),
+      named with year and link after each answer; no text, table or image of those sources is
+      reproduced, so their terms are not relicensed here. Publication is not approval of the
+      single items: the bank is in editorial revision and will be rebuilt by the author.

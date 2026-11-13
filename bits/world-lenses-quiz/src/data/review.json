@@ -1,0 +1,32 @@
+{
+  "format": "orbbits.world-lenses-quiz.review",
+  "version": 1,
+  "bank": "world-lenses-bank-1.1",
+  "edition": 5,
+  "updated": "2026-11-13",
+  "status": "provisional",
+  "note": "The bank was produced with AI-assisted generation and is not editorially approved. It is published as a working prototype of the quiz engine; it will be rebuilt by the author, item by item, from selected observations with verified sources. Publication is not approval of any single item.",
+  "criteria": "An item is held back from play when its decisive figure rests only on a secondary reproduction of the primary source, or on a source the bank itself declares not consulted. A source link is suppressed when it points to an unofficial copy of a document whose official link is also cited.",
+  "held": [
+    {
+      "id": "D45",
+      "reason": "The counts come only from a third-party reproduction (Irangaah) of ministerial statistics; the item's own note says the original MSRT table was not accessible."
+    },
+    {
+      "id": "D67",
+      "reason": "The 56% abstention figure is cited only through a reproduction of the WHO Global status report 2024 hosted by a third party; to be checked against WHO's own publication before play."
+    }
+  ],
+  "suppressed_sources": [
+    {
+      "item": "D22",
+      "url": "https://www.arielapp.co/es/biblioteca/documento/oim-world-migration-report-2026-chapter-2-76949ddc",
+      "reason": "Unofficial copy of IOM World Migration Report 2026, chapter 2; the official IOM link is cited in the same item."
+    },
+    {
+      "item": "D24",
+      "url": "https://www.arielapp.co/es/biblioteca/documento/oim-world-migration-report-2026-chapter-3-158087df",
+      "reason": "Unofficial copy of IOM World Migration Report 2026, chapter 3; the official IOM link is cited in the same item."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+id: right-triangle-trigonometry
+title: Triangoli rettangoli e rapporti trigonometrici
+
+kind: interactive
+role: dynamic-geometry
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-13
+
+description: >-
+  Un laboratorio sul triangolo rettangolo: fissato un angolo acuto, si ingrandisce o si riduce
+  il triangolo e si confrontano triangoli simili, per scoprire che le lunghezze cambiano ma i
+  rapporti fra i lati no. Solo dopo, i rapporti prendono il nome di seno, coseno e tangente;
+  cambiando l'angolo di riferimento, cateto opposto e adiacente si scambiano.
+
+subjects: [mathematics, physics]
+topics: [right-triangle, similarity, trigonometric-ratios, sine, cosine, tangent]
+levels: [upper-secondary]
+tags: [trigonometry, right-triangle, similarity, sine, cosine, tangent]
