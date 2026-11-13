@@ -1,0 +1,958 @@
+/*
+ * Il modulo della somma. Same sheet, grid and cards as the other vector Bits (a⃗ blue, b⃗ ochre,
+ * a⃗ + b⃗ teal), laid out differently: the construction is wide and low, so the stage spans the
+ * width and the controls sit underneath. Scoped under .vector-sum-magnitude-explorer.
+ */
+.vector-sum-magnitude-explorer {
+  --bg: #f3f2ee;
+  --stage: #fcfcfa;
+  --surface: #ffffff;
+  --line: #e2dfd7;
+  --line-strong: #cfcbc1;
+  --grid: #ecebe6;
+  --grid-major: #dcd9d1;
+  --axis: #575b64;
+  --fg: #1c1e25;
+  --muted: #646a76;
+  --soft: #8a8f99;
+  --c-v: #2b62cc;
+  --c-v-soft: rgb(43 98 204 / 0.1);
+  --c-a: #2b62cc;
+  --c-b: #c0700f;
+  --c-s: #0d8577;
+  --c-s-soft: rgb(13 133 119 / 0.08);
+  --c-s-strong: rgb(13 133 119 / 0.16);
+  --c-angle: #5b4bb5;
+  --c-aux: #8b909a;
+  --lit: rgb(43 98 204 / 0.07);
+  --lit-edge: rgb(43 98 204 / 0.35);
+  --mask: #e9e6de;
+  --button: #1c1e25;
+  --button-fg: #fbfaf7;
+  --shadow: 0 1px 2px rgb(30 30 40 / 0.06), 0 4px 14px rgb(30 30 40 / 0.05);
+
+  container: vbit / inline-size;
+  position: relative;
+  width: 100%;
+  border-radius: 1.25rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .vector-sum-magnitude-explorer {
+    --bg: #101319;
+    --stage: #151921;
+    --surface: #1a1f29;
+    --line: #2a303c;
+    --line-strong: #3a4250;
+    --grid: #1e232d;
+    --grid-major: #2a303b;
+    --axis: #a6adba;
+    --fg: #eef0f4;
+    --muted: #a3aab7;
+    --soft: #7d8594;
+    --c-v: #7ea8ff;
+    --c-v-soft: rgb(126 168 255 / 0.14);
+    --c-a: #7ea8ff;
+    --c-b: #eaa64b;
+    --c-s: #43c6b3;
+    --c-s-soft: rgb(67 198 179 / 0.1);
+    --c-s-strong: rgb(67 198 179 / 0.2);
+    --c-angle: #b3a6ff;
+    --c-aux: #7d8594;
+    --lit: rgb(126 168 255 / 0.1);
+    --lit-edge: rgb(126 168 255 / 0.45);
+    --mask: #2a303c;
+    --button: #eef0f4;
+    --button-fg: #12151b;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.25);
+  }
+}
+
+.vector-sum-magnitude-explorer:fullscreen {
+  border-radius: 0;
+  overflow: auto;
+}
+
+.vector-sum-magnitude-explorer *,
+.vector-sum-magnitude-explorer *::before,
+.vector-sum-magnitude-explorer *::after {
+  box-sizing: border-box;
+}
+
+.vector-sum-magnitude-explorer :is(h3, h4, p, ul) {
+  margin: 0;
+  padding: 0;
+}
+
+.vector-sum-magnitude-explorer ul {
+  list-style: none;
+}
+
+.vector-sum-magnitude-explorer button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.vector-sum-magnitude-explorer button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.vector-sum-magnitude-explorer :is(button, input, li, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-v);
+  outline-offset: 2px;
+}
+
+.vector-sum-magnitude-explorer .icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Layout: a wide stage, the controls underneath. */
+.vector-sum-magnitude-explorer .shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.vector-sum-magnitude-explorer .stage-wrap {
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  max-height: 62svh;
+}
+
+.vector-sum-magnitude-explorer .strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@container vbit (min-width: 46rem) {
+  .vector-sum-magnitude-explorer .stage-wrap {
+    aspect-ratio: 2 / 1;
+  }
+  .vector-sum-magnitude-explorer .strip {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.vector-sum-magnitude-explorer:fullscreen .shell {
+  height: 100dvh;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  font-size: clamp(1rem, 1.5vmin, 1.3rem);
+}
+
+.vector-sum-magnitude-explorer:fullscreen .stage-wrap {
+  aspect-ratio: auto;
+  max-height: none;
+}
+
+/* The stage */
+.vector-sum-magnitude-explorer .stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--stage);
+  box-shadow: var(--shadow);
+}
+
+.vector-sum-magnitude-explorer .board {
+  position: absolute;
+  inset: 0;
+  display: block;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vector-sum-magnitude-explorer .grid {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.vector-sum-magnitude-explorer .grid-major {
+  stroke: var(--grid-major);
+}
+
+.vector-sum-magnitude-explorer .axis {
+  stroke: var(--axis);
+  stroke-width: 1.4;
+}
+
+.vector-sum-magnitude-explorer .axis-head {
+  fill: var(--axis);
+}
+
+.vector-sum-magnitude-explorer .tick {
+  stroke: var(--axis);
+  stroke-width: 1.2;
+}
+
+.vector-sum-magnitude-explorer .tick-label {
+  fill: var(--muted);
+  font-size: calc(var(--label) * 0.66);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Arrows and the construction */
+.vector-sum-magnitude-explorer .vec-a .arrow-shaft { stroke: var(--c-a); }
+.vector-sum-magnitude-explorer .vec-a :is(.arrow-head, .arrow-point) { fill: var(--c-a); }
+.vector-sum-magnitude-explorer .vec-b .arrow-shaft { stroke: var(--c-b); }
+.vector-sum-magnitude-explorer .vec-b :is(.arrow-head, .arrow-point) { fill: var(--c-b); }
+.vector-sum-magnitude-explorer .vec-s .arrow-shaft { stroke: var(--c-s); }
+.vector-sum-magnitude-explorer .vec-s :is(.arrow-head, .arrow-point) { fill: var(--c-s); }
+
+.vector-sum-magnitude-explorer .piece.is-copy .arrow {
+  opacity: 0.55;
+}
+
+.vector-sum-magnitude-explorer .vec-s .arrow-point {
+  fill: var(--stage);
+  stroke: var(--c-s);
+  stroke-width: 3;
+}
+
+.vector-sum-magnitude-explorer .triangle {
+  fill: var(--c-s-soft);
+  transition: fill 0.2s;
+}
+
+.vector-sum-magnitude-explorer .triangle.is-right {
+  fill: var(--c-s-strong);
+}
+
+.vector-sum-magnitude-explorer .para-fill {
+  fill: var(--c-s-soft);
+}
+
+.vector-sum-magnitude-explorer .angle-arc,
+.vector-sum-magnitude-explorer .right-mark {
+  fill: none;
+  stroke: var(--c-angle);
+  stroke-width: 1.8;
+}
+
+.vector-sum-magnitude-explorer .tail-dot {
+  fill: var(--stage);
+  stroke: var(--c-v);
+  stroke-width: 2.4;
+}
+
+.vector-sum-magnitude-explorer .vec-v .arrow-point {
+  fill: var(--stage);
+  stroke: var(--c-v);
+  stroke-width: 3;
+}
+
+/* Highlighting: what is pointed at stays, the rest steps back. */
+.vector-sum-magnitude-explorer :is(g, .label) {
+  transition: opacity 0.16s ease;
+}
+
+.vector-sum-magnitude-explorer .is-preview {
+  opacity: 0.6;
+}
+
+.vector-sum-magnitude-explorer .is-dim {
+  opacity: 0.18;
+}
+
+.vector-sum-magnitude-explorer .hit {
+  stroke: transparent;
+  stroke-width: 18;
+  stroke-linecap: round;
+  pointer-events: stroke;
+}
+
+/* Handles */
+.vector-sum-magnitude-explorer .handle-body {
+  stroke: transparent;
+  stroke-width: 26;
+  pointer-events: stroke;
+  cursor: move;
+  outline: none;
+}
+
+.vector-sum-magnitude-explorer .handle {
+  cursor: grab;
+  outline: none;
+}
+
+.vector-sum-magnitude-explorer .handle-hit {
+  fill: transparent;
+}
+
+.vector-sum-magnitude-explorer .handle-ring {
+  fill: var(--c-v-soft);
+  stroke: var(--c-v);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.vector-sum-magnitude-explorer .handle:is(:hover, :focus-visible, [data-active]) .handle-ring {
+  opacity: 0.75;
+}
+
+.vector-sum-magnitude-explorer .handle:focus-visible .handle-ring {
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.vector-sum-magnitude-explorer .handle-body:focus-visible {
+  stroke: var(--c-v-soft);
+}
+
+.vector-sum-magnitude-explorer .board[data-dragging],
+.vector-sum-magnitude-explorer .board[data-dragging] * {
+  cursor: grabbing;
+}
+
+/* Labels over the drawing */
+.vector-sum-magnitude-explorer .labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.vector-sum-magnitude-explorer .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--label);
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow:
+    0 0 2px var(--stage),
+    0 0 3px var(--stage),
+    0 0 5px var(--stage);
+}
+
+.vector-sum-magnitude-explorer .label .katex {
+  font-size: 1em;
+}
+
+.vector-sum-magnitude-explorer .lab-a { color: var(--c-a); }
+.vector-sum-magnitude-explorer .lab-b { color: var(--c-b); }
+.vector-sum-magnitude-explorer .lab-s { color: var(--c-s); }
+.vector-sum-magnitude-explorer .lab-ghost { opacity: 0.62; font-size: calc(var(--label) * 0.92); }
+.vector-sum-magnitude-explorer .lab-alpha { color: var(--c-angle); font-size: calc(var(--label) * 0.9); }
+.vector-sum-magnitude-explorer .lab-point { color: var(--fg); font-size: calc(var(--label) * 0.82); }
+
+/* Floating tools on the stage */
+.vector-sum-magnitude-explorer .stage-tools {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.vector-sum-magnitude-explorer .tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.4rem;
+  padding: 0 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vector-sum-magnitude-explorer .tool:hover {
+  border-color: var(--line-strong);
+}
+
+.vector-sum-magnitude-explorer .tool[aria-pressed='true'] {
+  background: var(--button);
+  border-color: var(--button);
+  color: var(--button-fg);
+}
+
+.vector-sum-magnitude-explorer .tool-icon {
+  width: 2.4rem;
+  padding: 0;
+  justify-content: center;
+}
+
+@container vbit (max-width: 34rem) {
+  .vector-sum-magnitude-explorer .tool-text {
+    display: none;
+  }
+  .vector-sum-magnitude-explorer .tool {
+    width: 2.4rem;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+.vector-sum-magnitude-explorer .zoom {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.vector-sum-magnitude-explorer .zoom button {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .zoom button + button {
+  border-top: 1px solid var(--line);
+}
+
+.vector-sum-magnitude-explorer .zoom button:not(:disabled):hover {
+  color: var(--fg);
+  background: var(--lit);
+}
+
+/* The panel */
+.vector-sum-magnitude-explorer .side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.vector-sum-magnitude-explorer .card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.vector-sum-magnitude-explorer .card h3 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .katex {
+  font-size: 1.12em;
+}
+
+.vector-sum-magnitude-explorer .segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 0.2rem;
+  border-radius: 0.75rem;
+  background: var(--bg);
+}
+
+.vector-sum-magnitude-explorer .segmented button {
+  min-height: 2.1rem;
+  padding: 0 0.6rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 0.6rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vector-sum-magnitude-explorer .segmented button[aria-checked='true'] {
+  color: var(--fg);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+/* Values */
+.vector-sum-magnitude-explorer .value-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 0.5rem 0.55rem;
+  align-items: center;
+}
+
+.vector-sum-magnitude-explorer .square {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+}
+
+.vector-sum-magnitude-explorer .square:not(:disabled):hover {
+  color: var(--fg);
+  border-color: var(--line-strong);
+  background: var(--lit);
+}
+
+.vector-sum-magnitude-explorer .number-field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.vector-sum-magnitude-explorer .number-field-label .katex {
+  font-size: 1.12em;
+}
+
+.vector-sum-magnitude-explorer .number-field-box {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(2.5rem, 1fr) 1.9rem;
+  align-items: center;
+  height: 2.3rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--stage);
+  overflow: hidden;
+}
+
+.vector-sum-magnitude-explorer .number-field-box:focus-within {
+  border-color: var(--c-v);
+}
+
+.vector-sum-magnitude-explorer .number-field-box button {
+  height: 100%;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .number-field-box button:not(:disabled):hover {
+  color: var(--fg);
+  background: var(--lit);
+}
+
+.vector-sum-magnitude-explorer .number-field-box input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--fg);
+  border: 0;
+  background: none;
+  outline: none;
+}
+
+.vector-sum-magnitude-explorer .number-field-box input:disabled {
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .tint-x .number-field-label { color: var(--c-x); }
+.vector-sum-magnitude-explorer .tint-y .number-field-label { color: var(--c-y); }
+
+.vector-sum-magnitude-explorer .readout {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0.1rem 0;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .readout .katex {
+  font-size: 1.12em;
+}
+
+/* Relations */
+.vector-sum-magnitude-explorer .relations {
+  gap: 0.35rem;
+}
+
+.vector-sum-magnitude-explorer .formula-group + .formula-group {
+  padding-top: 0.35rem;
+  border-top: 1px dashed var(--line);
+}
+
+.vector-sum-magnitude-explorer .formula {
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.55rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  overflow-x: auto;
+  scrollbar-width: none;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.vector-sum-magnitude-explorer .formula:hover,
+.vector-sum-magnitude-explorer .formula.is-lit {
+  background: var(--lit);
+}
+
+.vector-sum-magnitude-explorer .formula.is-pinned {
+  border-color: var(--lit-edge);
+}
+
+.vector-sum-magnitude-explorer .formula .katex {
+  font-size: 1.08em;
+}
+
+.vector-sum-magnitude-explorer .formula-main {
+  padding-block: 0.4rem;
+}
+
+.vector-sum-magnitude-explorer .formula-main .katex {
+  font-size: 1.3em;
+}
+
+.vector-sum-magnitude-explorer .notes {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  border-radius: 0.6rem;
+  background: var(--bg);
+}
+
+.vector-sum-magnitude-explorer .notes .katex {
+  font-size: 1.04em;
+}
+
+/* Colours inside formulas (\htmlClass in format.ts) */
+.vector-sum-magnitude-explorer .c-a { color: var(--c-a); }
+.vector-sum-magnitude-explorer .c-b { color: var(--c-b); }
+.vector-sum-magnitude-explorer .c-s { color: var(--c-s); }
+
+.vector-sum-magnitude-explorer .mask {
+  display: inline-block;
+  min-width: 1.5em;
+  margin: 0 0.12em;
+  padding: 0 0.15em;
+  text-align: center;
+  color: var(--muted);
+  background: var(--mask);
+  border-radius: 0.3em;
+}
+
+/* Sliders */
+.vector-sum-magnitude-explorer .slider {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) 3.4rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.vector-sum-magnitude-explorer .slider-name .katex {
+  font-size: 1.15em;
+}
+
+.vector-sum-magnitude-explorer .slider input[type='range'] {
+  width: 100%;
+  accent-color: var(--fg);
+}
+
+.vector-sum-magnitude-explorer .tint-a input[type='range'] { accent-color: var(--c-a); }
+.vector-sum-magnitude-explorer .tint-b input[type='range'] { accent-color: var(--c-b); }
+.vector-sum-magnitude-explorer .slider-alpha input[type='range'] { accent-color: var(--c-angle); }
+
+.vector-sum-magnitude-explorer .slider-alpha .slider-name {
+  color: var(--c-angle);
+}
+
+.vector-sum-magnitude-explorer .slider-value {
+  font-size: 1.05rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.vector-sum-magnitude-explorer .slider-alpha .slider-value {
+  font-size: 1.25rem;
+}
+
+/* The three special cases */
+.vector-sum-magnitude-explorer .cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.vector-sum-magnitude-explorer .case {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem 0.3rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.vector-sum-magnitude-explorer .case:hover {
+  border-color: var(--line-strong);
+}
+
+.vector-sum-magnitude-explorer .case[aria-pressed='true'] {
+  border-color: var(--c-angle);
+  background: color-mix(in srgb, var(--c-angle) 9%, var(--surface));
+}
+
+.vector-sum-magnitude-explorer .case-picto {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+
+.vector-sum-magnitude-explorer .case[aria-pressed='true'] .case-picto {
+  stroke: var(--c-angle);
+}
+
+.vector-sum-magnitude-explorer .case-angle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.vector-sum-magnitude-explorer .case-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* The result */
+.vector-sum-magnitude-explorer .result {
+  align-content: start;
+}
+
+.vector-sum-magnitude-explorer .big {
+  min-height: 2.6rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vector-sum-magnitude-explorer .big .katex {
+  font-size: 1.55em;
+}
+
+.vector-sum-magnitude-explorer .rule {
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .rule .katex {
+  font-size: 1.05em;
+}
+
+.vector-sum-magnitude-explorer .note {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-radius: 0.6rem;
+  background: var(--bg);
+}
+
+.vector-sum-magnitude-explorer .compare {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .neq {
+  color: var(--fg);
+}
+
+.vector-sum-magnitude-explorer .range {
+  padding: 0.3rem 0.2rem 0;
+}
+
+.vector-sum-magnitude-explorer .range-track {
+  position: relative;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--grid-major);
+}
+
+.vector-sum-magnitude-explorer .range-span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 999px;
+  background: var(--c-s-strong);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-s) 40%, transparent);
+}
+
+.vector-sum-magnitude-explorer .range-mark {
+  position: absolute;
+  top: 50%;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: var(--c-s);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transform: translate(-50%, -50%);
+}
+
+.vector-sum-magnitude-explorer .range-ticks {
+  position: relative;
+  height: 1.3rem;
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .range-ticks span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.vector-sum-magnitude-explorer .range-ticks span:first-child {
+  transform: none;
+}
+
+.vector-sum-magnitude-explorer .range-ticks span:last-child {
+  transform: translateX(-100%);
+}
+
+/* Deepening */
+.vector-sum-magnitude-explorer .deep-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@container vbit (min-width: 46rem) {
+  .vector-sum-magnitude-explorer .deep-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    align-items: center;
+  }
+}
+
+.vector-sum-magnitude-explorer .deep-text {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.vector-sum-magnitude-explorer .deep-formula {
+  font-size: 1.08rem;
+  color: var(--fg);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vector-sum-magnitude-explorer .deep-chart {
+  margin: 0;
+}
+
+.vector-sum-magnitude-explorer .deep-chart figcaption {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.vector-sum-magnitude-explorer .deep-chart figcaption .katex {
+  font-size: 1em;
+}
+
+.vector-sum-magnitude-explorer .curve {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vector-sum-magnitude-explorer .curve-line {
+  fill: none;
+  stroke: var(--c-s);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+
+.vector-sum-magnitude-explorer .curve-guide {
+  stroke: var(--line-strong);
+  stroke-dasharray: 3 4;
+}
+
+.vector-sum-magnitude-explorer .curve-axis {
+  stroke: var(--axis);
+  stroke-width: 1.2;
+}
+
+.vector-sum-magnitude-explorer .curve-tick {
+  fill: var(--muted);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.vector-sum-magnitude-explorer .curve-point {
+  fill: var(--c-s);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.vector-sum-magnitude-explorer .disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  justify-self: start;
+  min-height: 2rem;
+  padding: 0 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 0.5rem;
+}
+
+.vector-sum-magnitude-explorer .disclosure:hover {
+  color: var(--fg);
+}
+
+.vector-sum-magnitude-explorer .disclosure .icon {
+  transition: transform 0.15s;
+}
+
+.vector-sum-magnitude-explorer .disclosure[aria-expanded='true'] .icon {
+  transform: rotate(90deg);
+}

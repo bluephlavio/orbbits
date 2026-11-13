@@ -156,8 +156,13 @@ Graph axes, tick marks, and labels are part of the mathematical language. Ensure
 
 ## Mathematical notation
 
-Unicode for simple symbols (θ, π, ≤); for real typesetting add KaTeX at the root
-(`pnpm add katex`) and render into the component — not yet a repository convention.
+Unicode for simple symbols in plain text (π, ≤). For formulas, and for any notation that
+Unicode only approximates (vector arrows, hats, roots, fractions), use KaTeX, a root
+dependency: render with `katex.renderToString` into the component, import
+`katex/dist/katex.min.css`, and cache by source so formulas can follow a drag. Colour and
+highlighting go through `\htmlClass{…}` (the only command to trust) and scoped CSS classes, so
+light and dark mode keep working. Labels over an SVG are HTML positioned in the SVG's pixel
+coordinates. Reference: `bits/vector-components-explorer` (`src/ui/Tex.tsx`, `format.ts`).
 
 ## Performance
 

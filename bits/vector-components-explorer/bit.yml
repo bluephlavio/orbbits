@@ -1,0 +1,21 @@
+id: vector-components-explorer
+title: Vettori, componenti e versori
+
+kind: interactive
+role: dynamic-geometry
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-12
+
+description: >-
+  Una lavagna di precisione per il vettore nel piano cartesiano: trascina coda e punta, trasla
+  la freccia, mostra versori, componenti e proiezioni, e osserva come il vettore si scrive con
+  le sue componenti scalari, anche negative, e i versori degli assi.
+
+subjects: [mathematics, physics]
+topics: [vectors, cartesian-plane, vector-components, unit-vectors]
+levels: [upper-secondary]
+tags: [vectors, vector-components, unit-vectors, cartesian-plane, projection]

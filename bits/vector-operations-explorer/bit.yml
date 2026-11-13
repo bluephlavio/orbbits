@@ -1,0 +1,21 @@
+id: vector-operations-explorer
+title: Operazioni con i vettori
+
+kind: interactive
+role: dynamic-geometry
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-12
+
+description: >-
+  Somma, differenza e prodotto per uno scalare come costruzioni con le frecce, confrontabili
+  fra loro (punta-coda, parallelogramma e le sue due diagonali), e come semplici calcoli in
+  componenti cartesiane, passo per passo.
+
+subjects: [mathematics, physics]
+topics: [vectors, vector-addition, vector-subtraction, scalar-multiplication]
+levels: [upper-secondary]
+tags: [vectors, vector-addition, vector-subtraction, scalar-multiplication, parallelogram-rule]

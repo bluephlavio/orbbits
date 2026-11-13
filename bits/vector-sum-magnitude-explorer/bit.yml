@@ -1,0 +1,21 @@
+id: vector-sum-magnitude-explorer
+title: Il modulo della somma
+
+kind: interactive
+role: dynamic-geometry
+engine: react
+
+status: usable
+default_locale: it
+locales: [it]
+created: 2026-11-12
+
+description: >-
+  Fissati i moduli di due vettori, ruota l'angolo α fra 0° e 180° e osserva come cambia
+  |a⃗ + b⃗|: massimo per vettori concordi, minimo per discordi, Pitagora per vettori
+  perpendicolari, e in generale |a⃗ + b⃗| ≠ |a⃗| + |b⃗|.
+
+subjects: [mathematics, physics]
+topics: [vectors, vector-addition, vector-magnitude]
+levels: [upper-secondary]
+tags: [vectors, vector-addition, vector-magnitude, pythagorean-theorem, triangle-inequality]

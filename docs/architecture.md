@@ -217,4 +217,9 @@ without a concrete current need:
   Bits need custom plots, extract a reusable component or library (either a React primitive
   or a plotting library like Plotly / Recharts) rather than duplicating the work per Bit.
   **Why deferred:** one implementation is sufficient to infer the API; the pattern will clarify
-  when a second real use case appears.
+  when a second real use case appears. **Status (2026-11):** the three vector Bits
+  (`vector-components-explorer`, `vector-operations-explorer`, `vector-sum-magnitude-explorer`)
+  share a small SVG core — view transform, arrows, parallel tracks, label placement, KaTeX
+  wrapper, Italian number formatting — as identical copies marked `[shared]` in their READMEs,
+  because Bits import only from their own `src/`. That core is the concrete candidate for
+  extraction; where shared Bit code may live is the decision still open.
